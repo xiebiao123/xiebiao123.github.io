@@ -23,7 +23,7 @@ url: http://yoursite.com
 root: /
 #文章链接地址格式 。即文章存放的目录。
 permalink: :year/:month/:day/:title/
-permalink_defaults: 404.html
+permalink_defaults: /404.html
 
 # 目录设置
 #资源文件夹，放在里面的文件会上传到github中
