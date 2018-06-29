@@ -7,7 +7,7 @@
 title: 奔跑的蜗牛
 # 副标题
 subtitle: 记录学习的技能和遇到的问题
-# 网站描述 
+# description主要用于SEO，告诉搜索引擎一个关于您站点的简单描述，通常建议在其中包含您网站的关键词。author参数用于主题显示文章的作者
 description: 做自己爱做的事，爱自己在做的事！
 keywords:
 author: 奔跑的蜗牛
@@ -18,11 +18,12 @@ timezone:
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 ## 如果您的网站放在子目录中，请将url设置为'http://yoursite.com/child'，root设置为'/ child /'
-url: http://yoursite.com
+url: https://xiebiao123.github.io/
 #网站根目录。如果网站是放在子目录中，将root设置成'子目录名'
 root: /
 #文章链接地址格式 。即文章存放的目录。
 permalink: :year/:month/:day/:title/
+#永久链接中各部分的默认值
 permalink_defaults: /404.html
 
 # 目录设置
@@ -49,10 +50,13 @@ skip_render: [baidu_verify_R9MZjdMkXT.html, google0f8fac7da2b48ef8.html, README.
 new_post_name: :title.md
 #默认布局模板是post，而不是draft和page
 default_layout: post
+#在中文和英文之间加入空格
+auto_spacing: false
 #是否将标题转换成标题形式（首字母大写）
 titlecase: false
 #在新标签页面中打开网页
 external_link: true
+#把文件名称转换为 (1) 小写或 (2) 大写
 filename_case: 0
 #是否渲染草稿
 render_drafts: false
@@ -83,8 +87,11 @@ index_generator:
   per_page: 10 # 条数
   order_by: -date #排序
 # Category & Tag
+# 默认分类
 default_category: uncategorized
+# 分类别名
 category_map:
+# 标签别名
 tag_map:
 
 # Pagination
