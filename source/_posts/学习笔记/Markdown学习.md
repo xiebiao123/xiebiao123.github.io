@@ -1,8 +1,11 @@
 ---
 title: Markdown
 
+categories:
+	- 学习
+
 tags:
-     - 学习笔记
+    - 学习笔记
 ---
 
 ----------
