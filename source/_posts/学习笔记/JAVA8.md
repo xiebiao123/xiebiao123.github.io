@@ -1,12 +1,11 @@
 ---
 title: Java8
-
 date: 2018-07-01
-
 categories:
-  - 学习
+    - 学习
 tags:
-  - 学习笔记
+    - 笔记
+    - Java
 ---
 
 ##### Lambada表达式

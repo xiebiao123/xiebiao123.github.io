@@ -1,10 +1,10 @@
 ---
 title: RabbitMQ
-
+date: 2018-07-02
 categories:
-	- 笔记
-
+	- 学习
 tags:
+    - 笔记
     - MQ
 ---
 
@@ -14,6 +14,7 @@ tags:
     spring.rabbitmq.cache.channel.size =＃要在缓存中保留的通道数。
     spring.rabbitmq.cache.connection.mode = CHANNEL＃连接工厂缓存模式。
     spring.rabbitmq.cache.connection.size =＃缓存的连接数。
+ <!-- more -->
     spring.rabbitmq.connection-timeout =＃连接超时，以毫秒为单位;零无限。
     spring.rabbitmq.dynamic = true＃创建一个AmqpAdmin bean。
     spring.rabbitmq.host = localhost＃RabbitMQ主机。

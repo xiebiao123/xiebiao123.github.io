@@ -1,12 +1,11 @@
 ---
 title: Markdown
-
 date: 2018-06-24
-
 categories:
 	- 学习
 tags:
-	- 学习笔记
+    - 笔记
+    - Markdown
 ---
 
 ##### 1.标题
