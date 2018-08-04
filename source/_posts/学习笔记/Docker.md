@@ -19,7 +19,7 @@ tags:
 
 ## 常用
     service docker start 启动 Docker 进程
-    docker command \-\-help Docker命令使用方法
+    docker command --help Docker命令使用方法
 
 ## 容器
 
