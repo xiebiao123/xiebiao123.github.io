@@ -6,10 +6,10 @@
 # 标题
 title: 奔跑的蜗牛
 # 副标题
-subtitle: 记录学习的技能和遇到的问题
+subtitle: 做自己爱做的事，爱自己在做的事
 # description主要用于SEO，告诉搜索引擎一个关于您站点的简单描述，通常建议在其中包含您网站的关键词。author参数用于主题显示文章的作者
-description: 做自己爱做的事，爱自己在做的事！
-keywords:
+description: 做自己爱做的事，爱自己在做的事
+keywords: "Java,Spring,Spring Boot,Spring Cloud,Dubbo,Redis,Kafka"
 author: 奔跑的蜗牛
 #网站语言，默认英语，设置简体汉语
 language: zh-Hans
