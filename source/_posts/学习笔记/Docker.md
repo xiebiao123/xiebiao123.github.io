@@ -4,7 +4,6 @@ date: 2018-08-04
 categories:
     - 学习
 tags:
-    - 笔记
     - Docker
 ---
 # 概念

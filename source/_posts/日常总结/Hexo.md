@@ -2,9 +2,8 @@
 title: Hexo + Github Pages + yilia 搭建个人博客
 date: 2019-07-02
 categories:
-	- 环境
+	- 学习
 tags:
-    - 笔记
     - Hexo
 ---
 #### Github Pages 是什么
@@ -22,6 +21,8 @@ GitHub Pages 本用于介绍托管在GitHub的项目，不过由于他的空间�
 1. 安装node.js
 2. 安装git
 
+<!-- more -->
+
 ##### Hexo 安装
 ```
 $ npm install hexo-cli -g
@@ -32,7 +33,7 @@ $ hexo g # 或者hexo generate
 $ hexo s # 或者hexo server，可以在http://localhost:4000/ 查看（hexo s -p 8023端口被占用时）
 ```
 
-<!-- more -->
+
 ##### 切换主题
 * 安装主题
 ```text

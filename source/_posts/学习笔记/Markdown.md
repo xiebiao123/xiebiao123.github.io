@@ -4,7 +4,6 @@ date: 2018-06-24
 categories:
 	- 学习
 tags:
-    - 笔记
     - Markdown
 ---
 

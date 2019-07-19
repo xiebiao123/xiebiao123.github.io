@@ -4,7 +4,6 @@ date: 2018-07-17
 categories:
     - 学习
 tags:
-    - 笔记
     - Maven
 ---
 ##### 基础概念
@@ -12,7 +11,7 @@ tags:
 ###### 稳定RELEASE
     用户A将代码打包发布到RELEASE仓库，用户B使用时，需要在pom.xml添加JAR包的依赖坐标。如果用户A将版本从1.0升级为2.0，用户B使用时也需要同时在pom.xml中修改坐标版本。但是RELEASE是稳定版本，是经过测试以后才会发布的，通常不会频繁的升级版本
 ![RELEASE](https://img-blog.csdn.net/20170325212027351?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ2JfamF2YQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
-<!-- more -->
+
 ###### 快照SNAPSHOT
     SNAPSHOT是不稳定版，可能是还在开发中的版本，在开发时用户A可能每天都会更新代码，可能会频繁的发布版本。而另一组用户B需要实时得到A的最新代码版本，以进行同步开发。如果使用RELEASE仓库需要不停的更换坐标，才能升级到最新版本。而SNAPSHOT仓库则不需要这样做，用户A和用户B都不用升级版本。用户A每次发布时会根据当时时间创建一个新的快照版本，之前的快照版本也会保留成为历史版本。用户B每次构建项目时会自动根据版本时间加载最新的JAR包，这种模式更加适合于多模块同步开发测试阶段
 ![RELEASE](https://img-blog.csdn.net/20170325212438654?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ2JfamF2YQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
@@ -21,6 +20,8 @@ tags:
 * package命令完成了项目编译、单元测试、打包功能，但没有把打好的可执行jar包，布署到本地maven仓库和远程maven私服仓库
 * install命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包，布署到本地maven仓库，但没有布署到远程maven私服仓库
 * deploy命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包，布署到本地maven仓库和远程maven私服仓库
+
+<!-- more -->
 
 ##### release插件
 
