@@ -4,7 +4,7 @@ date: 2018-08-04
 categories:
     - 学习
 tags:
-    - Docker
+    - docker
 ---
 # 概念
 * **镜像(Images)** 镜像是用于创建 Docker 容器的模板

@@ -4,7 +4,7 @@ date: 2019-07-19
 categories:
     - 学习
 tags:
-    - Sentinel
+    - sentinel
 ---
 
 ### Sentinel介绍

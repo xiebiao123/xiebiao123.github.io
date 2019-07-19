@@ -4,7 +4,7 @@ date: 2018-07-19
 categories:
     - 学习
 tags:
-    - Nginx
+    - nginx
 ---
 ### 配置详解
 https://www.cnblogs.com/knowledgesea/p/5175711.html

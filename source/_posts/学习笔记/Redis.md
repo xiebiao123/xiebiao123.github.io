@@ -4,7 +4,7 @@ date: 2018-07-08
 categories:
 	- 学习
 tags:
-    - Redis
+    - redis
 ---
 
 ##### 简介
