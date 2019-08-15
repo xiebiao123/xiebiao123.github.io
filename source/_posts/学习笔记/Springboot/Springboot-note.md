@@ -63,3 +63,35 @@ tags:
 	</plugins>
 </build>
 ```
+
+### springboot读取.properties配置文件中的map和list类型配置参数
+```
+#map 第一种方式
+data.person.name=zhangsan
+data.person.sex=man
+data.person.age=11
+data.person.url=xxxxxxxx
+#map 第二种方式
+data.person[name]=zhangsan
+data.person[sex]=man
+data.person[age]=11
+data.person[url]=xxxxxxxx
+#list 第一种方式
+data.list[0]=apple0
+data.list[1]=apple1
+data.list[2]=apple2
+#list 第二种方式
+data.list=apple0,apple1,apple2
+```
+```
+/**
+ * data.person.name
+ * 这里map名需要和application.properties中的参数一致
+ */
+private Map<String, String> person = new HashMap<>();
+/**
+ * data.list
+ * 这里list名需要和application.properties中的参数一致
+ */
+private List<String> list = new ArrayList<>();
+```
