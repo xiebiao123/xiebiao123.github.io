@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://xiebiao123.github.io">
-  <title>mysql-lock | 奔跑的蜗牛</title>
+  <title>mysql常见问题 | 奔跑的蜗牛</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="乐观锁概念用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出来的version值进行比对，如果数据库表当前版">
+  <meta name="description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
 <meta name="keywords" content="mysql">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql-lock">
-<meta property="og:url" content="https://xiebiao123.github.io/2018/07/19/学习笔记/Mysql-lock/index.html">
+<meta property="og:title" content="mysql常见问题">
+<meta property="og:url" content="https://xiebiao123.github.io/2019/09/10/学习笔记/数据库/Mysql-常见问题/index.html">
 <meta property="og:site_name" content="奔跑的蜗牛">
-<meta property="og:description" content="乐观锁概念用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出来的version值进行比对，如果数据库表当前版">
+<meta property="og:description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-19T06:27:03.887Z">
+<meta property="og:updated_time" content="2019-09-24T04:37:21.594Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql-lock">
-<meta name="twitter:description" content="乐观锁概念用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出来的version值进行比对，如果数据库表当前版">
+<meta name="twitter:title" content="mysql常见问题">
+<meta name="twitter:description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
   
     <link rel="alternative" href="/atom.xml" title="奔跑的蜗牛" type="application/atom+xml">
   
@@ -167,55 +167,30 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-学习笔记/Mysql-lock" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-学习笔记/数据库/Mysql-常见问题" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      mysql-lock
+      mysql常见问题
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/Mysql-lock/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+        <a href="/2019/09/10/学习笔记/数据库/Mysql-常见问题/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”<br>字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出<br>来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据库表设计三个字段，分别是id,value、version</span></span><br><span class="line">    select <span class="built_in">id</span>,value,<span class="built_in">version</span> <span class="keyword">from</span> TABLE <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125;</span></span><br><span class="line"><span class="comment"># 每次更新表中的value字段时，为了防止发生冲突，需要这样操作</span></span><br><span class="line">    update TABLE <span class="keyword">set</span> value=<span class="number">2</span>,<span class="built_in">version</span>=<span class="built_in">version</span>+<span class="number">1</span> <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125; and version=#&#123;version&#125;</span></span><br></pre></td></tr></table></figure>
+        <h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ul>
+<li>datetime 精度丢失的问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们</span><br><span class="line">说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)</span><br><span class="line"></span><br><span class="line">create table test_date (</span><br><span class="line">    id bigint(20) ,</span><br><span class="line">    datetime0  datetime,</span><br><span class="line">    datetime1 datetime(1),</span><br><span class="line">    datetime2 datetime(2),</span><br><span class="line">    datetime3 datetime(3)</span><br><span class="line">)ENGINE=INNODB DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line">insert into test_date values (1,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;);</span><br><span class="line">执行结果为：</span><br><span class="line">id  datetime0               datetime1                   datetime2                   datetime3</span><br><span class="line">1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789</span><br></pre></td></tr></table></figure>
 
-
-<a id="more"></a>
-
-<h3 id="悲观锁-共享锁、排它锁"><a href="#悲观锁-共享锁、排它锁" class="headerlink" title="悲观锁(共享锁、排它锁)"></a>悲观锁(共享锁、排它锁)</h3><h4 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h4><p>悲观锁就是在操作数据时，认为此操作会出现数据冲突，所以在进行每次操作时都要通过获取锁才能进行对相同数据的操作，这点跟java中的synchronized很相似，所以悲观锁需<br>要耗费较多的时间。另外与乐观锁相对应的，悲观锁是由数据库自己实现了的，要用的时候，我们直接调用数据库的相关语句就可以了。<strong>共享锁和排它锁是悲观锁的不同的实现，它俩都属于悲观锁的范畴</strong></p>
-<h4 id="举例-排它锁举例"><a href="#举例-排它锁举例" class="headerlink" title="举例(排它锁举例)"></a>举例(排它锁举例)</h4><p>要使用悲观锁，我们必须关闭mysql数据库的自动提交属性，因为MySQL默认使用autocommit模式，也就是说，当你执行一个更新操作后，MySQL会立刻将结果进行提交。<br>我们可以使用命令设置MySQL为非autocommit模式：</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">set</span> <span class="attribute">autocommit</span>=0;</span><br><span class="line"><span class="comment"># 设置完autocommit后，我们就可以执行我们的正常业务了。具体如下：</span></span><br><span class="line"><span class="comment"># 1. 开始事务</span></span><br><span class="line">begin;/begin work;/start transaction; (三者选一就可以)</span><br><span class="line"><span class="comment"># 2. 查询表信息</span></span><br><span class="line">select status <span class="keyword">from</span> TABLE where <span class="attribute">id</span>=1 <span class="keyword">for</span> update;</span><br><span class="line"><span class="comment"># 3. 插入一条数据</span></span><br><span class="line">insert into TABLE (id,value) values (2,2);</span><br><span class="line"><span class="comment"># 4. 修改数据为</span></span><br><span class="line">update TABLE <span class="builtin-name">set</span> <span class="attribute">value</span>=2 where <span class="attribute">id</span>=1;</span><br><span class="line"><span class="comment"># 5. 提交事务</span></span><br><span class="line">commit;/commit work;</span><br></pre></td></tr></table></figure>
-
-<h3 id="共享锁"><a href="#共享锁" class="headerlink" title="共享锁"></a>共享锁</h3><h4 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h4><p>共享锁又称读锁 read lock，是读取操作创建的锁。其他用户可以并发读取数据，但任何事务都不能对数据进行修改（获取数据上的排他锁），直到已释放所有共享锁。<br>如果事务T对数据A加上共享锁后，则其他事务只能对A再加共享锁，不能加排他锁。获得共享锁的事务只能读数据，不能修改数据。</p>
-<h4 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 打开第一个查询窗口</span></span><br><span class="line">begin;/begin work;/start <span class="keyword">transaction</span>;  (三者选一就可以)</span><br><span class="line">SELECT * <span class="keyword">from</span> TABLE <span class="keyword">where</span> <span class="built_in">id</span> = <span class="number">1</span>  lock <span class="keyword">in</span> share mode;</span><br><span class="line"></span><br><span class="line"><span class="comment">#然后在另一个查询窗口中，对id为1的数据进行更新</span></span><br><span class="line">update  TABLE <span class="keyword">set</span> <span class="built_in">name</span>=<span class="string">"www.baidu.com"</span> <span class="keyword">where</span> <span class="built_in">id</span> =<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#此时，操作界面进入了卡顿状态，过了超时间，提示错误信息,如果在超时前，执行 commit，此更新语句就会成功。</span></span><br><span class="line">[SQL]update  test_one <span class="keyword">set</span> <span class="built_in">name</span>=<span class="string">"www.baidu.com"</span> <span class="keyword">where</span> <span class="built_in">id</span> =<span class="number">1</span>;</span><br><span class="line">[Err] <span class="number">1205</span> - Lock wait <span class="keyword">timeout</span> exceeded; <span class="keyword">try</span> restarting <span class="keyword">transaction</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#加上共享锁后，也提示错误信息</span></span><br><span class="line">update  test_one <span class="keyword">set</span> <span class="built_in">name</span>=<span class="string">"www.baidu.com"</span> <span class="keyword">where</span> <span class="built_in">id</span> =<span class="number">1</span> lock <span class="keyword">in</span> share mode;</span><br><span class="line"></span><br><span class="line">[SQL]update  test_one <span class="keyword">set</span> <span class="built_in">name</span>=<span class="string">"www.baidu.com"</span> <span class="keyword">where</span> <span class="built_in">id</span> =<span class="number">1</span> lock <span class="keyword">in</span> share mode;</span><br><span class="line">[Err] <span class="number">1064</span> - You have an <span class="keyword">error</span> <span class="keyword">in</span> your SQL syntax; check <span class="keyword">the</span> manual <span class="keyword">that</span> corresponds <span class="keyword">to</span> your MySQL server</span><br><span class="line"><span class="built_in">version</span> <span class="keyword">for</span> <span class="keyword">the</span> right syntax <span class="keyword">to</span> use near 'lock <span class="keyword">in</span> share mode' <span class="keyword">at</span> line <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>在查询语句后面增加 LOCK IN SHARE MODE，Mysql会对查询结果中的每行都加共享锁，当没有其他线程对查询结果集中的任何一行使用排他锁时，可以成功申请共享锁，否则会被阻塞。其他线程也可以读取使用了共享锁的表，而且这些线程读取的是同一个版本的数据。</p>
-<p>加上共享锁后，对于update,insert,delete语句会自动加排它锁。</p>
-<p>读取为什么要加读锁呢：防止数据在被读取的时候被别的线程加上写锁</p>
-<h3 id="排它锁"><a href="#排它锁" class="headerlink" title="排它锁"></a>排它锁</h3><p>排他锁 exclusive lock（也叫writer lock）又称写锁。若事务 1 对数据对象A加上X锁，事务 1 可以读A也可以修改A，其他事务不能再对A加任何锁，直到事物 1 释放A上的锁。这保证了其他事务在事物 1 释放A上的锁之前不能再读取和修改A。排它锁会阻塞所有的排它锁和共享锁</p>
-<p>使用方式：在需要执行的语句后面加上<strong>for update</strong>就可以了</p>
-<h3 id="行锁-amp-表锁"><a href="#行锁-amp-表锁" class="headerlink" title="行锁&amp;表锁"></a>行锁&amp;表锁</h3><p>innodb 的行锁是在有索引的情况下,没有索引的表是锁定全表的, 在Innodb引擎中既支持行锁也支持表锁，那么什么时候会锁住整张表，什么时候或只锁住一行呢？ <strong>只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！</strong></p>
-<p>在实际应用中，要特别注意InnoDB行锁的这一特性，不然的话，可能导致大量的锁冲突，从而影响并发性能。<strong>行级锁都基于索引的，如果一条SQL语句用不到索引是不会使用行级锁的，会使用表级锁</strong><br>行级锁的缺点是：由于需要请求大量的锁资源，所以速度慢，内存消耗大。</p>
-<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>死锁（Deadlock）  所谓死锁：是指两个或两个以上的进程在执行过程中，因争夺资源而造成的一种互相等待的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。由于资源占用是互斥的，当某个进程提出申请资源后，使得有关进程在无外力协助下，永远分配不到必需的资源而无法继续运行，这就产生了一种特殊现象死锁。</p>
-<h4 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h4><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">第一种：</span><br><span class="line"><span class="meta"># 1.查询是否锁表</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">OPEN</span> TABLES <span class="built_in">where</span> In_use &gt; <span class="number">0</span>;</span><br><span class="line"><span class="meta"># 2.查询进程（如果您有SUPER权限，您可以看到所有线程。否则，您只能看到您自己的线程）</span></span><br><span class="line"><span class="keyword">show</span> processlist</span><br><span class="line"><span class="meta"># 3.杀死进程id（就是上面命令的id列）</span></span><br><span class="line">kill id</span><br><span class="line"></span><br><span class="line">第二种：</span><br><span class="line"><span class="meta"># 1.查看当前的事务</span></span><br><span class="line"><span class="built_in">SELECT</span> * FROM INFORMATION_SCHEMA.INNODB_TRX;</span><br><span class="line"><span class="meta"># 2.查看当前锁定的事务</span></span><br><span class="line"><span class="built_in">SELECT</span> * FROM INFORMATION_SCHEMA.INNODB_LOCKS;</span><br><span class="line"><span class="meta"># 3.查看当前等锁的事务</span></span><br><span class="line"><span class="built_in">SELECT</span> * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS; </span><br><span class="line"><span class="meta"># 4.杀死进程</span></span><br><span class="line">kill id</span><br></pre></td></tr></table></figure>
-
-<h4 id="降低死锁"><a href="#降低死锁" class="headerlink" title="降低死锁"></a>降低死锁</h4><ul>
-<li>按同一顺序访问对象。 </li>
-<li>避免事务中的用户交互。 </li>
-<li>保持事务简短并在一个批处理中。 </li>
-<li>使用低隔离级别。 </li>
-<li>使用绑定连接。</li>
+</li>
 </ul>
 
       
@@ -328,7 +303,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2018/07/19/学习笔记/Mysql-lock/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2019/09/10/学习笔记/数据库/Mysql-常见问题/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -342,18 +317,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/07/19/学习笔记/加密解密/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/09/26/日常总结/JWT/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          加密解密
+          JWT原理解析
         
       </div>
     </a>
   
   
-    <a href="/2018/07/19/学习笔记/Dubbo/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Dubbo</div>
+    <a href="/2019/09/10/问题总结/重大漏洞/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">重大漏洞</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -380,7 +355,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#乐观锁"><span class="toc-number">1.</span> <span class="toc-text">乐观锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#概念"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#举例"><span class="toc-number">1.2.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#悲观锁-共享锁、排它锁"><span class="toc-number">2.</span> <span class="toc-text">悲观锁(共享锁、排它锁)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#概念-1"><span class="toc-number">2.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#举例-排它锁举例"><span class="toc-number">2.2.</span> <span class="toc-text">举例(排它锁举例)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#共享锁"><span class="toc-number">3.</span> <span class="toc-text">共享锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#概念-2"><span class="toc-number">3.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#举例-1"><span class="toc-number">3.2.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排它锁"><span class="toc-number">4.</span> <span class="toc-text">排它锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#行锁-amp-表锁"><span class="toc-number">5.</span> <span class="toc-text">行锁&amp;表锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#死锁"><span class="toc-number">6.</span> <span class="toc-text">死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#解决办法"><span class="toc-number">6.1.</span> <span class="toc-text">解决办法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#降低死锁"><span class="toc-number">6.2.</span> <span class="toc-text">降低死锁</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">1.</span> <span class="toc-text">常见问题</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -496,11 +471,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,7 +487,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,19 +499,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">maven</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -540,15 +507,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+                <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -556,7 +519,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -564,23 +527,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,11 +535,51 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -600,11 +587,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">logback</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
             
             <div class="clearfix"></div>
