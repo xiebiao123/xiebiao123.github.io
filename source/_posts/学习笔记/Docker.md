@@ -6,7 +6,14 @@ categories:
 tags:
     - docker
 ---
-# 概念
+
+### [虚拟机与Docker有何不同](https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html)
+Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。
+虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。
+
+虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。
+
+### 概念
 * **镜像(Images)** 镜像是用于创建 Docker 容器的模板
 * **容器(Container)** 容器是独立运行的一个或一组应用
 * **客户端(Client)** Docker 客户端通过命令行或者其他工具使用 [Docker API](https://docs.docker.com/reference/api/docker_remote_api) 与 Docker 的守护进程通信
@@ -14,17 +21,17 @@ tags:
 * **仓库(Registry)** Docker 仓库用来保存镜像，可以理解为代码控制中的代码仓库,[Docker Hub](https://hub.docker.com) 提供了庞大的镜像集合供使用
 * **Machine** Docker Machine是一个简化Docker安装的命令行工具，通过一个简单的命令行即可在相应的平台上安装Docker，比如VirtualBox、 Digital Ocean、Microsoft Azure
 
-# 命令
+### 命令
 
-## 常用
+#### 常用
     service docker start 启动 Docker 进程
     docker command --help Docker命令使用方法
 
 <!-- more -->
 
-## 容器
+### 容器
 
-### docker run
+#### docker run 创建并运行容器
     语法
         docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
     OPTIONS说明
@@ -41,7 +48,7 @@ tags:
         使用镜像nginx:latest以交互模式启动一个容器,在容器内执行/bin/bash命令
         docker run -it nginx:latest /bin/bash
 
-### docker start/stop/restart
+#### docker start/stop/restart 启动/停止/重启容器
     语法
         启动一个或多个已经被停止的容器
         docker start [OPTIONS] CONTAINER [CONTAINER...]
@@ -54,7 +61,7 @@ tags:
         docker stop myrunoob
         docker restart myrunoob
 
-### docker rm
+#### docker rm 删除容器
     语法
         docker rm [OPTIONS] CONTAINER [CONTAINER...]
     OPTIONS说明
@@ -69,7 +76,7 @@ tags:
         删除容器nginx01,并删除容器挂载的数据卷
         docker rm -v nginx01
 
-### docker exec
+#### docker exec 在容器内执行命令
     语法
         docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
     OPTIONS说明
@@ -81,7 +88,7 @@ tags:
         docker exec -it  mynginx /bin/bash
 
 
-### docker logs
+#### docker logs 获取容器的日志
     语法
         docker logs [OPTIONS] CONTAINER
     OPTIONS说明
@@ -95,17 +102,15 @@ tags:
         查看容器mynginx从2018年7月1日后的最新10条日志
         docker logs --since="2018-07-01" --tail=10 mynginx
 
-### docker ps/port/cp/diff/export
+#### docker ps/port/cp/diff/export
     docker ps 列出容器
     docker port 列出指定的容器的端口映射
     docker cp 用于容器与主机之间的数据拷贝
     docker diff 检查容器里文件结构的更改
     docker export 将文件系统作为一个tar归档文件导出到STDOUT
 
-
-
-## 镜像
-### docker build
+### 镜像
+#### docker build 创建镜像
     语法
         docker build [OPTIONS] PATH | URL | -
     OPTIONS说明
@@ -121,15 +126,17 @@ tags:
         使用-f 指定Dockerfile 文件的位置 创建镜像
         docker build -f /path/to/a/Dockerfile .
 
-### docker images/pull/rmi/tag/search
+#### docker images/pull/rmi/tag/search
     docker images 列出本地镜像
     docker pull 拉取镜像
     docker rmi 删除本地一个或多少镜像
     docker tag 标记本地镜像
     docker search 查找镜像
 
-# Dockerfile详解
+#### [Docker命令大全](https://www.runoob.com/docker/docker-command-manual.html)
 
-1.[Dockerfile](https://blog.csdn.net/u010884123/article/details/55213279)
-2.[Dockerfile命令详解](https://www.cnblogs.com/dazhoushuoceshi/p/7066041.html)
+### Dockerfile详解
+
+1. [Dockerfile](https://blog.csdn.net/u010884123/article/details/55213279)
+2. [Dockerfile命令详解](https://www.cnblogs.com/dazhoushuoceshi/p/7066041.html)
 
