@@ -168,19 +168,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/正则" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Elastic-job" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/正则/">正则</a>
+      <a class="article-title" href="/2019/07/19/学习笔记/Elastic-job/">elastic-job</a>
     </h1>
   
 
         
-        <a href="/2019/07/19/学习笔记/正则/" class="archive-article-date">
+        <a href="/2019/07/19/学习笔记/Elastic-job/" class="archive-article-date">
   	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
 </a>
         
@@ -188,22 +188,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h3><ul>
-<li><strong>^</strong> 匹配输入字符串的开始位置，在方括号中（[^]）表示不介绍该字符集合</li>
-<li><strong>$</strong> 匹配输入字符串的结尾位置，如果设置了RegExp对象的Multiline属性，则$也匹配’\n’或’\r’</li>
-<li><strong>()</strong> 标记一个子表达式的开始和结束位置。子表达式可以获取供以后使用</li>
-<li><strong>|</strong> 指明两项之间的一个选择</li>
-</ul>
-<h3 id="限定符"><a href="#限定符" class="headerlink" title="限定符"></a>限定符</h3><ul>
-<li><strong>*</strong>    \匹配子表达式零次或多次，* 等价于{0,}</li>
-<li><strong>+</strong>     匹配子表达式一次或多次，+ 等价于{1,}</li>
-<li><strong>?</strong>     匹配前面的子表达式零次或一次，? 等价于 {0,1}</li>
-<li><strong>{n}</strong>   n是一个非负整数。匹配确定的 n 次</li>
-<li><strong>{n,}</strong>  n是一个非负整数。至少匹配n 次</li>
-<li><strong>{n,m}</strong> m和 n 均为非负整数，其中n &lt;= m。最少匹配 n 次且最多匹配 m 次，请注意在逗号和两个数之间不能有空格</li>
-</ul>
+        <h3 id="分片策略"><a href="#分片策略" class="headerlink" title="分片策略"></a>分片策略</h3><p>数据分片的目的在于把一个任务分散到不同的机器上运行，既可以解决单机计算能力上限的问题，也能降低部分任务失败对整体系统的影响。elastic-job并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器（其实是Job实例，部署在一台机器上的多个Job实例也能分片），开发者需要自行处理分片项与真实数据的对应关系。框架也预置了一些分片策略：平均分配算法策略，作业名哈希值奇偶数算法策略，轮转分片策略。同时也提供了自定义分片策略的接口。</p>
+<h4 id="分片原理"><a href="#分片原理" class="headerlink" title="分片原理"></a>分片原理</h4><p>elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点分配，如下三种情况都会触发主节点上的分片算法执行：</p>
+<ol>
+<li>新的Job实例加入集群</li>
+<li>现有的Job实例下线（如果下线的是leader节点，那么先选举然后触发分片算法的执行）</li>
+<li>主节点选举<br>上述三种情况，会让zookeeper上leader节点的sharding节点上多出来一个necessary的临时节点，主节点每次执行Job前，都会去看一下这个节点，如果有则执行分片算法。</li>
+</ol>
+<p>分片的执行结果会存储在zookeeper上，5个分片，每个分片应该由哪个Job实例来运行都已经分配好。分配的过程就是上面触发分片算法之后的操作。分配完成之后，各个Job实例就会在下次执行的时候使用上这个分配结果。</p>
+<p>每个job实例任务触发前都会获取本任务在本实例上的分片情况，然后封装成shardingContext，传递给调用任务的实际执行方法：</p>
         
-          <a class="article-more-a" href="/2019/07/19/学习笔记/正则/#more">more >></a>
+          <a class="article-more-a" href="/2019/07/19/学习笔记/Elastic-job/#more">more >></a>
         
       
 
@@ -217,7 +212,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">正则</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">elastic-job</a>
         		</li>
       		
 		</ul>
@@ -1245,11 +1240,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1261,15 +1256,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">maven</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1277,7 +1272,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+                <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1305,11 +1300,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1317,11 +1312,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
+                <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1333,11 +1328,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">面试</a>
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1365,7 +1360,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color3">logback</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,11 +1368,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">logback</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
