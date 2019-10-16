@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="https://xiebiao123.github.io">
   <title>mysql常见问题 | 奔跑的蜗牛</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
+  <meta name="description" content="常见问题 datetime mysql精度丢失的问题 123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table te">
 <meta name="keywords" content="mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql常见问题">
 <meta property="og:url" content="https://xiebiao123.github.io/2019/09/10/学习笔记/数据库/Mysql-常见问题/index.html">
 <meta property="og:site_name" content="奔跑的蜗牛">
-<meta property="og:description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
+<meta property="og:description" content="常见问题 datetime mysql精度丢失的问题 123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table te">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-24T04:37:21.594Z">
+<meta property="og:updated_time" content="2019-10-15T09:44:01.592Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql常见问题">
-<meta name="twitter:description" content="常见问题 datetime 精度丢失的问题123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table test_dat">
+<meta name="twitter:description" content="常见问题 datetime mysql精度丢失的问题 123456789101112131415    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)create table te">
   
     <link rel="alternative" href="/atom.xml" title="奔跑的蜗牛" type="application/atom+xml">
   
@@ -188,9 +188,14 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ul>
-<li>datetime 精度丢失的问题<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们</span><br><span class="line">说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)</span><br><span class="line"></span><br><span class="line">create table test_date (</span><br><span class="line">    id bigint(20) ,</span><br><span class="line">    datetime0  datetime,</span><br><span class="line">    datetime1 datetime(1),</span><br><span class="line">    datetime2 datetime(2),</span><br><span class="line">    datetime3 datetime(3)</span><br><span class="line">)ENGINE=INNODB DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line">insert into test_date values (1,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;);</span><br><span class="line">执行结果为：</span><br><span class="line">id  datetime0               datetime1                   datetime2                   datetime3</span><br><span class="line">1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789</span><br></pre></td></tr></table></figure>
-
+<li><p>datetime mysql精度丢失的问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们</span><br><span class="line">说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)</span><br><span class="line"></span><br><span class="line">create table test_date (</span><br><span class="line">    id bigint(20) ,</span><br><span class="line">    datetime0  datetime,</span><br><span class="line">    datetime1 datetime(1),</span><br><span class="line">    datetime2 datetime(2),</span><br><span class="line">    datetime3 datetime(3)</span><br><span class="line">)ENGINE=INNODB DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line">insert into test_date values (1,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;);</span><br><span class="line">执行结果为：</span><br><span class="line">id  datetime0               datetime1                   datetime2                   datetime3</span><br><span class="line">1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789</span><br></pre></td></tr></table></figure>
 </li>
+<li><p>FIND_IN_SET mysql查询匹配包含字符串 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.正确的方式：</span><br><span class="line">判断字段field_A中是否包含23:</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> table_test <span class="keyword">where</span> FIND_IN_SET(<span class="string">"23"</span>, field_A) ;</span><br><span class="line">2.错误的方式：</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">form</span> table_test <span class="keyword">where</span> field_A <span class="keyword">like</span> <span class="string">"%23%"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GROUP_CONCAT mysql连接字符串</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_concat([<span class="keyword">DISTINCT</span>] 要连接的字段 [<span class="keyword">Order</span> <span class="keyword">BY</span> <span class="keyword">ASC</span>/<span class="keyword">DESC</span> 排序字段] [Separator <span class="string">'分隔符'</span>])</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -317,18 +322,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/09/26/日常总结/JWT/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/09/10/面试/面试总结/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          JWT原理解析
+          面试100问
         
       </div>
     </a>
   
   
-    <a href="/2019/09/10/问题总结/重大漏洞/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">重大漏洞</div>
+    <a href="/2019/07/19/学习笔记/Vue/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Vue</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -366,8 +371,31 @@
 
 
 
+
   
+  <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NzEwNy8yMzYwNw==">
+  <script type="text/javascript">
+    (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  </script>
+  <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
   
+
+  
+
   
 
   
@@ -471,6 +499,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
@@ -487,23 +519,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,15 +527,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,6 +555,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
@@ -539,27 +579,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -567,7 +591,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,15 +607,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,7 +623,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -608,6 +632,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

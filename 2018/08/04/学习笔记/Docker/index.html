@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="奔跑的蜗牛">
 <meta property="og:description" content="虚拟机与Docker有何不同Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。 虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Doc">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-11T12:24:35.080Z">
+<meta property="og:updated_time" content="2019-10-11T12:46:30.980Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker">
 <meta name="twitter:description" content="虚拟机与Docker有何不同Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。 虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Doc">
@@ -189,6 +189,10 @@
       
         <h3 id="虚拟机与Docker有何不同"><a href="#虚拟机与Docker有何不同" class="headerlink" title="虚拟机与Docker有何不同"></a><a href="https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html" target="_blank" rel="noopener">虚拟机与Docker有何不同</a></h3><p>Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。<br>虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。</p>
 <p>虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。</p>
+<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><ol>
+<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">CentOS Docker 安装</a></li>
+</ol>
 <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
 <li><strong>镜像(Images)</strong> 镜像是用于创建 Docker 容器的模板</li>
 <li><strong>容器(Container)</strong> 容器是独立运行的一个或一组应用</li>
@@ -443,7 +447,7 @@ docker search 查找镜像</code></pre><h4 id="Docker命令大全"><a href="#Doc
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟机与Docker有何不同"><span class="toc-number">1.</span> <span class="toc-text">虚拟机与Docker有何不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概念"><span class="toc-number">2.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令"><span class="toc-number">3.</span> <span class="toc-text">命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#常用"><span class="toc-number">3.1.</span> <span class="toc-text">常用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器"><span class="toc-number">4.</span> <span class="toc-text">容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-run-创建并运行容器"><span class="toc-number">4.1.</span> <span class="toc-text">docker run 创建并运行容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-start-stop-restart-启动-停止-重启容器"><span class="toc-number">4.2.</span> <span class="toc-text">docker start/stop/restart 启动/停止/重启容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-rm-删除容器"><span class="toc-number">4.3.</span> <span class="toc-text">docker rm 删除容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-exec-在容器内执行命令"><span class="toc-number">4.4.</span> <span class="toc-text">docker exec 在容器内执行命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-logs-获取容器的日志"><span class="toc-number">4.5.</span> <span class="toc-text">docker logs 获取容器的日志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-ps-port-cp-diff-export"><span class="toc-number">4.6.</span> <span class="toc-text">docker ps/port/cp/diff/export</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#镜像"><span class="toc-number">5.</span> <span class="toc-text">镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-build-创建镜像"><span class="toc-number">5.1.</span> <span class="toc-text">docker build 创建镜像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-images-pull-rmi-tag-search"><span class="toc-number">5.2.</span> <span class="toc-text">docker images/pull/rmi/tag/search</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker命令大全"><span class="toc-number">5.3.</span> <span class="toc-text">Docker命令大全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile详解"><span class="toc-number">6.</span> <span class="toc-text">Dockerfile详解</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟机与Docker有何不同"><span class="toc-number">1.</span> <span class="toc-text">虚拟机与Docker有何不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker安装"><span class="toc-number">2.</span> <span class="toc-text">Docker安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概念"><span class="toc-number">3.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令"><span class="toc-number">4.</span> <span class="toc-text">命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#常用"><span class="toc-number">4.1.</span> <span class="toc-text">常用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器"><span class="toc-number">5.</span> <span class="toc-text">容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-run-创建并运行容器"><span class="toc-number">5.1.</span> <span class="toc-text">docker run 创建并运行容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-start-stop-restart-启动-停止-重启容器"><span class="toc-number">5.2.</span> <span class="toc-text">docker start/stop/restart 启动/停止/重启容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-rm-删除容器"><span class="toc-number">5.3.</span> <span class="toc-text">docker rm 删除容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-exec-在容器内执行命令"><span class="toc-number">5.4.</span> <span class="toc-text">docker exec 在容器内执行命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-logs-获取容器的日志"><span class="toc-number">5.5.</span> <span class="toc-text">docker logs 获取容器的日志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-ps-port-cp-diff-export"><span class="toc-number">5.6.</span> <span class="toc-text">docker ps/port/cp/diff/export</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#镜像"><span class="toc-number">6.</span> <span class="toc-text">镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-build-创建镜像"><span class="toc-number">6.1.</span> <span class="toc-text">docker build 创建镜像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#docker-images-pull-rmi-tag-search"><span class="toc-number">6.2.</span> <span class="toc-text">docker images/pull/rmi/tag/search</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Docker命令大全"><span class="toc-number">6.3.</span> <span class="toc-text">Docker命令大全</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile详解"><span class="toc-number">7.</span> <span class="toc-text">Dockerfile详解</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -454,8 +458,31 @@ docker search 查找镜像</code></pre><h4 id="Docker命令大全"><a href="#Doc
 
 
 
+
   
+  <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NzEwNy8yMzYwNw==">
+  <script type="text/javascript">
+    (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  </script>
+  <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
   
+
+  
+
   
 
   
@@ -559,6 +586,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
@@ -575,23 +606,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,15 +614,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -619,6 +642,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
@@ -627,27 +666,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -655,7 +678,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -671,15 +694,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -687,7 +710,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -696,6 +719,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

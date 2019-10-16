@@ -168,19 +168,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/Nacos" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Elastic-job" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/Nacos/">Nacos</a>
+      <a class="article-title" href="/2019/07/19/学习笔记/Elastic-job/">elastic-job</a>
     </h1>
   
 
         
-        <a href="/2019/07/19/学习笔记/Nacos/" class="archive-article-date">
+        <a href="/2019/07/19/学习笔记/Elastic-job/" class="archive-article-date">
   	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
 </a>
         
@@ -188,23 +188,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Nacos-Server"><a href="#Nacos-Server" class="headerlink" title="Nacos Server"></a>Nacos Server</h3><h4 id="启动nacos服务"><a href="#启动nacos服务" class="headerlink" title="启动nacos服务"></a>启动nacos服务</h4><ul>
-<li><a href="https://github.com/alibaba/nacos/releases" target="_blank" rel="noopener">下载源码或者安装包</a></li>
-<li>解压后进入nacos/bin目录</li>
-<li>输入命令启动服务<ul>
-<li>Linux： sh startup.sh -m standalone</li>
-<li>Windows：cmd startup.cmd</li>
-</ul>
-</li>
-<li>nacos默认使用8848端口，可通过 <strong><a href="http://127.0.0.1:8848/nacos/index.html" target="_blank" rel="noopener">http://127.0.0.1:8848/nacos/index.html</a></strong> 进入自带的控制台界面，默认用户名/密码是nacos/nacos</li>
-</ul>
-<h4 id="配置集群"><a href="#配置集群" class="headerlink" title="配置集群"></a>配置集群</h4><ul>
-<li>在nacos的解压目录conf下，有配置文件cluster.conf(若无则手动创建)，每行配置成ip:port。（配置3个或3个以上节点）<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#cluster</span><span class="selector-class">.conf</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.2</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.3</span><span class="selector-pseudo">:8848</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
+        <h3 id="分片策略"><a href="#分片策略" class="headerlink" title="分片策略"></a>分片策略</h3><p>数据分片的目的在于把一个任务分散到不同的机器上运行，既可以解决单机计算能力上限的问题，也能降低部分任务失败对整体系统的影响。elastic-job并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器（其实是Job实例，部署在一台机器上的多个Job实例也能分片），开发者需要自行处理分片项与真实数据的对应关系。框架也预置了一些分片策略：平均分配算法策略，作业名哈希值奇偶数算法策略，轮转分片策略。同时也提供了自定义分片策略的接口。</p>
+<h4 id="分片原理"><a href="#分片原理" class="headerlink" title="分片原理"></a>分片原理</h4><p>elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点分配，如下三种情况都会触发主节点上的分片算法执行：</p>
+<ol>
+<li>新的Job实例加入集群</li>
+<li>现有的Job实例下线（如果下线的是leader节点，那么先选举然后触发分片算法的执行）</li>
+<li>主节点选举<br>上述三种情况，会让zookeeper上leader节点的sharding节点上多出来一个necessary的临时节点，主节点每次执行Job前，都会去看一下这个节点，如果有则执行分片算法。</li>
+</ol>
+<p>分片的执行结果会存储在zookeeper上，5个分片，每个分片应该由哪个Job实例来运行都已经分配好。分配的过程就是上面触发分片算法之后的操作。分配完成之后，各个Job实例就会在下次执行的时候使用上这个分配结果。</p>
+<p>每个job实例任务触发前都会获取本任务在本实例上的分片情况，然后封装成shardingContext，传递给调用任务的实际执行方法：</p>
         
-          <a class="article-more-a" href="/2019/07/19/学习笔记/Nacos/#more">more >></a>
+          <a class="article-more-a" href="/2019/07/19/学习笔记/Elastic-job/#more">more >></a>
         
       
 
@@ -218,7 +212,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">elastic-job</a>
         		</li>
       		
 		</ul>
@@ -721,6 +715,10 @@ finally {
       
         <h3 id="虚拟机与Docker有何不同"><a href="#虚拟机与Docker有何不同" class="headerlink" title="虚拟机与Docker有何不同"></a><a href="https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html" target="_blank" rel="noopener">虚拟机与Docker有何不同</a></h3><p>Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。<br>虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。</p>
 <p>虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。</p>
+<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><ol>
+<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">CentOS Docker 安装</a></li>
+</ol>
 <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
 <li><strong>镜像(Images)</strong> 镜像是用于创建 Docker 容器的模板</li>
 <li><strong>容器(Container)</strong> 容器是独立运行的一个或一组应用</li>
@@ -1057,19 +1055,19 @@ docker command --help Docker命令使用方法</code></pre>
 
 
   
-    <article id="post-学习笔记/freemarker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-美好生活/大学时代" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/freemarker/">Freemarker</a>
+      <a class="article-title" href="/2018/07/19/美好生活/大学时代/">大学时代</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/freemarker/" class="archive-article-date">
+        <a href="/2018/07/19/美好生活/大学时代/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -1077,25 +1075,10 @@ docker command --help Docker命令使用方法</code></pre>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="取值指令"><a href="#取值指令" class="headerlink" title="取值指令"></a>取值指令</h3><ul>
-<li>常用${var}语法进行取值</li>
-<li>对null、不存在对象取值${var!}或${var!’defaultValue’}</li>
-<li>取包装对象的值,通过‘点’语法${user.name}</li>
-<li>取值的时候可以进行赋值、运算</li>
-<li>Date类型格式化${date?String(‘yyyy-MM-dd’)}</li>
-<li>转义HTML内容${date?html}</li>
-<li>{data?string.currency} – $20.00</li>
-<li>{data?string.percent} – 20%</li>
-<li>布尔类型${foo?string(“yes”,”no”)}</li>
-</ul>
-<h3 id="内置函数-使用"><a href="#内置函数-使用" class="headerlink" title="内置函数(使用?)"></a>内置函数(使用?)</h3><h4 id="对于字符串"><a href="#对于字符串" class="headerlink" title="对于字符串"></a>对于字符串</h4><ul>
-<li>html 对字符串进行HTML编码</li>
-<li>cap_first 使字符串第一个字母大写</li>
-<li>lower_case 将字符串转换成小写</li>
-<li>trim 去掉字符串前后的空白字符</li>
-</ul>
+        <h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
+<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
         
-          <a class="article-more-a" href="/2018/07/19/学习笔记/freemarker/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/美好生活/大学时代/#more">more >></a>
         
       
 
@@ -1109,7 +1092,7 @@ docker command --help Docker命令使用方法</code></pre>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">freemarker</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">大学时代</a>
         		</li>
       		
 		</ul>
@@ -1121,7 +1104,7 @@ docker command --help Docker命令使用方法</code></pre>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
         		</li>
       		
 		</ul>
@@ -1257,6 +1240,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
@@ -1273,23 +1260,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1297,15 +1268,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1317,6 +1296,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
@@ -1325,27 +1320,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1353,7 +1332,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1369,15 +1348,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1385,7 +1364,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1394,6 +1373,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

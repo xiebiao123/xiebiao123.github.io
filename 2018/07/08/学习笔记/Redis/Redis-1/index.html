@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://xiebiao123.github.io">
-  <title>Java8 | 奔跑的蜗牛</title>
+  <title>Redis-缓存 | 奔跑的蜗牛</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Lambada表达式 可选类型声明 - 无需声明参数的类型。编译器可以从该参数的值推断。 可选圆括号参数 - 无需在括号中声明参数。对于多个参数，括号是必需的。 可选大括号 - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。 可选return关键字 - 编译器会自动返回值，如果主体有一个表达式返回的值。花括号是必需的，以表明表达式返回一个值。">
-<meta name="keywords" content="java">
+  <meta name="description" content="缓存穿透概念缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞 解决方案有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够">
+<meta name="keywords" content="redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java8">
-<meta property="og:url" content="https://xiebiao123.github.io/2018/07/01/学习笔记/JAVA8/index.html">
+<meta property="og:title" content="Redis-缓存">
+<meta property="og:url" content="https://xiebiao123.github.io/2018/07/08/学习笔记/Redis/Redis-1/index.html">
 <meta property="og:site_name" content="奔跑的蜗牛">
-<meta property="og:description" content="Lambada表达式 可选类型声明 - 无需声明参数的类型。编译器可以从该参数的值推断。 可选圆括号参数 - 无需在括号中声明参数。对于多个参数，括号是必需的。 可选大括号 - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。 可选return关键字 - 编译器会自动返回值，如果主体有一个表达式返回的值。花括号是必需的，以表明表达式返回一个值。">
+<meta property="og:description" content="缓存穿透概念缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞 解决方案有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-19T06:22:04.940Z">
+<meta property="og:updated_time" content="2019-07-19T06:27:18.709Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java8">
-<meta name="twitter:description" content="Lambada表达式 可选类型声明 - 无需声明参数的类型。编译器可以从该参数的值推断。 可选圆括号参数 - 无需在括号中声明参数。对于多个参数，括号是必需的。 可选大括号 - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。 可选return关键字 - 编译器会自动返回值，如果主体有一个表达式返回的值。花括号是必需的，以表明表达式返回一个值。">
+<meta name="twitter:title" content="Redis-缓存">
+<meta name="twitter:description" content="缓存穿透概念缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞 解决方案有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够">
   
     <link rel="alternative" href="/atom.xml" title="奔跑的蜗牛" type="application/atom+xml">
   
@@ -167,466 +167,46 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-学习笔记/JAVA8" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-学习笔记/Redis/Redis-1" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Java8
+      Redis-缓存
     </h1>
   
 
         
-        <a href="/2018/07/01/学习笔记/JAVA8/" class="archive-article-date">
-  	<time datetime="2018-06-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-01</time>
+        <a href="/2018/07/08/学习笔记/Redis/Redis-1/" class="archive-article-date">
+  	<time datetime="2018-07-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h5 id="Lambada表达式"><a href="#Lambada表达式" class="headerlink" title="Lambada表达式"></a>Lambada表达式</h5><ul>
-<li><strong>可选类型声明</strong> - 无需声明参数的类型。编译器可以从该参数的值推断。</li>
-<li><strong>可选圆括号参数</strong> - 无需在括号中声明参数。对于多个参数，括号是必需的。</li>
-<li><strong>可选大括号</strong> - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。</li>
-<li><strong>可选return关键字</strong> - 编译器会自动返回值，如果主体有一个表达式返回的值。花括号是必需的，以表明表达式返回一个值。</li>
-</ul>
+        <h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><h5 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h5><p>缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞</p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被 这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。另外也有一个更为简单粗暴的方法（我们采用的就是这种），如果一个查询返回的数据为空（不管是数 据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<h4 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h4><h5 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h5><p>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到DB，DB瞬时压力过重雪崩。</p>
+<h5 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h5><p>缓存失效时的雪崩效应对底层系统的冲击非常可怕。大多数系统设计者考虑用加锁或者队列的方式保证缓存的单线 程（进程）写，从而避免失效时大量的并发请求落到底层存储系统上。这里分享一个简单方案就时讲缓存失效时间分散开，比如我们可以在原有的失效时间基础上增加一个随机值，比如1-5分钟随机，这样每一个缓存的过期时间的重复率就会降低，就很难引发集体失效的事件。</p>
+<h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><h5 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h5><p>对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据。这个时候，需要考虑一个问题：缓存被“击穿”的问题，这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</p>
+<h5 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h5><h6 id="1-使用互斥锁-mutex-key"><a href="#1-使用互斥锁-mutex-key" class="headerlink" title="1.使用互斥锁(mutex key)"></a>1.使用互斥锁(mutex key)</h6><p>业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如Redis的SETNX或者Memcache的ADD）去set一个mutex key，当操作返回成功时，再进行load db的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
+<p>SETNX，是「SET if Not eXists」的缩写，也就是只有不存在的时候才设置，可以利用它来实现锁的效果。在redis2.6.1之前版本未实现setnx的过期时间，所以这里给出两种版本代码参考：</p>
 <a id="more"></a>
 
-<h6 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * lambda表达式</span></span><br><span class="line"><span class="comment"> * 定义方法骨架，实现由调用者实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LambdaDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//with type declaration (声明类型)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MathOperation addition = (<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a + b;</span><br><span class="line">    <span class="comment">//with out type declaration</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MathOperation subtraction = (a, b) -&gt; a - b;</span><br><span class="line">    <span class="comment">//with return statement along with curly braces （返回值）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MathOperation multiplication = (<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; &#123; <span class="keyword">return</span> a * b; &#125;;</span><br><span class="line">    <span class="comment">//without return statement and without curly braces</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> MathOperation division = (<span class="keyword">int</span> a, <span class="keyword">int</span> b) -&gt; a / b;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">MathOperation</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">operation</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">operate</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, MathOperation mathOperation)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mathOperation.operation(a, b);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        LambdaDemo tester = <span class="keyword">new</span> LambdaDemo();</span><br><span class="line">        System.out.println(<span class="string">"10 + 5 = "</span> + tester.operate(<span class="number">10</span>, <span class="number">5</span>, addition));</span><br><span class="line">        System.out.println(<span class="string">"10 - 5 = "</span> + tester.operate(<span class="number">10</span>, <span class="number">5</span>, subtraction));</span><br><span class="line">        System.out.println(<span class="string">"10 x 5 = "</span> + tester.operate(<span class="number">10</span>, <span class="number">5</span>, multiplication));</span><br><span class="line">        System.out.println(<span class="string">"10 / 5 = "</span> + tester.operate(<span class="number">10</span>, <span class="number">5</span>, division));</span><br><span class="line">        <span class="comment">//with parenthesis（括号）</span></span><br><span class="line">        GreetingService greetService1 = message -&gt; System.out.println(<span class="string">"Hello "</span> + message);</span><br><span class="line">        <span class="comment">//without parenthesis</span></span><br><span class="line">        GreetingService greetService2 = (message) -&gt; System.out.println(<span class="string">"Hello "</span> + message);</span><br><span class="line">        greetService1.sayMessage(<span class="string">"Mahesh"</span>);</span><br><span class="line">        greetService2.sayMessage(<span class="string">"Suresh"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//2.6.1前单机版本锁 </span></span><br><span class="line"><span class="keyword">String</span> <span class="built_in">get</span>(<span class="keyword">String</span> <span class="built_in">key</span>) &#123; </span><br><span class="line">    <span class="keyword">String</span> value = redis.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">    <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123; </span><br><span class="line">        <span class="keyword">if</span> (redis.setnx(key_mutex, <span class="string">"1"</span>)) &#123; </span><br><span class="line">            <span class="comment">// 3 min timeout to avoid mutex holder crash </span></span><br><span class="line">            redis.expire(key_mutex, <span class="number">3</span> * <span class="number">60</span>);</span><br><span class="line">            value = db.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">            redis.<span class="built_in">set</span>(<span class="built_in">key</span>, value); </span><br><span class="line">            redis.delete(key_mutex); </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">//其他线程休息50毫秒后重试 </span></span><br><span class="line">            Thread.sleep(<span class="number">50</span>); </span><br><span class="line">            <span class="built_in">get</span>(<span class="built_in">key</span>);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//2.6.1版后代码：</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">String</span> <span class="built_in">get</span>(<span class="built_in">key</span>) &#123; </span><br><span class="line">    <span class="keyword">String</span> value = redis.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">    <span class="comment">//代表缓存值过期 </span></span><br><span class="line">    <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//设置3min的超时，防止del操作失败的时候，下次缓存过期一直不能load db </span></span><br><span class="line">        <span class="keyword">if</span> (redis.setnx(key_mutex, <span class="number">1</span>, <span class="number">3</span> * <span class="number">60</span>) == <span class="number">1</span>) &#123; </span><br><span class="line">            <span class="comment">//代表设置成功 </span></span><br><span class="line">            value = db.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">            redis.<span class="built_in">set</span>(<span class="built_in">key</span>, value, expire_secs); </span><br><span class="line">            redis.del(key_mutex); </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">//这个时候代表同时候的其他线程已经load db并回设到缓存了，这时候重试获取缓存值即可 </span></span><br><span class="line">            sleep(<span class="number">50</span>); </span><br><span class="line">            <span class="comment">//重试 </span></span><br><span class="line">            <span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h6 id="结果："><a href="#结果：" class="headerlink" title="结果："></a>结果：</h6><pre><code>10 + 5 = 15
-10 - 5 = 5
-10 x 5 = 50
-10 / 5 = 2
-Hello Mahesh
-Hello Suresh</code></pre><ul>
-<li>lambda表达式主要用于定义内联执行的功能的接口，即只有一个单一的方法接口。</li>
-<li>Lambda表达式消除匿名类的需求，并给出了一个非常简单但功能强大的函数式编程能力。</li>
-</ul>
-<h6 id="变量的作用域"><a href="#变量的作用域" class="headerlink" title="变量的作用域"></a>变量的作用域</h6><pre><code>在lambda表达式中，可以指任何最终的变量（final）或有效的最后一个变量</code></pre><h5 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h5><ul>
-<li>静态方法</li>
-<li>实例方法</li>
-<li>使用new运算符构造函数(TreeSet::new)</li>
-</ul>
-<h6 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethdQuote</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; names = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        names.add(<span class="string">"Mahesh"</span>);</span><br><span class="line">        names.add(<span class="string">"Suresh"</span>);</span><br><span class="line">        names.add(<span class="string">"Ramesh"</span>);</span><br><span class="line">        names.add(<span class="string">"Naresh"</span>);</span><br><span class="line">        names.add(<span class="string">"Kalpesh"</span>);</span><br><span class="line">        <span class="comment">//names.forEach(System.out::println);</span></span><br><span class="line">        GreetingService greetingService = <span class="keyword">new</span> GreetingService();</span><br><span class="line">        names.forEach(greetingService::sayMessage);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>&#123;</span><br><span class="line">        System.out.println(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="2-”提前”使用互斥锁-mutex-key"><a href="#2-”提前”使用互斥锁-mutex-key" class="headerlink" title="2.”提前”使用互斥锁(mutex key)"></a>2.”提前”使用互斥锁(mutex key)</h6><p>在value内部设置1个超时值(timeout1), timeout1比实际的memcache timeout(timeout2)小。当从cache读取到timeout1发现它已经过期时候，马上延长timeout1并重新设置到cache。然后再从数据库加载数据并设置到cache中。伪代码如下：</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">V <span class="built_in">get</span>(<span class="built_in">key</span>)&#123;</span><br><span class="line">    v = memcache.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">    <span class="keyword">if</span> (v == <span class="keyword">null</span>) &#123; </span><br><span class="line">        <span class="keyword">if</span> (memcache.<span class="built_in">add</span>(key_mutex, <span class="number">3</span> * <span class="number">60</span> * <span class="number">1000</span>) == <span class="keyword">true</span>) &#123; </span><br><span class="line">            value = db.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">            memcache.<span class="built_in">set</span>(<span class="built_in">key</span>, value); </span><br><span class="line">            memcache.delete(key_mutex); </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">            sleep(<span class="number">50</span>); </span><br><span class="line">            <span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="keyword">if</span> (v.timeout &lt;= now()) &#123; </span><br><span class="line">            <span class="keyword">if</span> (memcache.<span class="built_in">add</span>(key_mutex, <span class="number">3</span> * <span class="number">60</span> * <span class="number">1000</span>) == <span class="keyword">true</span>) &#123; </span><br><span class="line">                <span class="comment">// extend the timeout for other threads </span></span><br><span class="line">                v.timeout += <span class="number">3</span> * <span class="number">60</span> * <span class="number">1000</span>; </span><br><span class="line">                memcache.<span class="built_in">set</span>(<span class="built_in">key</span>, v, KEY_TIMEOUT * <span class="number">2</span>); </span><br><span class="line">                <span class="comment">// load the latest value from db </span></span><br><span class="line">                v = db.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">                v.timeout = KEY_TIMEOUT; </span><br><span class="line">                memcache.<span class="built_in">set</span>(<span class="built_in">key</span>, value, KEY_TIMEOUT * <span class="number">2</span>); </span><br><span class="line">                memcache.delete(key_mutex);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">                sleep(<span class="number">50</span>); </span><br><span class="line">                retry(); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h6 id="结果：-1"><a href="#结果：-1" class="headerlink" title="结果："></a>结果：</h6><pre><code>Mahesh
-Suresh
-Ramesh
-Naresh
-Kalpesh</code></pre><h5 id="函数式接口："><a href="#函数式接口：" class="headerlink" title="函数式接口："></a>函数式接口：</h5><table>
-<thead>
-<tr>
-<th>序号</th>
-<th align="center">接口名</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td align="center">BiConsumer&lt;T,U&gt;</td>
-<td>表示接收两个输入参数和不返回结果的操作。</td>
-</tr>
-<tr>
-<td>2</td>
-<td align="center">BiFunction&lt;T,U,R&gt;</td>
-<td>表示接受两个参数，并产生一个结果的函数。</td>
-</tr>
-<tr>
-<td>3</td>
-<td align="center">BinaryOperator<t></t></td>
-<td>表示在相同类型的两个操作数的操作，生产相同类型的操作数的结果。</td>
-</tr>
-<tr>
-<td>4</td>
-<td align="center">BiPredicate&lt;T,U&gt;</td>
-<td>代表两个参数谓词（布尔值函数）。</td>
-</tr>
-<tr>
-<td>5</td>
-<td align="center">BooleanSupplier</td>
-<td>代表布尔值结果的提供者。</td>
-</tr>
-<tr>
-<td>6</td>
-<td align="center">Consumer<t></t></td>
-<td>表示接受一个输入参数和不返回结果的操作。</td>
-</tr>
-<tr>
-<td>7</td>
-<td align="center">DoubleBinaryOperator</td>
-<td>代表在两个double值操作数的运算，并产生一个double值结果。</td>
-</tr>
-<tr>
-<td>8</td>
-<td align="center">DoubleConsumer</td>
-<td>表示接受一个double值参数，不返回结果的操作。</td>
-</tr>
-<tr>
-<td>9</td>
-<td align="center">DoubleFunction<r></r></td>
-<td>表示接受double值参数，并产生一个结果的函数。</td>
-</tr>
-<tr>
-<td>10</td>
-<td align="center">DoublePredicate</td>
-<td>代表一个double值参数谓词（布尔值函数）。</td>
-</tr>
-<tr>
-<td>11</td>
-<td align="center">DoubleSupplier</td>
-<td>表示double值结果的提供者。</td>
-</tr>
-<tr>
-<td>12</td>
-<td align="center">DoubleToIntFunction</td>
-<td>表示接受double值参数，并产生一个int值结果的函数。</td>
-</tr>
-<tr>
-<td>13</td>
-<td align="center">DoubleToLongFunction</td>
-<td>代表接受一个double值参数，并产生一个long值结果的函数。</td>
-</tr>
-<tr>
-<td>14</td>
-<td align="center">DoubleUnaryOperator</td>
-<td>表示上产生一个double值结果的单个double值操作数的操作。</td>
-</tr>
-<tr>
-<td>15</td>
-<td align="center">Function&lt;T,R&gt;</td>
-<td>表示接受一个参数，并产生一个结果的函数。</td>
-</tr>
-<tr>
-<td>16</td>
-<td align="center">IntBinaryOperator</td>
-<td>表示对两个int值操作数的运算，并产生一个int值结果。</td>
-</tr>
-<tr>
-<td>17</td>
-<td align="center">IntConsumer</td>
-<td>表示接受单个int值的参数并没有返回结果的操作。</td>
-</tr>
-<tr>
-<td>18</td>
-<td align="center">IntFunction<r></r></td>
-<td>表示接受一个int值参数，并产生一个结果的函数。</td>
-</tr>
-<tr>
-<td>19</td>
-<td align="center">IntPredicate</td>
-<td>表示一个整数值参数谓词（布尔值函数）。</td>
-</tr>
-<tr>
-<td>20</td>
-<td align="center">IntSupplier</td>
-<td>代表整型值的结果的提供者。</td>
-</tr>
-<tr>
-<td>21</td>
-<td align="center">IntToDoubleFunction</td>
-<td>表示接受一个int值参数，并产生一个double值结果的功能。</td>
-</tr>
-<tr>
-<td>22</td>
-<td align="center">IntToLongFunction</td>
-<td>表示接受一个int值参数，并产生一个long值结果的函数。</td>
-</tr>
-<tr>
-<td>23</td>
-<td align="center">IntUnaryOperator</td>
-<td>表示产生一个int值结果的单个int值操作数的运算。</td>
-</tr>
-<tr>
-<td>24</td>
-<td align="center">LongBinaryOperator</td>
-<td>表示在两个long值操作数的操作，并产生一个long值结果。</td>
-</tr>
-<tr>
-<td>25</td>
-<td align="center">LongConsumer</td>
-<td>表示接受一个long值参数和不返回结果的操作。</td>
-</tr>
-<tr>
-<td>26</td>
-<td align="center">LongFunction<r></r></td>
-<td>表示接受long值参数，并产生一个结果的函数。</td>
-</tr>
-<tr>
-<td>27</td>
-<td align="center">LongPredicate</td>
-<td>代表一个long值参数谓词（布尔值函数）。</td>
-</tr>
-<tr>
-<td>28</td>
-<td align="center">LongSupplier</td>
-<td>表示long值结果的提供者。</td>
-</tr>
-<tr>
-<td>29</td>
-<td align="center">LongToDoubleFunction</td>
-<td>表示接受double参数，并产生一个double值结果的函数。</td>
-</tr>
-<tr>
-<td>30</td>
-<td align="center">LongToIntFunction</td>
-<td>表示接受long值参数，并产生一个int值结果的函数。</td>
-</tr>
-<tr>
-<td>31</td>
-<td align="center">LongUnaryOperator</td>
-<td>表示上产生一个long值结果单一的long值操作数的操作。</td>
-</tr>
-<tr>
-<td>32</td>
-<td align="center">ObjDoubleConsumer<t></t></td>
-<td>表示接受对象值和double值参数，并且没有返回结果的操作。</td>
-</tr>
-<tr>
-<td>33</td>
-<td align="center">ObjIntConsumer<t></t></td>
-<td>表示接受对象值和整型值参数，并返回没有结果的操作。</td>
-</tr>
-<tr>
-<td>34</td>
-<td align="center">ObjLongConsumer<t></t></td>
-<td>表示接受对象的值和long值的说法，并没有返回结果的操作。</td>
-</tr>
-<tr>
-<td>35</td>
-<td align="center">Predicate<t></t></td>
-<td>代表一个参数谓词（布尔值函数）。</td>
-</tr>
-<tr>
-<td>36</td>
-<td align="center">Supplier<t></t></td>
-<td>表示一个提供者的结果。</td>
-</tr>
-<tr>
-<td>37</td>
-<td align="center">ToDoubleBiFunction&lt;T,U&gt;</td>
-<td>表示接受两个参数，并产生一个double值结果的功能。</td>
-</tr>
-<tr>
-<td>38</td>
-<td align="center">ToDoubleFunction<t></t></td>
-<td>代表一个产生一个double值结果的功能。</td>
-</tr>
-<tr>
-<td>39</td>
-<td align="center">ToIntBiFunction&lt;T,U&gt;</td>
-<td>表示接受两个参数，并产生一个int值结果的函数。</td>
-</tr>
-<tr>
-<td>40</td>
-<td align="center">ToIntFunction<t></t></td>
-<td>代表产生一个int值结果的功能。</td>
-</tr>
-<tr>
-<td>41</td>
-<td align="center">ToLongBiFunction&lt;T,U&gt;</td>
-<td>表示接受两个参数，并产生long值结果的功能。</td>
-</tr>
-<tr>
-<td>42</td>
-<td align="center">ToLongFunction<t></t></td>
-<td>代表一个产生long值结果的功能。</td>
-</tr>
-<tr>
-<td>43</td>
-<td align="center">UnaryOperator<t></t></td>
-<td>表示上产生相同类型的操作数的结果的单个操作数的操作。</td>
-</tr>
-</tbody></table>
-<h6 id="示例：-2"><a href="#示例：-2" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FunctionInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"Print all numbers:"</span>);</span><br><span class="line">        eval(list, n -&gt; <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"Print even numbers:"</span>);</span><br><span class="line">        eval(list, n -&gt; n % <span class="number">2</span> == <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"Print numbers greater than 3:"</span>);</span><br><span class="line">        eval(list, n -&gt; n &gt; <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">        Map&lt;Integer,Integer&gt; map1 = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        Map&lt;Integer,Integer&gt; map2 = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map1.put(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">        map2.put(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">        map1.put(<span class="number">2</span>,<span class="number">2</span>);</span><br><span class="line">        map2.put(<span class="number">3</span>,<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        doubleValue(map1,map2,(x,y)-&gt; x+y );</span><br><span class="line">        doubleValue(map1,map2,(x,y)-&gt; x-y );</span><br><span class="line">        doubleValue(map1,map2,(x,y)-&gt; x*y );</span><br><span class="line">        doubleValue(map1,map2,(x,y)-&gt; x/y );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;Integer,Integer&gt; <span class="title">doubleValue</span><span class="params">(Map&lt;Integer,Integer&gt; map1, Map&lt;Integer,Integer&gt; map2, BiFunction&lt;Integer,Integer,Integer&gt; biFunction)</span> </span>&#123;</span><br><span class="line">        Map&lt;Integer,Integer&gt; result = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map1.forEach((key,vaule)-&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span>(map2.containsKey(key))&#123;</span><br><span class="line">                result.put(key,biFunction.apply(map2.get(key),vaule)) ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        result.forEach( (x,y)-&gt; System.out.println(<span class="string">"x:"</span>+x+<span class="string">",y:"</span>+y) );</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">eval</span><span class="params">(List&lt;Integer&gt; list, Predicate&lt;Integer&gt; predicate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Integer n : list) &#123;</span><br><span class="line">            <span class="keyword">if</span> (predicate.test(n)) &#123;</span><br><span class="line">                System.out.println(n + <span class="string">" "</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="结果：-2"><a href="#结果：-2" class="headerlink" title="结果："></a>结果：</h6><pre><code>Print all numbers:
-1 
-2 
-3 
-4 
-5 
-6 
-Print even numbers:
-2 
-4 
-6 
-Print numbers greater than 3:
-4 
-5 
-6 
-x:1,y:4
-x:1,y:0
-x:1,y:4
-x:1,y:1</code></pre><h5 id="默认方法："><a href="#默认方法：" class="headerlink" title="默认方法："></a>默认方法：</h5><ul>
-<li>多重默认，使用超指定接口的默认方法</li>
-<li>静态默认方法</li>
-</ul>
-<h6 id="示例：-3"><a href="#示例：-3" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultFunction</span> <span class="keyword">implements</span> <span class="title">Vehicle</span>,<span class="title">FourWheeler</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">        DefaultFunction defaultFunction = <span class="keyword">new</span> DefaultFunction();</span><br><span class="line">        defaultFunction.print();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Vehicle.<span class="keyword">super</span>.print();</span><br><span class="line">        Vehicle.blowHorn();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Vehicle</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"I am a vehicle!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//静态默认方法</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">blowHorn</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Blowing horn!!!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">FourWheeler</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"I am a four wheeler!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="结果：-3"><a href="#结果：-3" class="headerlink" title="结果："></a>结果：</h6><pre><code>I am a vehicle!
-Blowing horn!!!</code></pre><h5 id="数据流："><a href="#数据流：" class="headerlink" title="数据流："></a>数据流：</h5><ul>
-<li>元素序列 - 流提供了一组特定类型的以顺序方式元素。流获取/计算需求的元素。它不存储元素。</li>
-<li>源- 流使用集合，数组或I/O资源为输入源。</li>
-<li>聚合操作 - 数据流支持如filter, map, limit, reduced, find, match等聚合操作。</li>
-<li>管道传输 - 大多数流操作的返回流本身使他们的结果可以被管道传输。这些操作被称为中间操作以及它们的功能是利用输入，处理输入和输出返回到目标。collect()方法是终端操作，这是通常出现在管道传输操作结束标记流的结束。</li>
-<li>自动迭代 - 流操作内部做了反复对比，其中明确迭代需要集合提供源元素。</li>
-</ul>
+<h6 id="3-”永远不过期”"><a href="#3-”永远不过期”" class="headerlink" title="3.”永远不过期”"></a>3.”永远不过期”</h6><p>这里的“永远不过期”包含两层意思：</p>
 <ol>
-<li>生成数据流<ul>
-<li>stream() -返回顺序流考虑集合作为其源。</li>
-<li>parallelStream() - 返回并行数据流考虑集合作为其源。</li>
-</ul>
-</li>
-<li>forEach 遍历每个元素</li>
-<li>map 映射每个元素对应的结果</li>
-<li>filter 过滤基于标准元素</li>
-<li>limit 减少流的大小</li>
-<li>sorted 排序</li>
-<li>collect（收集器）用来处理组合在一个数据流的元素的结果。收集器可用于返回一个列表或一个字符串。</li>
-<li>summaryStatistics（统计）统计收集器引入计算所有统计数据</li>
+<li>从redis上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。</li>
+<li>从功能上看，如果不过期，那不就成静态的了吗。所以我们把过期时间存在key对应的value里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期<br>从实战看，这种方法对于性能非常友好，唯一不足的就是构建缓存时候，其余线程(非构建缓存的线程)可能访问的是老数据，但是对于一般的互联网功能来说这个还是可以忍受。<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">String</span> <span class="built_in">get</span>(<span class="keyword">final</span> <span class="keyword">String</span> <span class="built_in">key</span>) &#123; </span><br><span class="line">    V v = redis.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">    <span class="keyword">String</span> value = v.getValue(); </span><br><span class="line">    <span class="keyword">long</span> timeout = v.getTimeout(); </span><br><span class="line">    <span class="keyword">if</span> (v.timeout &lt;= System.currentTimeMillis()) &#123; </span><br><span class="line">        <span class="comment">// 异步更新后台异常执行 </span></span><br><span class="line">        threadPool.execute(<span class="keyword">new</span> Runnable() &#123; </span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> run() &#123; </span><br><span class="line">                <span class="keyword">String</span> keyMutex = <span class="string">"mutex:"</span> + <span class="built_in">key</span>; </span><br><span class="line">                <span class="keyword">if</span> (redis.setnx(keyMutex, <span class="string">"1"</span>)) &#123; </span><br><span class="line">                    <span class="comment">// 3 min timeout to avoid mutex holder crash </span></span><br><span class="line">                    redis.expire(keyMutex, <span class="number">3</span> * <span class="number">60</span>); </span><br><span class="line">                    <span class="keyword">String</span> dbValue = db.<span class="built_in">get</span>(<span class="built_in">key</span>); </span><br><span class="line">                    redis.<span class="built_in">set</span>(<span class="built_in">key</span>, dbValue); </span><br><span class="line">                    redis.delete(keyMutex); </span><br><span class="line">                &#125; </span><br><span class="line">            &#125; </span><br><span class="line">        &#125;); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> value; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
-<h6 id="示例：-4"><a href="#示例：-4" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        <span class="comment">//ForEach</span></span><br><span class="line">        Random random = <span class="keyword">new</span> Random();</span><br><span class="line">        random.ints(<span class="number">3</span>,<span class="number">5</span>,<span class="number">20</span>).forEach(System.out::println);</span><br><span class="line">        <span class="comment">//map 对每个元素的操作</span></span><br><span class="line">        List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">3</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line">        List&lt;Integer&gt; squaresList = numbers.stream().map( i -&gt; i*i).distinct().collect(Collectors.toList());</span><br><span class="line">        squaresList.stream().forEach(System.out::println);</span><br><span class="line">        <span class="comment">//filter</span></span><br><span class="line">        List&lt;String&gt;strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">        Long count = strings.stream().filter(string -&gt; string.isEmpty()).count();</span><br><span class="line">        System.out.println(count);</span><br><span class="line">        <span class="comment">//limit方法用于减少流的大小</span></span><br><span class="line">        random.ints(<span class="number">5</span>,<span class="number">20</span>).limit(<span class="number">3</span>).forEach(System.out::println);</span><br><span class="line">        <span class="comment">//sorted</span></span><br><span class="line">        random.ints(<span class="number">5</span>,<span class="number">20</span>).limit(<span class="number">3</span>).sorted().forEach(System.out::println);</span><br><span class="line">        <span class="comment">//并行处理 parallelStream</span></span><br><span class="line">        strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">        count = strings.parallelStream().filter(string -&gt; string.isEmpty()).count();</span><br><span class="line">        System.out.println(count);</span><br><span class="line">        <span class="comment">//收集器collect | Collectors</span></span><br><span class="line">        strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">        List&lt;String&gt; filtered = strings.stream().filter(string -&gt; !string.isEmpty()).collect(Collectors.toList());</span><br><span class="line">        System.out.println(<span class="string">"Filtered List: "</span> + filtered);</span><br><span class="line">        String mergedString = strings.stream().filter(string -&gt; !string.isEmpty()).collect(Collectors.joining(<span class="string">", "</span>));</span><br><span class="line">        System.out.println(<span class="string">"Merged String: "</span> + mergedString);</span><br><span class="line">        <span class="comment">//统计</span></span><br><span class="line">        numbers = Arrays.asList(<span class="number">3</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">5</span>);</span><br><span class="line">        IntSummaryStatistics stats = numbers.stream().mapToInt((x) -&gt; x).summaryStatistics();</span><br><span class="line">        System.out.println(<span class="string">"Highest number in List : "</span> + stats.getMax());</span><br><span class="line">        System.out.println(<span class="string">"Lowest  number in List : "</span> + stats.getMin());</span><br><span class="line">        System.out.println(<span class="string">"Sum of all numbers : "</span> + stats.getSum());</span><br><span class="line">        System.out.println(<span class="string">"Average of all  numbers : "</span> + stats.getAverage());</span><br><span class="line">        </span><br><span class="line">        testStream();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testStream</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; strings = Arrays.asList(<span class="string">"abc"</span>, <span class="string">""</span>, <span class="string">"bc"</span>, <span class="string">"efg"</span>, <span class="string">"abcd"</span>,<span class="string">""</span>, <span class="string">"jkl"</span>);</span><br><span class="line">        List&lt;String&gt; filtered = strings.stream().filter(string -&gt; StringUtils.isNotEmpty(string)).collect(Collectors.toList());</span><br><span class="line">        filtered.stream().forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h6 id="运行结果："><a href="#运行结果：" class="headerlink" title="运行结果："></a>运行结果：</h6><pre><code>8
-7
-7
-9
-4
-49
-25
-2
-19
-16
-8
-10
-10
-11
-2
-Filtered List: [abc, bc, efg, abcd, jkl]
-Merged String: abc, bc, efg, abcd, jkl
-Highest number in List : 7
-Lowest  number in List : 2
-Sum of all numbers : 25
-Average of all  numbers : 3.5714285714285716
-abc
-bc
-efg
-abcd
-jkl</code></pre><h5 id="Optional类："><a href="#Optional类：" class="headerlink" title="Optional类："></a>Optional类：</h5><pre><code>Optional用于包含非空对象的容器对象</code></pre><h6 id="示例：-5"><a href="#示例：-5" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OptionalDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      OptionalDemo optionalDemo = <span class="keyword">new</span> OptionalDemo();</span><br><span class="line">      Integer value1 =  <span class="keyword">null</span>;</span><br><span class="line">      Integer value2 =  <span class="keyword">new</span> Integer(<span class="number">10</span>);</span><br><span class="line">      <span class="comment">//Optional.ofNullable - allows passed parameter to be null.</span></span><br><span class="line">      Optional&lt;Integer&gt; a = Optional.ofNullable(value1);</span><br><span class="line">      <span class="comment">//Optional.of - throws NullPointerException if passed parameter is null</span></span><br><span class="line">      Optional&lt;Integer&gt; b = Optional.of(value2);</span><br><span class="line">      System.out.println(optionalDemo.sum(a,b));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Integer <span class="title">sum</span><span class="params">(Optional&lt;Integer&gt; a, Optional&lt;Integer&gt; b)</span></span>&#123;</span><br><span class="line">      <span class="comment">//Optional.isPresent - checks the value is present or not</span></span><br><span class="line">      System.out.println(<span class="string">"First parameter is present: "</span> + a.isPresent());</span><br><span class="line">      System.out.println(<span class="string">"Second parameter is present: "</span> + b.isPresent());</span><br><span class="line">      <span class="comment">//Optional.orElse - returns the value if present otherwise returns</span></span><br><span class="line">      <span class="comment">//the default value passed.</span></span><br><span class="line">      Integer value1 = a.orElse(<span class="keyword">new</span> Integer(<span class="number">0</span>));</span><br><span class="line">      <span class="comment">//Optional.get - gets the value, value should be present</span></span><br><span class="line">      Integer value2 = b.get();</span><br><span class="line">      <span class="keyword">return</span> value1 + value2;</span><br><span class="line">   &#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="结果：-4"><a href="#结果：-4" class="headerlink" title="结果："></a>结果：</h6><pre><code>First parameter is present: false
-Second parameter is present: true
-10</code></pre><h5 id="时间："><a href="#时间：" class="headerlink" title="时间："></a>时间：</h5><ul>
-<li>LocalDate/LocalDateTime | 本地日期时间API</li>
-<li>ZonedDateTime | 时区日期时间API</li>
-<li>ChronoUnit | 计时单位枚举</li>
-<li>Period/Duration | 时间间隔</li>
-<li>TemporalAdjuster | 时间调节器</li>
-<li>toInstant() | 向后兼容性</li>
-</ul>
-<h6 id="LocalDate示例："><a href="#LocalDate示例：" class="headerlink" title="LocalDate示例："></a>LocalDate示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 本地时间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalDateApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      LocalDateApi localDateApi = <span class="keyword">new</span> LocalDateApi();</span><br><span class="line">      localDateApi.testLocalDateTime();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLocalDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">// Get the current date and time</span></span><br><span class="line">      LocalDateTime currentTime = LocalDateTime.now();     </span><br><span class="line">      System.out.println(<span class="string">"Current DateTime: "</span> + currentTime);</span><br><span class="line">      System.out.println(<span class="string">"date0: "</span> + currentTime.toLocalTime());</span><br><span class="line">      LocalDate date1 = currentTime.toLocalDate();</span><br><span class="line">      System.out.println(<span class="string">"date1: "</span> + date1);</span><br><span class="line">      Month month = currentTime.getMonth();</span><br><span class="line">      <span class="keyword">int</span> day = currentTime.getDayOfMonth();</span><br><span class="line">      <span class="keyword">int</span> seconds = currentTime.getSecond();</span><br><span class="line">      System.out.println(<span class="string">"Month: "</span> + month</span><br><span class="line">         +<span class="string">",day: "</span> + day</span><br><span class="line">         +<span class="string">",seconds: "</span> + seconds</span><br><span class="line">      );</span><br><span class="line">      LocalDateTime date2 = currentTime.withDayOfMonth(<span class="number">10</span>).withYear(<span class="number">2012</span>);</span><br><span class="line">      System.out.println(<span class="string">"date2: "</span> + date2);</span><br><span class="line">      <span class="comment">//12 december 2014</span></span><br><span class="line">      LocalDate date3 = LocalDate.of(<span class="number">2014</span>, Month.DECEMBER, <span class="number">12</span>); </span><br><span class="line">      System.out.println(<span class="string">"date3: "</span> + date3);</span><br><span class="line">      <span class="comment">//22 hour 15 minutes</span></span><br><span class="line">      LocalTime date4 = LocalTime.of(<span class="number">22</span>, <span class="number">15</span>);</span><br><span class="line">      System.out.println(<span class="string">"date4: "</span> + date4);</span><br><span class="line">      <span class="comment">//22 hour 15 minutes 10秒</span></span><br><span class="line">      LocalTime date5 = LocalTime.of(<span class="number">22</span>, <span class="number">15</span>,<span class="number">10</span>);</span><br><span class="line">      System.out.println(<span class="string">"date5: "</span> + date5);</span><br><span class="line">      <span class="comment">//parse a string</span></span><br><span class="line">      LocalTime date6 = LocalTime.parse(<span class="string">"20:15:30"</span>);</span><br><span class="line">      System.out.println(<span class="string">"date6: "</span> + date6);</span><br><span class="line">   &#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="LocalDate结果："><a href="#LocalDate结果：" class="headerlink" title="LocalDate结果："></a>LocalDate结果：</h6><pre><code>Current DateTime: 2018-07-01T22:23:51.761
-date0: 22:23:51.761
-date1: 2018-07-01
-Month: JULY,day: 1,seconds: 51
-date2: 2012-07-10T22:23:51.761
-date3: 2014-12-12
-date4: 22:15
-date5: 22:15:10
-date6: 20:15:30</code></pre><h6 id="ZonedDateTime示例："><a href="#ZonedDateTime示例：" class="headerlink" title="ZonedDateTime示例："></a>ZonedDateTime示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 时区时间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZonedDateTimeApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      ZonedDateTimeApi zonedDateTimeApi = <span class="keyword">new</span> ZonedDateTimeApi();</span><br><span class="line">      zonedDateTimeApi.testZonedDateTime();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testZonedDateTime</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">// Get the current date and time</span></span><br><span class="line">      ZonedDateTime date1 = ZonedDateTime.parse(<span class="string">"2007-12-03T10:15:30+05:30[Asia/Karachi]"</span>);</span><br><span class="line">      System.out.println(<span class="string">"date1: "</span> + date1);</span><br><span class="line">      ZoneId id = ZoneId.of(<span class="string">"Europe/Paris"</span>);</span><br><span class="line">      System.out.println(<span class="string">"ZoneId: "</span> + id);</span><br><span class="line">      ZoneId currentZone = ZoneId.systemDefault();</span><br><span class="line">      System.out.println(<span class="string">"CurrentZone: "</span> + currentZone);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="ZonedDateTime结果："><a href="#ZonedDateTime结果：" class="headerlink" title="ZonedDateTime结果："></a>ZonedDateTime结果：</h6><pre><code>date1: 2007-12-03T10:15:30+05:00[Asia/Karachi]
-ZoneId: Europe/Paris
-CurrentZone: Asia/Shanghai</code></pre><h6 id="Period-Duration示例："><a href="#Period-Duration示例：" class="headerlink" title="Period | Duration示例："></a>Period | Duration示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计算时间间隔</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PeriodAndDurationApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      PeriodAndDurationApi periodAndDurationApi = <span class="keyword">new</span> PeriodAndDurationApi();</span><br><span class="line">      periodAndDurationApi.testPeriod();</span><br><span class="line">      periodAndDurationApi.testDuration();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPeriod</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">//Get the current date</span></span><br><span class="line">      LocalDate date1 = LocalDate.now();</span><br><span class="line">      System.out.println(<span class="string">"Current date: "</span> + date1);</span><br><span class="line">      <span class="comment">//add 1 month to the current date</span></span><br><span class="line">      LocalDate date2 = date1.plus(<span class="number">1</span>, ChronoUnit.YEARS)</span><br><span class="line">              .plus(<span class="number">1</span>, ChronoUnit.MONTHS)</span><br><span class="line">              .plus(<span class="number">1</span>, ChronoUnit.DAYS);</span><br><span class="line">      System.out.println(<span class="string">"Next month: "</span> + date2);</span><br><span class="line">      Period period = Period.between(date1, date2);</span><br><span class="line">      System.out.println(<span class="string">"Period: "</span> + period);</span><br><span class="line">      System.out.println(<span class="string">"Period: "</span> + period.getYears());</span><br><span class="line">      System.out.println(<span class="string">"Period: "</span> + period.getMonths());</span><br><span class="line">      System.out.println(<span class="string">"Period: "</span> + period.getDays());</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testDuration</span><span class="params">()</span></span>&#123;</span><br><span class="line">      LocalTime time1 = LocalTime.now();</span><br><span class="line">      Duration twoHours = Duration.ofHours(<span class="number">2</span>);</span><br><span class="line">      <span class="comment">//有隔天问题</span></span><br><span class="line">      LocalTime time2 = time1.plus(twoHours);</span><br><span class="line">      Duration duration = Duration.between(time1, time2);</span><br><span class="line">      System.out.println(<span class="string">"Duration: "</span> + duration);</span><br><span class="line">      System.out.println(<span class="string">"Duration: "</span> + duration.getSeconds());</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="Period-Duration结果："><a href="#Period-Duration结果：" class="headerlink" title="Period | Duration结果："></a>Period | Duration结果：</h6><pre><code>Current date: 2018-07-01
-Next month: 2019-08-02
-Period: P1Y1M1D
-Period: 1
-Period: 1
-Period: 1
-Duration: PT1H
-Duration: 7200 </code></pre><h6 id="ChromoUnits示例："><a href="#ChromoUnits示例：" class="headerlink" title="ChromoUnits示例："></a>ChromoUnits示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 时区枚举ChromoUnits</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChromoUnitsApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      ChromoUnitsApi chromoUnitsApi = <span class="keyword">new</span> ChromoUnitsApi();</span><br><span class="line">      chromoUnitsApi.testChromoUnits();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testChromoUnits</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">//Get the current date</span></span><br><span class="line">      LocalDate today = LocalDate.now();</span><br><span class="line">      System.out.println(<span class="string">"Current date: "</span> + today);</span><br><span class="line">      <span class="comment">//add 1 week to the current date</span></span><br><span class="line">      LocalDate nextWeek = today.plus(<span class="number">1</span>, ChronoUnit.WEEKS);</span><br><span class="line">      System.out.println(<span class="string">"Next week: "</span> + nextWeek);</span><br><span class="line">      <span class="comment">//add 1 month to the current date</span></span><br><span class="line">      LocalDate nextMonth = today.plus(<span class="number">1</span>, ChronoUnit.MONTHS);</span><br><span class="line">      System.out.println(<span class="string">"Next month: "</span> + nextMonth);</span><br><span class="line">      <span class="comment">//add 1 year to the current date</span></span><br><span class="line">      LocalDate nextYear = today.plus(<span class="number">1</span>, ChronoUnit.YEARS);</span><br><span class="line">      System.out.println(<span class="string">"Next year: "</span> + nextYear);</span><br><span class="line">      <span class="comment">//add 10 years to the current date</span></span><br><span class="line">      LocalDate nextDecade = today.plus(<span class="number">1</span>, ChronoUnit.DECADES);</span><br><span class="line">      System.out.println(<span class="string">"Date after ten year: "</span> + nextDecade);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="ChromoUnits结果："><a href="#ChromoUnits结果：" class="headerlink" title="ChromoUnits结果："></a>ChromoUnits结果：</h6><pre><code>Current date: 2018-07-01
-Next week: 2018-07-08
-Next month: 2018-08-01
-Next year: 2019-07-01
-Date after ten year: 2028-07-01</code></pre><h6 id="TemporalAdjusters示例："><a href="#TemporalAdjusters示例：" class="headerlink" title="TemporalAdjusters示例："></a>TemporalAdjusters示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * TemporalAdjusters 是做日期数学计算</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AdjustersApi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      AdjustersApi adjustersApi = <span class="keyword">new</span> AdjustersApi();</span><br><span class="line">      adjustersApi.testAdjusters();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAdjusters</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">//Get the current date</span></span><br><span class="line">      LocalDate date1 = LocalDate.now();</span><br><span class="line">      System.out.println(<span class="string">"Current date: "</span> + date1);</span><br><span class="line">      <span class="comment">//get the next tuesday</span></span><br><span class="line">      LocalDate nextTuesday = date1.with(TemporalAdjusters.next(DayOfWeek.TUESDAY));</span><br><span class="line">      System.out.println(<span class="string">"Next Tuesday on : "</span> + nextTuesday);</span><br><span class="line">      <span class="comment">//get the second saturday of next month</span></span><br><span class="line">      LocalDate firstInYear = LocalDate.of(date1.getYear(),date1.getMonth(), <span class="number">1</span>);</span><br><span class="line">      LocalDate secondSaturday = firstInYear.with(</span><br><span class="line">              TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY)).with(</span><br><span class="line">              TemporalAdjusters.next(DayOfWeek.SATURDAY));</span><br><span class="line">      System.out.println(<span class="string">"Second saturday on : "</span> + secondSaturday);</span><br><span class="line">      System.out.print(firstInYear.with(TemporalAdjusters.firstDayOfNextYear()));</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="TemporalAdjusters结果："><a href="#TemporalAdjusters结果：" class="headerlink" title="TemporalAdjusters结果："></a>TemporalAdjusters结果：</h6><pre><code>Current date: 2018-07-01
-Next Tuesday on : 2018-07-03
-Second saturday on : 2018-07-14
-2019-01-01</code></pre><h6 id="toInstant-示例："><a href="#toInstant-示例：" class="headerlink" title="toInstant()示例："></a>toInstant()示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 新旧日期兼容 toInstant()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BackwardCompatability</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      BackwardCompatability backwardCompatability = <span class="keyword">new</span> BackwardCompatability();</span><br><span class="line">      backwardCompatability.testBackwardCompatability();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testBackwardCompatability</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="comment">//Get the current date</span></span><br><span class="line">      Date currentDate = <span class="keyword">new</span> Date();</span><br><span class="line">      System.out.println(<span class="string">"Current date: "</span> + currentDate);</span><br><span class="line">      <span class="comment">//Get the instant of current date in terms of milliseconds</span></span><br><span class="line">      Instant now = currentDate.toInstant();</span><br><span class="line">      ZoneId currentZone = ZoneId.systemDefault();</span><br><span class="line">      LocalDateTime localDateTime = LocalDateTime.ofInstant(now, currentZone);</span><br><span class="line">      System.out.println(<span class="string">"Local date: "</span> + localDateTime);</span><br><span class="line">      ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(now, currentZone);</span><br><span class="line">      System.out.println(<span class="string">"Zoned date: "</span> + zonedDateTime);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="toInstant-结果："><a href="#toInstant-结果：" class="headerlink" title="toInstant()结果："></a>toInstant()结果：</h6><pre><code>Current date: Sun Jul 01 22:34:20 CST 2018
-Local date: 2018-07-01T22:34:20.804
-Zoned date: 2018-07-01T22:34:20.804+08:00[Asia/Shanghai]</code></pre><h5 id="Base64："><a href="#Base64：" class="headerlink" title="Base64："></a>Base64：</h5><ul>
-<li>简单 - 输出映射设置字符在A-ZA-Z0-9+/。编码器不添加任何换行输出和解码器拒绝在A-Za-z0-9+/以外的任何字符。</li>
-<li>URL - 输出映射设置字符在A-Za-z0-9+_。输出URL和文件名安全。</li>
-<li>MIME - 输出映射到MIME友好的格式。输出表示在每次不超过76个字符行和使用’\r’后跟一个换行符’\n’回车作为行分隔符。无行隔板的存在是为了使编码的结束输出。</li>
-</ul>
-<h6 id="Base64-Decoder-解码器-Base64-Encoder-编码器-方法："><a href="#Base64-Decoder-解码器-Base64-Encoder-编码器-方法：" class="headerlink" title="Base64.Decoder(解码器) | Base64.Encoder(编码器) 方法："></a>Base64.Decoder(解码器) | Base64.Encoder(编码器) 方法：</h6><table>
-<thead>
-<tr>
-<th>序号</th>
-<th align="center">接口名</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1</td>
-<td align="center">static Base64.Decoder getDecoder()</td>
-<td>返回Base64.Decoder解码使用基本型base64编码方案。</td>
-</tr>
-<tr>
-<td>2</td>
-<td align="center">static Base64.Encoder getEncoder()</td>
-<td>返回Base64.Encoder编码使用的基本型base64编码方案。</td>
-</tr>
-<tr>
-<td>3</td>
-<td align="center">static Base64.Decoder getMimeDecoder()</td>
-<td>返回Base64.Decoder解码使用MIME类型的base64解码方案。</td>
-</tr>
-<tr>
-<td>4</td>
-<td align="center">static Base64.Encoder getMimeEncoder()</td>
-<td>返回Base64.Encoder编码使用MIME类型base64编码方案。</td>
-</tr>
-<tr>
-<td>5</td>
-<td align="center">static Base64.Encoder getMimeEncoder(int lineLength, byte[] lineSeparator)</td>
-<td>返回Base64.Encoder编码使用指定的行长度和线分隔的MIME类型base64编码方案。</td>
-</tr>
-<tr>
-<td>6</td>
-<td align="center">static Base64.Decoder getUrlDecoder()</td>
-<td>返回Base64.Decoder解码使用URL和文件名安全型base64编码方案。</td>
-</tr>
-<tr>
-<td>7</td>
-<td align="center">static Base64.Encoder getUrlEncoder()</td>
-<td>返回Base64.Decoder解码使用URL和文件名安全型base64编码方案。</td>
-</tr>
-</tbody></table>
-<h6 id="示例：-6"><a href="#示例：-6" class="headerlink" title="示例："></a>示例：</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Base64Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">// Encode using basic encoder</span></span><br><span class="line">         String base64encodedString = Base64.getEncoder().encodeToString(<span class="string">"YiiBai?java8"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">         System.out.println(<span class="string">"Base64 Encoded String (Basic) :"</span> + base64encodedString);</span><br><span class="line">         <span class="comment">// Decode</span></span><br><span class="line">         <span class="keyword">byte</span>[] base64decodedBytes = Base64.getDecoder().decode(base64encodedString);</span><br><span class="line">         System.out.println(<span class="string">"Original String: "</span>+<span class="keyword">new</span> String(base64decodedBytes, <span class="string">"utf-8"</span>));</span><br><span class="line">         </span><br><span class="line">         base64encodedString = Base64.getUrlEncoder().encodeToString(<span class="string">"YiiBai?java8"</span>.getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line">         System.out.println(<span class="string">"Base64 Encoded String (URL) :"</span> + base64encodedString);</span><br><span class="line">         StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i) &#123;</span><br><span class="line">            stringBuilder.append(UUID.randomUUID().toString());</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">byte</span>[] mimeBytes = stringBuilder.toString().getBytes(<span class="string">"utf-8"</span>);</span><br><span class="line">         String mimeEncodedString = Base64.getMimeEncoder().encodeToString(mimeBytes);</span><br><span class="line">            System.out.println(<span class="string">"Base64 Encoded String (MIME) :"</span>+mimeEncodedString);</span><br><span class="line">      &#125;<span class="keyword">catch</span>(UnsupportedEncodingException e)&#123;</span><br><span class="line">         System.out.println(<span class="string">"Error :"</span>+e.getMessage());</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="结果：-5"><a href="#结果：-5" class="headerlink" title="结果："></a>结果：</h6><pre><code>Base64 Encoded String (Basic) :WWlpQmFpP2phdmE4
-Original String: YiiBai?java8
-Base64 Encoded String (URL) :WWlpQmFpP2phdmE4
-Base64 Encoded String (MIME) :MjdkM2ZiNGItOTVkNS00YzI5LTg5MWUtYTJhOGJlODMyMTUxNTQ1YjlmMmEtYTc3YS00NzBlLWE5
-Y2UtZjIzYzdjODI3M2ZmZGM4ODRlZmMtYWViNS00YTNiLTg5NGEtMTRjZDI4ZGY4ZDc5NzI2ZDA5
-NTktNjQyYi00NTRjLWIxY2UtYzM3MjI1YzQxNTViZTUxYjUwZDQtOTk4Yy00MGY4LWIxOGMtNWJl
-OGE0M2EzYzJjOTlmMmUwZjMtMmM0NS00YjkzLTlmYWItN2RkNTljNDZkYmU1YTU3Y2I4ODYtMDNi
-NS00YjUyLTk4ZTMtYTZmMmQ2ZTljMDg2Zjk4OGUxZGEtMDM3OC00NmY3LThjZDctODVhMDc0NzRk
-YThlY2I1YzYwZTItMGI3ZS00YTQ4LWI5YzAtMjI0MTFlMmMxYmU2MTdmMTJhZjgtMTRiZC00NGZj
-LWJmYzItODM5NTczMTVlNGVk</code></pre>
       
 
       
@@ -670,7 +250,7 @@ LWJmYzItODM5NTczMTVlNGVk</code></pre>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
         		</li>
       		
 		</ul>
@@ -737,7 +317,7 @@ LWJmYzItODM5NTczMTVlNGVk</code></pre>
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2018/07/01/学习笔记/JAVA8/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2018/07/08/学习笔记/Redis/Redis-1/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -751,18 +331,18 @@ LWJmYzItODM5NTczMTVlNGVk</code></pre>
   
 <nav id="article-nav">
   
-    <a href="/2018/07/02/日常总结/RabbitMQ/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/07/08/学习笔记/Redis/Redis/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          RabbitMQ
+          Redis
         
       </div>
     </a>
   
   
-    <a href="/2018/06/24/学习笔记/Markdown/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Markdown</div>
+    <a href="/2018/07/02/日常总结/RabbitMQ/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">RabbitMQ</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -789,7 +369,7 @@ LWJmYzItODM5NTczMTVlNGVk</code></pre>
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#Lambada表达式"><span class="toc-number">1.</span> <span class="toc-text">Lambada表达式</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例："><span class="toc-number">1.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果："><span class="toc-number">1.2.</span> <span class="toc-text">结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#变量的作用域"><span class="toc-number">1.3.</span> <span class="toc-text">变量的作用域</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#方法引用"><span class="toc-number">2.</span> <span class="toc-text">方法引用</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-1"><span class="toc-number">2.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果：-1"><span class="toc-number">2.2.</span> <span class="toc-text">结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#函数式接口："><span class="toc-number">3.</span> <span class="toc-text">函数式接口：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-2"><span class="toc-number">3.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果：-2"><span class="toc-number">3.2.</span> <span class="toc-text">结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#默认方法："><span class="toc-number">4.</span> <span class="toc-text">默认方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-3"><span class="toc-number">4.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果：-3"><span class="toc-number">4.2.</span> <span class="toc-text">结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#数据流："><span class="toc-number">5.</span> <span class="toc-text">数据流：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-4"><span class="toc-number">5.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#运行结果："><span class="toc-number">5.2.</span> <span class="toc-text">运行结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Optional类："><span class="toc-number">6.</span> <span class="toc-text">Optional类：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-5"><span class="toc-number">6.1.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果：-4"><span class="toc-number">6.2.</span> <span class="toc-text">结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#时间："><span class="toc-number">7.</span> <span class="toc-text">时间：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#LocalDate示例："><span class="toc-number">7.1.</span> <span class="toc-text">LocalDate示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#LocalDate结果："><span class="toc-number">7.2.</span> <span class="toc-text">LocalDate结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#ZonedDateTime示例："><span class="toc-number">7.3.</span> <span class="toc-text">ZonedDateTime示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#ZonedDateTime结果："><span class="toc-number">7.4.</span> <span class="toc-text">ZonedDateTime结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Period-Duration示例："><span class="toc-number">7.5.</span> <span class="toc-text">Period | Duration示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#Period-Duration结果："><span class="toc-number">7.6.</span> <span class="toc-text">Period | Duration结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#ChromoUnits示例："><span class="toc-number">7.7.</span> <span class="toc-text">ChromoUnits示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#ChromoUnits结果："><span class="toc-number">7.8.</span> <span class="toc-text">ChromoUnits结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#TemporalAdjusters示例："><span class="toc-number">7.9.</span> <span class="toc-text">TemporalAdjusters示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#TemporalAdjusters结果："><span class="toc-number">7.10.</span> <span class="toc-text">TemporalAdjusters结果：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#toInstant-示例："><span class="toc-number">7.11.</span> <span class="toc-text">toInstant()示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#toInstant-结果："><span class="toc-number">7.12.</span> <span class="toc-text">toInstant()结果：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Base64："><span class="toc-number">8.</span> <span class="toc-text">Base64：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#Base64-Decoder-解码器-Base64-Encoder-编码器-方法："><span class="toc-number">8.1.</span> <span class="toc-text">Base64.Decoder(解码器) | Base64.Encoder(编码器) 方法：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#示例：-6"><span class="toc-number">8.2.</span> <span class="toc-text">示例：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#结果：-5"><span class="toc-number">8.3.</span> <span class="toc-text">结果：</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#缓存穿透"><span class="toc-number">1.</span> <span class="toc-text">缓存穿透</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#概念"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解决方案"><span class="toc-number">1.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#缓存雪崩"><span class="toc-number">2.</span> <span class="toc-text">缓存雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#概念-1"><span class="toc-number">2.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解决方案-1"><span class="toc-number">2.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#缓存击穿"><span class="toc-number">3.</span> <span class="toc-text">缓存击穿</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#概念-2"><span class="toc-number">3.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解决方案-2"><span class="toc-number">3.2.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-使用互斥锁-mutex-key"><span class="toc-number">3.2.1.</span> <span class="toc-text">1.使用互斥锁(mutex key)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-”提前”使用互斥锁-mutex-key"><span class="toc-number">3.2.2.</span> <span class="toc-text">2.”提前”使用互斥锁(mutex key)</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-”永远不过期”"><span class="toc-number">3.2.3.</span> <span class="toc-text">3.”永远不过期”</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -800,8 +380,31 @@ LWJmYzItODM5NTczMTVlNGVk</code></pre>
 
 
 
+
   
+  <!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NzEwNy8yMzYwNw==">
+  <script type="text/javascript">
+    (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  </script>
+  <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+
   
+
+  
+
   
 
   
@@ -905,6 +508,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
@@ -921,23 +528,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">markdown</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -945,15 +536,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -965,6 +564,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
@@ -973,27 +588,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">五龙河</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+                <a href="javascript:void(0)" class="js-tag color5">大学时代</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1001,7 +600,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1017,15 +616,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1033,7 +632,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1042,6 +641,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

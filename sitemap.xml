@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://xiebiao123.github.io/2018/06/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/</loc>
+    <loc>https://xiebiao123.github.io/2019/09/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</loc>
     
-    <lastmod>2019-10-11T12:30:38.208Z</lastmod>
+    <lastmod>2019-10-15T09:44:01.592Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://xiebiao123.github.io/2018/08/04/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Docker/</loc>
     
-    <lastmod>2019-10-11T12:24:35.080Z</lastmod>
+    <lastmod>2019-10-11T12:46:30.980Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://xiebiao123.github.io/2018/06/10/%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/</loc>
+    
+    <lastmod>2019-10-11T12:30:38.208Z</lastmod>
     
   </url>
   
@@ -47,13 +54,6 @@
     <loc>https://xiebiao123.github.io/2019/09/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Git/</loc>
     
     <lastmod>2019-09-24T07:29:25.760Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://xiebiao123.github.io/2019/09/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%95%B0%E6%8D%AE%E5%BA%93/Mysql-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</loc>
-    
-    <lastmod>2019-09-24T04:37:21.594Z</lastmod>
     
   </url>
   
@@ -142,7 +142,7 @@
   </url>
   
   <url>
-    <loc>https://xiebiao123.github.io/2018/07/08/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Redis-1/</loc>
+    <loc>https://xiebiao123.github.io/2018/07/08/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Redis/Redis-1/</loc>
     
     <lastmod>2019-07-19T06:27:18.709Z</lastmod>
     
@@ -184,7 +184,7 @@
   </url>
   
   <url>
-    <loc>https://xiebiao123.github.io/2018/07/08/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Redis/</loc>
+    <loc>https://xiebiao123.github.io/2018/07/08/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Redis/Redis/</loc>
     
     <lastmod>2019-07-19T06:22:39.782Z</lastmod>
     
@@ -212,7 +212,7 @@
   </url>
   
   <url>
-    <loc>https://xiebiao123.github.io/2018/07/01/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/JAVA8/</loc>
+    <loc>https://xiebiao123.github.io/2018/07/01/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Java/JAVA8/</loc>
     
     <lastmod>2019-07-19T06:22:04.940Z</lastmod>
     
