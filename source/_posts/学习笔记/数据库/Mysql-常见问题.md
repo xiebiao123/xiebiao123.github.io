@@ -8,7 +8,7 @@ tags:
 ---
 
 ### 常见问题
-* datetime 精度丢失的问题
+* datetime mysql精度丢失的问题
 ```text
     mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们
 说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)
@@ -27,4 +27,16 @@ id  datetime0               datetime1                   datetime2               
 1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789
 ```
 
+* FIND_IN_SET mysql查询匹配包含字符串 
+```
+1.正确的方式：
+判断字段field_A中是否包含23:
 
+select * from table_test where FIND_IN_SET("23", field_A) ;
+2.错误的方式：
+select * form table_test where field_A like "%23%"
+```
+* GROUP_CONCAT mysql连接字符串
+```
+group_concat([DISTINCT] 要连接的字段 [Order BY ASC/DESC 排序字段] [Separator '分隔符'])
+```

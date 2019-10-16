@@ -13,6 +13,10 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
 
 虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。
 
+### Docker安装
+1. [Windows Docker 安装](https://www.runoob.com/docker/windows-docker-install.html)
+2. [CentOS Docker 安装](https://www.runoob.com/docker/centos-docker-install.html)
+
 ### 概念
 * **镜像(Images)** 镜像是用于创建 Docker 容器的模板
 * **容器(Container)** 容器是独立运行的一个或一组应用
