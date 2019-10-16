@@ -168,19 +168,19 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-美好生活/五龙河游玩" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-美好生活/我家小可爱" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/美好生活/五龙河游玩/">五龙河</a>
+      <a class="article-title" href="/2018/07/19/美好生活/我家小可爱/">小璐璐</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/美好生活/五龙河游玩/" class="archive-article-date">
+        <a href="/2018/07/19/美好生活/我家小可爱/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -191,7 +191,7 @@
         <h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
 <h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
         
-          <a class="article-more-a" href="/2018/07/19/美好生活/五龙河游玩/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/美好生活/我家小可爱/#more">more >></a>
         
       
 
@@ -205,7 +205,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">五龙河</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小璐璐</a>
         		</li>
       		
 		</ul>
@@ -252,19 +252,19 @@
 
 
   
-    <article id="post-学习笔记/数据库/Mysql-lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Spock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/数据库/Mysql-lock/">mysql-lock</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/Spock/">Spock</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/数据库/Mysql-lock/" class="archive-article-date">
+        <a href="/2018/07/19/学习笔记/Spock/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -272,10 +272,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”<br>字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出<br>来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据库表设计三个字段，分别是id,value、version</span></span><br><span class="line">    select <span class="built_in">id</span>,value,<span class="built_in">version</span> <span class="keyword">from</span> TABLE <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125;</span></span><br><span class="line"><span class="comment"># 每次更新表中的value字段时，为了防止发生冲突，需要这样操作</span></span><br><span class="line">    update TABLE <span class="keyword">set</span> value=<span class="number">2</span>,<span class="built_in">version</span>=<span class="built_in">version</span>+<span class="number">1</span> <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125; and version=#&#123;version&#125;</span></span><br></pre></td></tr></table></figure>
+        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"># 预先定义的几个函数</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup</span></span>() &#123;&#125;          <span class="comment">// run before every feature method</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cleanup</span></span>() &#123;&#125;        <span class="comment">// run after every feature method</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setupSpec</span></span>() &#123;&#125;      <span class="comment">// run before the first feature method</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cleanupSpec</span></span>() &#123;&#125;    <span class="comment">// run after the last feature method</span></span><br><span class="line"></span><br><span class="line"># 每个method又被划分为不同的block，不同的block处于测试执行的不同阶段，在测试运行时，各个block按照不同的顺序和规则被执行</span><br><span class="line"></span><br><span class="line"># setup / given 在这个block中会放置与这个测试函数相关的初始化程序</span><br><span class="line">setup:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stack</span> </span>= <span class="keyword">new</span> <span class="type">Stack</span>()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">elem</span> </span>= <span class="string">"push me"</span></span><br><span class="line">    </span><br><span class="line"># when与then需要搭配使用，在when中执行待测试的函数，在then中判断是否符合预期</span><br><span class="line">when:</span><br><span class="line">    stack.push(elem)  </span><br><span class="line">then:</span><br><span class="line">    !stack.empty</span><br><span class="line">    stack.size() == <span class="number">1</span></span><br><span class="line">    stack.peek() == elem</span><br><span class="line"></span><br><span class="line"># 在then或expect中会默认assert所有返回值是boolean型的顶级语句。如果要在其它地方增加断言，需要显式增加assert关键字</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setup</span></span>() &#123;</span><br><span class="line">  stack = <span class="keyword">new</span> <span class="type">Stack</span>()</span><br><span class="line">  assert stack.empty</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 如果要验证有没有抛出异常，可以用thrown()，如果要验证没有抛出某种异常，可以用notThrown()</span><br><span class="line">when:</span><br><span class="line">    stack.pop()  </span><br><span class="line">then:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">e</span> </span>= thrown(<span class="type">EmptyStackException</span>)</span><br><span class="line">    e.cause == <span class="literal">null</span></span><br><span class="line">    </span><br><span class="line">setup:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">map</span> </span>= <span class="keyword">new</span> <span class="type">HashMap</span>()  </span><br><span class="line">when:</span><br><span class="line">    map.put(<span class="literal">null</span>, <span class="string">"elem"</span>)  </span><br><span class="line">then:</span><br><span class="line">    notThrown(<span class="type">NullPointerException</span>)</span><br><span class="line">    </span><br><span class="line"># expect可以看做精简版的when+then</span><br><span class="line">when:</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">x</span> </span>= <span class="type">Math</span>.max(<span class="number">1</span>, <span class="number">2</span>)   ==&gt;&gt;   expect: <span class="type">Math</span>.max(<span class="number">1</span>, <span class="number">2</span>) == <span class="number">2</span></span><br><span class="line">then:</span><br><span class="line">    x == <span class="number">2</span></span><br><span class="line"></span><br><span class="line"># <span class="type">Cleanup</span> <span class="type">Blocks</span> 函数退出前做一些清理工作，如关闭资源等</span><br><span class="line"></span><br><span class="line"># <span class="type">Where</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataDriven</span> <span class="keyword">extends</span> <span class="title">Specification</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> "<span class="title">maximum</span> <span class="title">of</span> <span class="title">two</span> <span class="title">numbers</span>"</span>() &#123;</span><br><span class="line">        expect:</span><br><span class="line">        <span class="type">Math</span>.max(a, b) == c</span><br><span class="line"></span><br><span class="line">        where:</span><br><span class="line">        a | b || c</span><br><span class="line">        <span class="number">3</span> | <span class="number">5</span> || <span class="number">5</span></span><br><span class="line">        <span class="number">7</span> | <span class="number">0</span> || <span class="number">7</span></span><br><span class="line">        <span class="number">0</span> | <span class="number">0</span> || <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 上述例子实际会跑三次测试，相当于在<span class="keyword">for</span>循环中执行三次测试，a/b/c的值分别为<span class="number">3</span>/<span class="number">5</span>/<span class="number">5</span>,<span class="number">7</span>/<span class="number">0</span>/<span class="number">7</span>和<span class="number">0</span>/<span class="number">0</span>/<span class="number">0</span>。</span><br><span class="line">如果在方法前声明<span class="meta">@Unroll</span>，则会当成三个方法运行。更进一步，可以为标记<span class="meta">@Unroll</span>的方法声明动态的spec名。</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataDriven</span> <span class="keyword">extends</span> <span class="title">Specification</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Unroll</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> "<span class="title">maximum</span> <span class="title">of</span> <span class="title">#a</span> <span class="title">and</span> <span class="title">#b</span> <span class="title">should</span> <span class="title">be</span> <span class="title">#c</span>"</span>() &#123;</span><br><span class="line">        expect:</span><br><span class="line">        <span class="type">Math</span>.max(a, b) == c</span><br><span class="line"></span><br><span class="line">        where:</span><br><span class="line">        a | b || c</span><br><span class="line">        <span class="number">3</span> | <span class="number">5</span> || <span class="number">5</span></span><br><span class="line">        <span class="number">7</span> | <span class="number">0</span> || <span class="number">7</span></span><br><span class="line">        <span class="number">0</span> | <span class="number">0</span> || <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2018/07/19/学习笔记/数据库/Mysql-lock/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/Spock/#more">more >></a>
         
       
 
@@ -289,7 +288,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">spock</a>
         		</li>
       		
 		</ul>
@@ -419,19 +418,19 @@
 
 
   
-    <article id="post-美好生活/我家小可爱" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/freemarker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/美好生活/我家小可爱/">小璐璐</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/freemarker/">Freemarker</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/美好生活/我家小可爱/" class="archive-article-date">
+        <a href="/2018/07/19/学习笔记/freemarker/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -439,10 +438,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
-<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
+        <h3 id="取值指令"><a href="#取值指令" class="headerlink" title="取值指令"></a>取值指令</h3><ul>
+<li>常用${var}语法进行取值</li>
+<li>对null、不存在对象取值${var!}或${var!’defaultValue’}</li>
+<li>取包装对象的值,通过‘点’语法${user.name}</li>
+<li>取值的时候可以进行赋值、运算</li>
+<li>Date类型格式化${date?String(‘yyyy-MM-dd’)}</li>
+<li>转义HTML内容${date?html}</li>
+<li>{data?string.currency} – $20.00</li>
+<li>{data?string.percent} – 20%</li>
+<li>布尔类型${foo?string(“yes”,”no”)}</li>
+</ul>
+<h3 id="内置函数-使用"><a href="#内置函数-使用" class="headerlink" title="内置函数(使用?)"></a>内置函数(使用?)</h3><h4 id="对于字符串"><a href="#对于字符串" class="headerlink" title="对于字符串"></a>对于字符串</h4><ul>
+<li>html 对字符串进行HTML编码</li>
+<li>cap_first 使字符串第一个字母大写</li>
+<li>lower_case 将字符串转换成小写</li>
+<li>trim 去掉字符串前后的空白字符</li>
+</ul>
         
-          <a class="article-more-a" href="/2018/07/19/美好生活/我家小可爱/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/freemarker/#more">more >></a>
         
       
 
@@ -456,7 +470,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小璐璐</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">freemarker</a>
         		</li>
       		
 		</ul>
@@ -468,7 +482,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
         		</li>
       		
 		</ul>
@@ -783,19 +797,19 @@
 
 
   
-    <article id="post-学习笔记/freemarker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-美好生活/乌镇旅行" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/freemarker/">Freemarker</a>
+      <a class="article-title" href="/2018/07/19/美好生活/乌镇旅行/">乌镇旅行</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/freemarker/" class="archive-article-date">
+        <a href="/2018/07/19/美好生活/乌镇旅行/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -803,25 +817,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="取值指令"><a href="#取值指令" class="headerlink" title="取值指令"></a>取值指令</h3><ul>
-<li>常用${var}语法进行取值</li>
-<li>对null、不存在对象取值${var!}或${var!’defaultValue’}</li>
-<li>取包装对象的值,通过‘点’语法${user.name}</li>
-<li>取值的时候可以进行赋值、运算</li>
-<li>Date类型格式化${date?String(‘yyyy-MM-dd’)}</li>
-<li>转义HTML内容${date?html}</li>
-<li>{data?string.currency} – $20.00</li>
-<li>{data?string.percent} – 20%</li>
-<li>布尔类型${foo?string(“yes”,”no”)}</li>
-</ul>
-<h3 id="内置函数-使用"><a href="#内置函数-使用" class="headerlink" title="内置函数(使用?)"></a>内置函数(使用?)</h3><h4 id="对于字符串"><a href="#对于字符串" class="headerlink" title="对于字符串"></a>对于字符串</h4><ul>
-<li>html 对字符串进行HTML编码</li>
-<li>cap_first 使字符串第一个字母大写</li>
-<li>lower_case 将字符串转换成小写</li>
-<li>trim 去掉字符串前后的空白字符</li>
-</ul>
+        <p><img src="/images/%E7%94%9F%E6%B4%BB/%E4%B9%8C%E9%95%87%E6%97%85%E8%A1%8C/%E4%B9%8C%E9%95%871.jpg" alt="乌镇1"></p>
         
-          <a class="article-more-a" href="/2018/07/19/学习笔记/freemarker/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/美好生活/乌镇旅行/#more">more >></a>
         
       
 
@@ -835,7 +833,97 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">freemarker</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">乌镇旅行</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/学习笔记/加密解密/">加密解密</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/19/学习笔记/加密解密/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
+<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
+<ul>
+<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
+<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
+<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
+</ul>
+<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2018/07/19/学习笔记/加密解密/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
         		</li>
       		
 		</ul>
@@ -919,96 +1007,6 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单点登录</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/加密解密/">加密解密</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/19/学习笔记/加密解密/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
-<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
-<ul>
-<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
-<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
-<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
-</ul>
-<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/07/19/学习笔记/加密解密/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
         		</li>
       		
 		</ul>
@@ -1245,7 +1243,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1253,19 +1251,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1277,11 +1275,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1305,23 +1303,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1333,11 +1323,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">面试</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">面试</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1353,11 +1351,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">加密解密</a>
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1365,7 +1363,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">logback</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,11 +1371,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color3">logback</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
               </li>
              
               <li class="article-tag-list-item">
