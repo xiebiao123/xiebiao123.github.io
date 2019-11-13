@@ -182,14 +182,14 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/Spring/Spring-schema" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/单点登录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/Spring/Spring-schema/">Spring schema 自定义扩展</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/单点登录/">单点登录</a>
     </h1>
   
 
@@ -197,7 +197,7 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/19/学习笔记/Spring/Spring-schema/" class="archive-article-date">
+        <a href="/2018/07/19/学习笔记/单点登录/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -205,13 +205,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h3><p>Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展XML配置的机制。通过该机制，我们可以编写自己的Schema，并根据<br>自定义的Schema用自定的标签配置Bean。要使用的Spring的扩展XML配置机制，也比较简单，有以下4个步骤：</p>
-<ul>
-<li>编写自定义Schema文件</li>
-<li>编写自定义NamespaceHandler</li>
-<li>编写解析BeanDefinition的parser</li>
-<li>在Spring中注册上述组建</li>
-</ul>
+        <h3 id="原理详解"><a href="#原理详解" class="headerlink" title="原理详解"></a>原理详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">单点登录</a></p>
         
       
 
@@ -225,7 +219,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单点登录</a>
         		</li>
       		
 		</ul>
@@ -357,14 +351,14 @@
 
 
   
-    <article id="post-学习笔记/Maven" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Groovy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/17/学习笔记/Maven/">Maven</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/Groovy/">Groovy</a>
     </h1>
   
 
@@ -372,20 +366,387 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/17/学习笔记/Maven/" class="archive-article-date">
-  	<time datetime="2018-07-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-17</time>
+        <a href="/2018/07/19/学习笔记/Groovy/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h5 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h5><h6 id="稳定RELEASE"><a href="#稳定RELEASE" class="headerlink" title="稳定RELEASE"></a>稳定RELEASE</h6><pre><code>用户A将代码打包发布到RELEASE仓库，用户B使用时，需要在pom.xml添加JAR包的依赖坐标。如果用户A将版本从1.0升级为2.0，用户B使用时也需要同时在pom.xml中修改坐标版本。但是RELEASE是稳定版本，是经过测试以后才会发布的，通常不会频繁的升级版本</code></pre><p><img src="https://img-blog.csdn.net/20170325212027351?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ2JfamF2YQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="RELEASE"></p>
-<h6 id="快照SNAPSHOT"><a href="#快照SNAPSHOT" class="headerlink" title="快照SNAPSHOT"></a>快照SNAPSHOT</h6><pre><code>SNAPSHOT是不稳定版，可能是还在开发中的版本，在开发时用户A可能每天都会更新代码，可能会频繁的发布版本。而另一组用户B需要实时得到A的最新代码版本，以进行同步开发。如果使用RELEASE仓库需要不停的更换坐标，才能升级到最新版本。而SNAPSHOT仓库则不需要这样做，用户A和用户B都不用升级版本。用户A每次发布时会根据当时时间创建一个新的快照版本，之前的快照版本也会保留成为历史版本。用户B每次构建项目时会自动根据版本时间加载最新的JAR包，这种模式更加适合于多模块同步开发测试阶段</code></pre><p><img src="https://img-blog.csdn.net/20170325212438654?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd2FuZ2JfamF2YQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="RELEASE"></p>
-<h6 id="package、install、deploy命令区别"><a href="#package、install、deploy命令区别" class="headerlink" title="package、install、deploy命令区别"></a>package、install、deploy命令区别</h6><ul>
-<li>package命令完成了项目编译、单元测试、打包功能，但没有把打好的可执行jar包，布署到本地maven仓库和远程maven私服仓库</li>
-<li>install命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包，布署到本地maven仓库，但没有布署到远程maven私服仓库</li>
-<li>deploy命令完成了项目编译、单元测试、打包功能，同时把打好的可执行jar包，布署到本地maven仓库和远程maven私服仓库</li>
+        <h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*多行字符串可以使用三个连续的单引号或双引号包括*/</span></span><br><span class="line">def multiline=<span class="string">"""line1</span></span><br><span class="line"><span class="string">line2</span></span><br><span class="line"><span class="string">line3</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*内插字符串,变量直接插入到字符串中,当使用内插字符串的时候，字符串字面值是Groovy的字符串类型GString。这一点需要注意。</span></span><br><span class="line"><span class="comment">普通的Java字符串是不变的，而GString是可变的。另外它们的哈希值也不同。因此在使用Map等数据类型的时候需要格外注意，避</span></span><br><span class="line"><span class="comment">免使用GString作为Map的键。*/</span></span><br><span class="line">def name = <span class="string">'Guillaume'</span></span><br><span class="line">def greeting = <span class="string">"Hello $&#123;name&#125;"</span></span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">groovy</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Nginx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/学习笔记/Nginx/">Nginx</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/19/学习笔记/Nginx/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="配置文件结构"><a href="#配置文件结构" class="headerlink" title="配置文件结构"></a>配置文件结构</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">..</span>.              #全局块</span><br><span class="line">events &#123;         #events块</span><br><span class="line">   <span class="built_in">..</span>.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http      #http块</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">..</span>.   #http全局块</span><br><span class="line">   <span class="built_in"> server </span>       #server块</span><br><span class="line">    &#123; </span><br><span class="line">        <span class="built_in">..</span>.       #server全局块</span><br><span class="line">        location [PATTERN]   #location块</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">..</span>.</span><br><span class="line">        &#125;</span><br><span class="line">        location [PATTERN] </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">..</span>.</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    server</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">..</span>.</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">..</span>.     #http全局块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>(全局设置)           设置的指令将影响其他所有设置<ul>
+<li>Events </li>
+<li>HTTP<ul>
+<li>upstream              负载均衡服务器设置</li>
+<li>Server (主机设置)     指定主机和端口<ul>
+<li>location          用于匹配网页位置</li>
+<li>location</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Server</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">server</span>继承全局块 | location继承<span class="keyword">server</span> | upstream既不会继承其他设置也不会被继承</span><br></pre></td></tr></table></figure>
+
+<h4 id="Nginx-的全局配置"><a href="#Nginx-的全局配置" class="headerlink" title="Nginx 的全局配置"></a>Nginx 的全局配置</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">user nobody nobody<span class="comment">;</span></span><br><span class="line">worker_processes <span class="number">2</span><span class="comment">;</span></span><br><span class="line">error_log logs/error.log notice<span class="comment">;</span></span><br><span class="line">pid logs/nginx.pid<span class="comment">;</span></span><br><span class="line">worker_rlimit_nofile <span class="number">65535</span><span class="comment">;</span></span><br><span class="line"> </span><br><span class="line">events&#123;</span><br><span class="line">    use epoll<span class="comment">;</span></span><br><span class="line">    worker_connections <span class="number">65536</span><span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>user</strong> 是个主模块指令，指定Nginx Worker进程运行用户以及用户组，默认由nobody账号运行</li>
+<li><strong>worker_processes</strong> 是个主模块指令，指定了Nginx要开启的进程数。每个Nginx进程平均消耗10M-12M内存。建议指定和CPU的数量一致即可</li>
+<li><strong>error_log</strong> 是个主模块指令，用来定义全局错误日志文件。日志输出级别有debug（最详细）、info、notice、warm、error、crit（最少）可供选择</li>
+<li><strong>pid</strong> 是个主模块指令，用来指定进程pid的存储文件位置</li>
+<li><strong>worker_rlimit_nofile</strong> 用于绑定worker进程和CPU,linux内核2.4以上</li>
+</ul>
+<p>events事件指令是设定Nginx的工作模式以及连接数上限：</p>
+<ul>
+<li><strong>user</strong> 是个事件模块指令，用来指定Nginx的工作模式。Nginx支持的工作模式有select、poll、kqueue、epoll、rtsig、和/dev/poll。<br>其中select和poll都是标准的工作模式、kqueue和epoll是高效的工作模式、不同的是epoll用在Linux平台上，而kqueue用在BSD系统中。对于Linux<br>系统，epoll工作模式首先</li>
+<li><strong>worker_connections</strong>也是事件模块指令，用于定义Nginx每个进程的最大默认连接数，默认是1024。最大客户端连接数由worker_processes和<br>worker_connections决定，即max_client=worker_processes<em>worker_connections。在作为反向代理时，max_client=worker_processes</em>worker_connections/4。<br>进程的最大连接数受Linux系统进程的最大打开文件数限制，在执行操作系统命令<strong>ulimit -n 65536</strong>后worker_connections的设置才能生效</li>
+</ul>
+<h4 id="HTTP服务器配置"><a href="#HTTP服务器配置" class="headerlink" title="HTTP服务器配置"></a>HTTP服务器配置</h4><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">http&#123;</span><br><span class="line">    include      conf/mime.types<span class="comment">;</span></span><br><span class="line">    default_type  application/octet-stream<span class="comment">; </span></span><br><span class="line">    log_format main <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$request</span>" <span class="variable">$status</span> <span class="variable">$bytes_sent</span> '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_referer</span>" "<span class="variable">$http_user_agent</span>" '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$gzip_ratio</span>"'</span><span class="comment">;</span></span><br><span class="line">     log_format download <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$request</span>" <span class="variable">$status</span> <span class="variable">$bytes_sent</span> '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_referer</span>" "<span class="variable">$http_user_agent</span>" '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_range</span>" "<span class="variable">$sent_http_content_range</span>"'</span><span class="comment">;</span></span><br><span class="line">    client_max_body_size  <span class="number">20</span>m<span class="comment">; </span></span><br><span class="line">    client_header_buffer_size    <span class="number">32</span>K<span class="comment">;</span></span><br><span class="line">    large_client_header_buffers  <span class="number">4</span> <span class="number">32</span>k<span class="comment">;</span></span><br><span class="line">    Sendfile  <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    tcp_nopush     <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    tcp_nodelay    <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    keepalive_timeout <span class="number">60</span><span class="comment">;</span></span><br><span class="line">    client_header_timeout  <span class="number">10</span><span class="comment">;</span></span><br><span class="line">    client_body_timeout    <span class="number">10</span><span class="comment">;</span></span><br><span class="line">    send_timeout          <span class="number">10</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>include</strong> 是实现对配置文件所包含的文件的设定，可以减少主配置文件的复杂度。</li>
+<li><strong>default_type</strong> 属于HTTP核心模块指令，这里设定默认类型为二进制流，也就是当文件类型未定义时使用这种方式，<br>例如在没有设置PHP环境是，Nginx是不予解析的，此时用浏览器访问PHP文件就会出现下载窗口</li>
+<li><strong>log_format</strong> 是Nginx的HttpLog模块指令，用于指定Nginx日志的输出格式。main为此日志输出格式的名称，可以在下面access_log指令中引用</li>
+<li><strong>client_max_body_size</strong> 用来设置允许客户端请求的最大的单个文件字节数</li>
+<li><strong>client_header_buffer_size</strong> 用来指定客户端请求的header buffer大小。对于大多数请求，1k的缓冲区大小已经足够了，如果自定义<br>了消息头或者有更大的cookie，可以增加缓冲区大小，这里设置为32K</li>
+<li><strong>large_client_header_buffers</strong>用来指定客户端请求中较大的消息头的缓存最大数量和大小， 4 为个数 32k为大小 最大缓冲缓存量4*32k</li>
+<li><strong>sendfile</strong> 参数用于开启高效文件传输模式，将tcp_nopush和tcp_nodelay两个指令设置为on用于防止网络阻塞</li>
+<li><strong>keepalive_timeout</strong> 设置客户端连接保持活动的超时时间，超过这个时间服务器将会关闭连接</li>
+<li><strong>client_header_timeout</strong> 设置客户端请求头读取超时时间，如果超过这个时间,客户端还没有发送任何数据，Nginx将返回“Request time out（408）”错误</li>
+<li><strong>client_body_timeout</strong> 设置客户端请求主体读取超时时间，如果超过这个时间,客户端还没有发送任何数据，Nginx将返回“Request time out（408）”错误，默认值60</li>
+<li><strong>send_timeout</strong> 指定响应客户端的超时时间，这个超时仅限于两个连续活动之间的时间，如果超过这个时间，客户端还没有任何活动，Nginx将会关闭连接</li>
+</ul>
+<h4 id="HttpGzip模块配置"><a href="#HttpGzip模块配置" class="headerlink" title="HttpGzip模块配置"></a>HttpGzip模块配置</h4><p>HttpGzip模块支持在线实时压缩传输数据流，通过/opt/nginx/sbin/nginx -V命令可以查看安装Nginx时的编译选项。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vps ~]<span class="comment"># /opt/nginx/sbin/nginx  -V</span></span><br><span class="line">nginx <span class="keyword">version</span>: nginx/1.0.14</span><br><span class="line">built by gcc 4.4.6 20110731 <span class="params">(Red Hat 4.4.6-3)</span> <span class="params">(GCC)</span></span><br><span class="line">configure arguments: <span class="params">--with-http_stub_status_module</span> <span class="params">--with-http_gzip_static_module</span> <span class="params">--prefix=/opt/nginx</span></span><br></pre></td></tr></table></figure>
+
+<p>下面是HttpGzip模块在Nginx配置中的相关属性设置</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gzip <span class="keyword">on</span>;</span><br><span class="line">gzip_min_length <span class="number">1</span>k;</span><br><span class="line">gzip_buffers <span class="number">4</span> <span class="number">16</span>k;</span><br><span class="line">gzip_http_version <span class="number">1.1</span>;</span><br><span class="line">gzip_comp_level <span class="number">2</span>;</span><br><span class="line">gzip_types <span class="built_in">text</span>/plain <span class="built_in">application</span>/x-javascript <span class="built_in">text</span>/css <span class="built_in">application</span>/xml</span><br><span class="line">gzip_vary <span class="keyword">on</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>gzip</strong>用于设置开启或者关闭gzip模块</li>
+<li><strong>gzip_min_length</strong> 表示允许压缩的页面最小字节数，页面字节数据从header头中的Content-Length中获取，默认值0，建议设置成大于1K<br>,小于1K可能会越压缩越大</li>
+<li><strong>gzip_buffers</strong> 表示申请4个单位为16K的内存，作为压缩结果流缓存，默认值是申请与原始值大小相同的的内存空间来存储gzip压缩结果</li>
+<li><strong>gzip_http_version</strong> 用于设置识别HTTP协议版本，默认是1.1，目前大部分浏览器已支持Gzip解压，使用默认即可</li>
+<li><strong>gzip_comp_level</strong> 用来指定Gzip压缩比，1压缩比最小，处理速度快，9压缩比最大，传输速度快，但是处理最慢，也比较消耗cpu资源</li>
+<li><strong>gzip_types</strong> 用来指定压缩的类型，无论是否指定，”text/html”类型总是被压缩的</li>
+<li><strong>gzip_vary</strong> 选项可以让前端的缓存服务器经过Gzip压缩的页面，例如用Squid缓存经过Nginx压缩的数据</li>
+</ul>
+<h4 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream xiebiao123.com&#123;</span><br><span class="line">    ip_hash;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.11:80;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.12:80 down;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.13:8009 <span class="attribute">max_fails</span>=3 <span class="attribute">fail_timeout</span>=20s;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.146:8080;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>upstream是Nginx的HTTP Upstream模块，这个模块通过一个简单的调度算法来实现客户端IP到后端服务器的负载均衡。<br>在上面的设定中，通过upstream指令指定了一个负载均衡器的名称xiebiao123.com。这个名称可以任意指定，在后面需要的地方直接调用即可<br>Nginx的负载均衡模块目前支持4种调度算法:</p>
+<ul>
+<li>轮询（默认）：每个请求按时间顺序逐一分配到不同的后端服务，如果后端某台服务器宕机，故障系统被自动剔除。</li>
+<li>weigh ：指定轮询权值，weight值越大，分配到的访问几率越高</li>
+<li>ip_hash ： 每个请求按访问IP的hash结果分配，这样来自同一个IP的访客固定访问一个后台服务</li>
+<li>fair ： 根据后端服务的响应时间来分配请求，响应时间短的优先分配，Nginx本身不支持fair,需要使用必须下载Nginx的upstream_fair模块</li>
+<li>url_hash ：按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，可以进一步提升后端服务的效率，Nginx本身不支持url_hash<br>,可以安装Nginx的hash软件包</li>
+</ul>
+<p>在HTTP Upstream模块中，可以通过server指令指定后端服务器的IP地址和端口，同时还可以设定每个后端服务器在负载均衡调度中的状态。常用的状态有：</p>
+<ul>
+<li>down：表示当前的server暂时不参与负载均衡</li>
+<li>backup：预留的备份机器。当其他所有的非backup机器出现故障或者忙的时候，才会请求backup机器，因此这台机器的压力最轻；</li>
+<li>max_fails：允许请求失败的次数，默认为1。当超过最大次数时，返回proxy_next_upstream 模块定义的错误；</li>
+<li>fail_timeout：在经历了max_fails次失败后，暂停服务的时间。max_fails可以和fail_timeout一起使用。</li>
+</ul>
+<blockquote>
+<p>注意，当负载调度算法为ip_hash时，后端服务器在负载均衡调度中的状态不能是weight(权重)和backup。</p>
+</blockquote>
+<h4 id="server虚拟主机配置"><a href="#server虚拟主机配置" class="headerlink" title="server虚拟主机配置"></a>server虚拟主机配置</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">    listen         <span class="number">80</span><span class="comment">;</span></span><br><span class="line">    server_name    <span class="number">192.168</span>.<span class="number">12.188</span>  www.ixdba.net<span class="comment">;</span></span><br><span class="line">    index index.html index.htm index.jsp<span class="comment">;</span></span><br><span class="line">    root  /web/wwwroot/www.ixdba.net</span><br><span class="line">    charset gb2312<span class="comment">;</span></span><br><span class="line">    access_log logs/nginx.log main<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>listen 用于指定虚拟机的服务端口</li>
+<li>server_name 用来指定IP地址或者域名，多个域名之间用空格分开</li>
+<li>index 用于设定访问的默认首页地址</li>
+<li>root 用于指定虚拟机的网页根目录，这个目录可以是相对路径也可以是绝对路径</li>
+<li>charset 用于网页的默认编码格式</li>
+<li>access_log 用来指定此虚拟机的访问日志存放路径，最后的main用于指定日志的格式（上文中的main）<blockquote>
+<p>建议将虚拟机配置写进另外一个文件，然后通过include指令包含进来，这样更方便管理和维护</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="location-URL匹配配置"><a href="#location-URL匹配配置" class="headerlink" title="location URL匹配配置"></a>location URL匹配配置</h4><p>location 支持正则表达式匹配，也支持条件判断匹配，用户可以通过location指令实现Nginx对动、静态网页进行过滤<br>处理。使用location URL匹配配置还可以实现反向代理，用于实现PHP动态解析或者负载均衡策略。</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location ~ .*\.(gif|<span class="type">jpg</span>|<span class="type">jpeg</span>|<span class="type">png</span>|<span class="type">bmp</span>|<span class="type">swf</span>)$  &#123;</span><br><span class="line">    root    /web/wwwroot/www.ixdba.net;</span><br><span class="line">    expires <span class="number">30</span>d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上这段设置是通过location指令来对网页URL进行分析处理，所有扩展名以.gif、.jpg、.jpeg、.png、.bmp、.swf结尾的静态文件都交给nginx处理，<br>而expires用来指定静态文件的过期时间，这里是30天</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> <span class="regexp">~ .*.jsp$</span> &#123; </span><br><span class="line">    <span class="attribute">index</span> index.jsp;       </span><br><span class="line">    <span class="attribute">proxy_pass</span> http://localhost:8080;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在最后这段设置中，location是对此虚拟主机下动态网页的过滤处理，也就是将所有以.jsp为后缀的文件都交给本机的8080端口处理。</p>
+<h4 id="StubStatus模块配置"><a href="#StubStatus模块配置" class="headerlink" title="StubStatus模块配置"></a>StubStatus模块配置</h4><p>stubStatus模块能够获取Nginx自上次启动以来的工作状态，此模块非核心模块，需要在Nginx编译安装时手工指定才能使用此功能，<br>以下指令启用获取Nginx工作状态的功能</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /NginxStatus &#123;</span><br><span class="line">    <span class="attribute">stub_status</span>      <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">access_log</span>       logs/NginxStatus.log;</span><br><span class="line">    <span class="attribute">auth_basic</span>       <span class="string">"NginxStatus"</span>;</span><br><span class="line">    <span class="attribute">auth_basic_user_file</span>    ../htpasswd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>stub_status 设置为no,表示启用StubStatus的工作状态统计功能</li>
+<li>access_log 用来指定StubStatus模块的访问日志文件</li>
+<li>auth_basic Nginx的一种认证机制</li>
+<li>auth_basic_user_file 用来指定认证的密码文件</li>
+</ul>
+<h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
+<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-美好生活/我家小可爱" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/美好生活/我家小可爱/">小璐璐</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/19/美好生活/我家小可爱/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
+<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小璐璐</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Spring/Spring-schema" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/学习笔记/Spring/Spring-schema/">Spring schema 自定义扩展</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/19/学习笔记/Spring/Spring-schema/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h3><p>Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展XML配置的机制。通过该机制，我们可以编写自己的Schema，并根据<br>自定义的Schema用自定的标签配置Bean。要使用的Spring的扩展XML配置机制，也比较简单，有以下4个步骤：</p>
+<ul>
+<li>编写自定义Schema文件</li>
+<li>编写自定义NamespaceHandler</li>
+<li>编写解析BeanDefinition的parser</li>
+<li>在Spring中注册上述组建</li>
 </ul>
         
       
@@ -400,7 +761,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -447,14 +808,14 @@
 
 
   
-    <article id="post-日常总结/文章精选" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/IDEA" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/14/日常总结/文章精选/">日常总结</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/IDEA/">IDEA</a>
     </h1>
   
 
@@ -462,23 +823,15 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/14/日常总结/文章精选/" class="archive-article-date">
-  	<time datetime="2018-07-13T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-14</time>
+        <a href="/2018/07/19/学习笔记/IDEA/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h5 id="常用文档"><a href="#常用文档" class="headerlink" title="常用文档"></a>常用文档</h5><ol>
-<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/" title="Spring" target="_blank" rel="noopener"><strong>SpringBoot文档</strong></a></li>
-<li><a href="http://cloud.spring.io/spring-cloud-static/Edgware.SR4/multi/multi_spring-cloud.html" title="Spring" target="_blank" rel="noopener"><strong>SpringCloud文档</strong></a></li>
-<li><a href="https://mapperhelper.github.io/docs/2.use/" title="mapper" target="_blank" rel="noopener"><strong>Mybatis通用Mapper</strong></a></li>
-</ol>
-<h4 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h4><h5 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h5><ol>
-<li><a href="https://juejin.im/post/5ab46c9ef265da239b415ce1" title="JAVA" target="_blank" rel="noopener">Java工程师成神之路</a></li>
-<li><a href="https://www.cnblogs.com/smyhvae/p/4810168.html" title="JAVA" target="_blank" rel="noopener">Java虚拟机</a></li>
-</ol>
+        <h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a><a href="http://www.riaway.com/theme.php" target="_blank" rel="noopener">主题</a></h4><h4 id="常用plugins"><a href="#常用plugins" class="headerlink" title="常用plugins"></a>常用plugins</h4>
         
       
 
@@ -492,7 +845,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">IDEA</a>
         		</li>
       		
 		</ul>
@@ -539,14 +892,14 @@
 
 
   
-    <article id="post-学习笔记/Redis/Redis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/数据库/Mysql-lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/学习笔记/Redis/Redis/">Redis</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/数据库/Mysql-lock/">mysql-lock</a>
     </h1>
   
 
@@ -554,23 +907,206 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/08/学习笔记/Redis/Redis/" class="archive-article-date">
-  	<time datetime="2018-07-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
+        <a href="/2018/07/19/学习笔记/数据库/Mysql-lock/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h5 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h5><pre><code>Redis 是完全开源免费的，遵守BSD协议，是一个高性能的key-value数据库。
-Redis三个特点：
-    1. Redis支持数据的持久化，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。
-    2. Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储。
-    3. Redis支持数据的备份，即master-slave模式的数据备份。</code></pre><h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ul>
-<li><strong>性能极高</strong> – Redis能读的速度是110000次/s,写的速度是81000次/s 。</li>
-<li><strong>丰富的数据类型</strong> – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
-<li><strong>原子</strong> – Redis的所有操作都是原子性的，意思就是要么成功执行要么失败完全不执行。单个操作是原子性的。多个操作也支持事务，即原子性，通过MULTI和EXEC指令包起来。</li>
-<li><strong>丰富的特性</strong> – Redis还支持 publish/subscribe, 通知, key 过期等等特性。</li>
+        <h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”<br>字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出<br>来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据库表设计三个字段，分别是id,value、version</span></span><br><span class="line">    select <span class="built_in">id</span>,value,<span class="built_in">version</span> <span class="keyword">from</span> TABLE <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125;</span></span><br><span class="line"><span class="comment"># 每次更新表中的value字段时，为了防止发生冲突，需要这样操作</span></span><br><span class="line">    update TABLE <span class="keyword">set</span> value=<span class="number">2</span>,<span class="built_in">version</span>=<span class="built_in">version</span>+<span class="number">1</span> <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125; and version=#&#123;version&#125;</span></span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/学习笔记/加密解密/">加密解密</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/19/学习笔记/加密解密/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
+<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
+<ul>
+<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
+<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
+<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
+</ul>
+<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/freemarker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/19/学习笔记/freemarker/">Freemarker</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/19/学习笔记/freemarker/" class="archive-article-date">
+  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="取值指令"><a href="#取值指令" class="headerlink" title="取值指令"></a>取值指令</h3><ul>
+<li>常用${var}语法进行取值</li>
+<li>对null、不存在对象取值${var!}或${var!’defaultValue’}</li>
+<li>取包装对象的值,通过‘点’语法${user.name}</li>
+<li>取值的时候可以进行赋值、运算</li>
+<li>Date类型格式化${date?String(‘yyyy-MM-dd’)}</li>
+<li>转义HTML内容${date?html}</li>
+<li>{data?string.currency} – $20.00</li>
+<li>{data?string.percent} – 20%</li>
+<li>布尔类型${foo?string(“yes”,”no”)}</li>
+</ul>
+<h3 id="内置函数-使用"><a href="#内置函数-使用" class="headerlink" title="内置函数(使用?)"></a>内置函数(使用?)</h3><h4 id="对于字符串"><a href="#对于字符串" class="headerlink" title="对于字符串"></a>对于字符串</h4><ul>
+<li>html 对字符串进行HTML编码</li>
+<li>cap_first 使字符串第一个字母大写</li>
+<li>lower_case 将字符串转换成小写</li>
+<li>trim 去掉字符串前后的空白字符</li>
 </ul>
         
       
@@ -585,452 +1121,7 @@ Redis三个特点：
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Redis/Redis-1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/学习笔记/Redis/Redis-1/">Redis-缓存</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/08/学习笔记/Redis/Redis-1/" class="archive-article-date">
-  	<time datetime="2018-07-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h4><h5 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h5><p>缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞</p>
-<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><p>有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被 这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。另外也有一个更为简单粗暴的方法（我们采用的就是这种），如果一个查询返回的数据为空（不管是数 据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
-<h4 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h4><h5 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h5><p>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到DB，DB瞬时压力过重雪崩。</p>
-<h5 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h5><p>缓存失效时的雪崩效应对底层系统的冲击非常可怕。大多数系统设计者考虑用加锁或者队列的方式保证缓存的单线 程（进程）写，从而避免失效时大量的并发请求落到底层存储系统上。这里分享一个简单方案就时讲缓存失效时间分散开，比如我们可以在原有的失效时间基础上增加一个随机值，比如1-5分钟随机，这样每一个缓存的过期时间的重复率就会降低，就很难引发集体失效的事件。</p>
-<h4 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h4><h5 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h5><p>对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据。这个时候，需要考虑一个问题：缓存被“击穿”的问题，这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</p>
-<h5 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h5><h6 id="1-使用互斥锁-mutex-key"><a href="#1-使用互斥锁-mutex-key" class="headerlink" title="1.使用互斥锁(mutex key)"></a>1.使用互斥锁(mutex key)</h6><p>业界比较常用的做法，是使用mutex。简单地来说，就是在缓存失效的时候（判断拿出来的值为空），不是立即去load db，而是先使用缓存工具的某些带成功操作返回值的操作（比如Redis的SETNX或者Memcache的ADD）去set一个mutex key，当操作返回成功时，再进行load db的操作并回设缓存；否则，就重试整个get缓存的方法。</p>
-<p>SETNX，是「SET if Not eXists」的缩写，也就是只有不存在的时候才设置，可以利用它来实现锁的效果。在redis2.6.1之前版本未实现setnx的过期时间，所以这里给出两种版本代码参考：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-日常总结/RabbitMQ" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/02/日常总结/RabbitMQ/">RabbitMQ</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/02/日常总结/RabbitMQ/" class="archive-article-date">
-  	<time datetime="2018-07-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="1-配置详解"><a href="#1-配置详解" class="headerlink" title="1.配置详解"></a>1.配置详解</h5><pre><code>spring.rabbitmq.addresses =＃客户端应连接的地址的逗号分隔列表。
-spring.rabbitmq.cache.channel.checkout-timeout =＃如果已经达到缓存大小，等待获得频道的毫秒数。
-spring.rabbitmq.cache.channel.size =＃要在缓存中保留的通道数。
-spring.rabbitmq.cache.connection.mode = CHANNEL＃连接工厂缓存模式。
-spring.rabbitmq.cache.connection.size =＃缓存的连接数。</code></pre>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MQ</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Java/JAVA8" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/01/学习笔记/Java/JAVA8/">Java8</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/01/学习笔记/Java/JAVA8/" class="archive-article-date">
-  	<time datetime="2018-06-30T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="Lambada表达式"><a href="#Lambada表达式" class="headerlink" title="Lambada表达式"></a>Lambada表达式</h5><ul>
-<li><strong>可选类型声明</strong> - 无需声明参数的类型。编译器可以从该参数的值推断。</li>
-<li><strong>可选圆括号参数</strong> - 无需在括号中声明参数。对于多个参数，括号是必需的。</li>
-<li><strong>可选大括号</strong> - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。</li>
-<li><strong>可选return关键字</strong> - 编译器会自动返回值，如果主体有一个表达式返回的值。花括号是必需的，以表明表达式返回一个值。</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Markdown" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/24/学习笔记/Markdown/">Markdown</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/06/24/学习笔记/Markdown/" class="archive-article-date">
-  	<time datetime="2018-06-23T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h5 id="1-标题"><a href="#1-标题" class="headerlink" title="1.标题"></a>1.标题</h5><pre><code># 一级标题
-## 二级标题
-### 三级标题
-#### 四级标题
-##### 五级标题
-###### 六级标题
-
-这是高阶标题(效果和一级标题一样)
-===
-这是次阶标题(效果和二级标题一样)
----</code></pre>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">markdown</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-第一篇博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/10/第一篇博客/">博客之旅</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/06/10/第一篇博客/" class="archive-article-date">
-  	<time datetime="2018-06-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <pre><code>坚持每周写一篇博客，记录自己成长中的点点滴滴</code></pre><h3 id="1-加强java基础"><a href="#1-加强java基础" class="headerlink" title="1.加强java基础"></a>1.加强java基础</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">java并发编程</span></span><br><span class="line"><span class="keyword">spring </span><span class="keyword">boot</span></span><br><span class="line"><span class="keyword">spring </span><span class="keyword">cloud</span></span><br><span class="line"><span class="keyword">dubbo</span></span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">目标</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">freemarker</a>
         		</li>
       		
 		</ul>
@@ -1079,7 +1170,7 @@ spring.rabbitmq.cache.connection.size =＃缓存的连接数。</code></pre>
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -1181,19 +1272,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1201,11 +1280,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1213,11 +1296,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1225,7 +1304,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1233,7 +1312,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1245,27 +1352,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1297,6 +1388,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
@@ -1305,19 +1404,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">logback</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

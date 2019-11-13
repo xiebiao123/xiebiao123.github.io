@@ -182,6 +182,505 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-学习笔记/Spring/Logback" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/Spring/Logback/">Logback</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/学习笔记/Spring/Logback/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>logback是java的日志开源组件，是log4j创始人写的，性能比log4j要好，目前主要分为3个模块：</p>
+<ol>
+<li><strong>logback-core</strong>:核心代码模块</li>
+<li><strong>logback-classic</strong>:log4j的一个改良版本，同时实现了slf4j的接口，这样你如果之后要切换其他日志组件也是一件很容易的事</li>
+<li><strong>logback-access</strong>:访问模块与Servlet容器集成提供通过Http来访问日志的功能</li>
+</ol>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="引入maven依赖"><a href="#引入maven依赖" class="headerlink" title="引入maven依赖"></a>引入maven依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--这个依赖直接包含了 logback-core 以及 slf4j-api的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="logback的配置"><a href="#logback的配置" class="headerlink" title="logback的配置"></a>logback的配置</h4><h5 id="配置获取顺序"><a href="#配置获取顺序" class="headerlink" title="配置获取顺序"></a>配置获取顺序</h5><p>logback在启动的时候，会按照下面的顺序加载配置文件</p>
+<ol>
+<li>如果java程序启动是指定<strong>logback.configurationFile</strong>属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test，<br>这样执行Test类的时候就会加载/path/to/mylogback.xml配置</li>
+<li>在classpath中查找 logback.groovy 文件</li>
+<li>在classpath中查找 logback-test.xml 文件</li>
+<li>在classpath中查找 logback.xml 文件</li>
+<li>如果是 jdk6+,那么会调用ServiceLoader 查找 com.qos.logback.classic.spi.Configurator接口的第一个实现类</li>
+<li>自动使用ch.qos.logback.classic.BasicConfigurator,在控制台输出日志</li>
+</ol>
+<p>上面的顺序表示优先级，使用java -D配置的优先级最高，只要获取到配置后就不会再执行下面的流程。相关代码可以看ContextInitializer#autoConfig()方法。</p>
+<h5 id="日志输出级别"><a href="#日志输出级别" class="headerlink" title="日志输出级别"></a>日志输出级别</h5><p>从小到大的日志级别依旧是 <strong>trace、debug、info、warn、error</strong></p>
+<h5 id="logback-xml-配置样例"><a href="#logback-xml-配置样例" class="headerlink" title="logback.xml 配置样例"></a>logback.xml 配置样例</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">de<span class="doctag">bug:</span> 要不要打印 logback内部日志信息，true则表示要打印。建议开启</span></span><br><span class="line"><span class="comment">scan: 配置发生改变时，要不要重新加载</span></span><br><span class="line"><span class="comment">scanPeriod: 检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">debug</span>=<span class="string">"true"</span> <span class="attr">scan</span>=<span class="string">"true"</span> <span class="attr">scanPeriod</span>=<span class="string">"1 seconds"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>logback<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--定义参数,后面可以通过$&#123;app.name&#125;使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"app.name"</span> <span class="attr">value</span>=<span class="string">"logback_test"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--ConsoleAppender 用于在屏幕上输出日志--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"stdout"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里定义了DEBUG，也就是控制台不会输出比DEBUG级别小的日志--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder 默认配置为PatternLayoutEncoder --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义控制台输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志输出的路径--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里的scheduler.manager.server.home 没有在上面的配置中设定，所以会使用java启动时配置的值--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--比如通过 java -Dscheduler.manager.server.home=/path/to XXXX 配置该属性--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志滚动的策略--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--定义文件滚动时的文件名的格式--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.%d&#123;yyyy-MM-dd.HH&#125;.log.gz</span><br><span class="line">            <span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--60天的时间周期，日志量最大20GB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>60<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 该属性在 1.1.6版本后 才开始支持--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">totalSizeCap</span>&gt;</span>20GB<span class="tag">&lt;/<span class="name">totalSizeCap</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">triggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--每个日志文件最大100MB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">maxFileSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">triggeringPolicy</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--root是默认的logger 这里设定输出级别是debug--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"trace"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了两个appender，日志会通过往这两个appender里面写--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"file"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--这个logger没有指定appender，它会继承root节点中定义的那些appender--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.example.logback"</span> <span class="attr">level</span>=<span class="string">"warn"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--通过 LoggerFactory.getLogger("mytest") 可以获取到这个logger--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--由于这个logger自动继承了root的appender，root中已经有stdout的appender了，自己这边又引入了stdout的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果没有设置 additivity="false" ,就会导致一条日志在控制台输出两次的情况--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--additivity表示要不要使用rootLogger配置的appender进行输出--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--由于设置了 additivity="false" ，所以输出时不会使用rootLogger的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--但是这个logger本身又没有配置appender，所以使用这个logger输出日志的话就不会输出到任何地方--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest2"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>configuration节点相关属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th align="center">默认值</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>debug</td>
+<td align="center">false</td>
+<td>要不要打印 logback内部日志信息，true则表示要打印。建议开启</td>
+</tr>
+<tr>
+<td>scan</td>
+<td align="center">true</td>
+<td>配置发送改变时，要不要重新加载</td>
+</tr>
+<tr>
+<td>scanPeriod</td>
+<td align="center">1 seconds</td>
+<td>检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</td>
+</tr>
+</tbody></table>
+<ul>
+<li>configuration子节点<ul>
+<li>contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称</li>
+<li>property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问</li>
+<li>appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class <ul>
+<li>name 无默认值 | appender组件的名称，后面给logger指定appender使用</li>
+<li>class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender<ul>
+<li>ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用</li>
+<li>FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用</li>
+<li>RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">logback</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/Git/">Git</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/学习笔记/Git/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
+<li>本地一直提示没有权限或账户密码错误<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--system --unset credential.helper</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-面试/面试总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/面试/面试总结/">面试100问</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/面试/面试总结/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="面试基础"><a href="#面试基础" class="headerlink" title="面试基础"></a>面试基础</h3><h4 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h4><ul>
+<li><p>要点：</p>
+<ul>
+<li>只能有一个实例 (构造器私有化)</li>
+<li>自行的创建实例 (该类的静态变量来保存这个唯一的实例)</li>
+<li>向整个系统提供这个实例  (直接暴露（饿汉式） | 用静态变量的get方法获取（懒汉式）)</li>
+</ul>
+</li>
+<li><p>饿汉式：直接创建对象（类加载的时候创建对象）、不存在线程安全问题</p>
+<ul>
+<li>直接实例化  (简洁直观)</li>
+<li>枚举式  (最简洁)</li>
+<li>静态代码块饿汉式 (适合复杂实例化)</li>
+</ul>
+</li>
+<li><p>懒汉式：延迟创建对象</p>
+<ul>
+<li>线程不安全  （单线程）</li>
+<li>线程安全  （多线程）</li>
+<li>静态内部类形式  （多线程）<ul>
+<li>静态内部类不会随着外部类的加载和初始化而初始化，需要单独的加载和初始化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="成员方法、静态方法、代码块、静态代码块、父子类构造方法的执行顺序-类的初始化过程、实例的初始化过程、父子类"><a href="#成员方法、静态方法、代码块、静态代码块、父子类构造方法的执行顺序-类的初始化过程、实例的初始化过程、父子类" class="headerlink" title="成员方法、静态方法、代码块、静态代码块、父子类构造方法的执行顺序 (类的初始化过程、实例的初始化过程、父子类)"></a>成员方法、静态方法、代码块、静态代码块、父子类构造方法的执行顺序 (类的初始化过程、实例的初始化过程、父子类)</h4><ul>
+<li>类的初始化过程：<ul>
+<li>一个类要创建实例需要先加载并初始化该类<ul>
+<li>main方法所在的类需要先加载和初始化</li>
+</ul>
+</li>
+<li>一个子类要初始化需要先初始化父类</li>
+<li>一个类初始化就是执行<clinit>()方法<ul>
+<li><clinit>()方法由静态类变量显示赋值代码和静态代码块组成</clinit></li>
+<li>执行顺序是从上到下顺序执行</li>
+<li><clinit>()只会执行一次</clinit></li>
+</ul>
+</clinit></li>
+</ul>
+</li>
+<li>实例的初始化过程<ul>
+<li>实例初始化就是执行<init>()方法<ul>
+<li><init>()方法可能重载有多个，有几个构造器就有几个<init>方法</init></init></li>
+<li><init>()方法由非静态实例变量显示赋值代码、非静态代码块和对应的构造器组成</init></li>
+<li>非静态实例变量显示赋值代码和非静态代码块从上到下顺序执行，而对应构造器代码最后执行</li>
+<li>每次创建实例对象，调用对应的构造器，执行的就是对应的<init>方法</init></li>
+<li><init>方法的首行是super()或者super（实参列表），即对应父类的<init>方法</init></init></li>
+</ul>
+</init></li>
+</ul>
+</li>
+<li>方法的重写(Override)<ul>
+<li>重写的原理<ul>
+<li>非静态方法默认前面都会有一个this,this在<init>方法中表示当前对象</init></li>
+</ul>
+</li>
+<li>那些方法不会被重写<ul>
+<li>final修饰的方法</li>
+<li>静态方法</li>
+<li>private等子类不可见方法</li>
+</ul>
+</li>
+<li>注意事项<ol>
+<li>方法重写时，必须存在继承关系</li>
+<li>方法重写时，方法名和形式参数必须一致。</li>
+<li>方法重写时，子类的权限修饰符需要大于或等于父类的权限修饰符。</li>
+<li>方法重写时，子类的返回值类型必须小于或等于父类的返回值类型</li>
+<li>方法重写时，子类的异常类型要小于等于父类的异常类型。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>方法的重载(Overload)<ul>
+<li>方法的名称</li>
+</ul>
+</li>
+</ul>
+<h3 id="Spring-常见问题"><a href="#Spring-常见问题" class="headerlink" title="Spring 常见问题"></a>Spring 常见问题</h3><h4 id="IOC-和-AOP"><a href="#IOC-和-AOP" class="headerlink" title="IOC 和 AOP"></a>IOC 和 AOP</h4><ul>
+<li><strong>IOC(控制反转)</strong> 是一种设计思想，将原本在程序中手动创建对象的控制权，交由给Spring框架来管理。IOC容器是Spring用来实现IOC的载体，<br>IOC容器实际上就是一个Map(key, value)，Map中存放的是各种对象</li>
+<li><strong>AOP(面向切面编程)</strong> 能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任（例如事务处理、日志管理、权限控制等）封装起来，<br>便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可扩展性和可维护性。使用AOP之后我们可以把一些通用功能抽象出来，<br>在需要用到的地方直接使用即可，这样可以大大简化代码量，提高了系统的扩展性</li>
+</ul>
+<h4 id="Spring-AOP-AspectJ-AOP-的区别"><a href="#Spring-AOP-AspectJ-AOP-的区别" class="headerlink" title="Spring AOP / AspectJ AOP 的区别"></a>Spring AOP / AspectJ AOP 的区别</h4><ol>
+<li>Spring AOP属于运行时增强，而AspectJ是编译时增强</li>
+<li>Spring AOP基于代理，而AspectJ基于字节码操作</li>
+<li>AspectJ相比于Spring AOP功能更加强大，但是Spring AOP相对来说更简单。如果切面比较少，那么两者性能差异不大。但是，当切面<br>太多的话，最好选择AspectJ，它比SpringAOP快很多</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/面试//" class="article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/数据库/Mysql-常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/数据库/Mysql-常见问题/">mysql常见问题</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/学习笔记/数据库/Mysql-常见问题/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ul>
+<li><p>datetime mysql精度丢失的问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们</span><br><span class="line">说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)</span><br><span class="line"></span><br><span class="line">create table test_date (</span><br><span class="line">    id bigint(20) ,</span><br><span class="line">    datetime0  datetime,</span><br><span class="line">    datetime1 datetime(1),</span><br><span class="line">    datetime2 datetime(2),</span><br><span class="line">    datetime3 datetime(3)</span><br><span class="line">)ENGINE=INNODB DEFAULT CHARSET=utf8;</span><br><span class="line"></span><br><span class="line">insert into test_date values (1,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;,&apos;2019-02-22 13:02:58.789&apos;);</span><br><span class="line">执行结果为：</span><br><span class="line">id  datetime0               datetime1                   datetime2                   datetime3</span><br><span class="line">1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>FIND_IN_SET mysql查询匹配包含字符串 </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.正确的方式：</span><br><span class="line">判断字段field_A中是否包含23:</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> table_test <span class="keyword">where</span> FIND_IN_SET(<span class="string">"23"</span>, field_A) ;</span><br><span class="line">2.错误的方式：</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">form</span> table_test <span class="keyword">where</span> field_A <span class="keyword">like</span> <span class="string">"%23%"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GROUP_CONCAT mysql连接字符串</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">group_concat([<span class="keyword">DISTINCT</span>] 要连接的字段 [<span class="keyword">Order</span> <span class="keyword">BY</span> <span class="keyword">ASC</span>/<span class="keyword">DESC</span> 排序字段] [Separator <span class="string">'分隔符'</span>])</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-学习笔记/Nacos" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -234,6 +733,450 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Elastic-job" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/Elastic-job/">elastic-job</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/Elastic-job/" class="archive-article-date">
+  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="分片策略"><a href="#分片策略" class="headerlink" title="分片策略"></a>分片策略</h3><p>数据分片的目的在于把一个任务分散到不同的机器上运行，既可以解决单机计算能力上限的问题，也能降低部分任务失败对整体系统的影响。elastic-job并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器（其实是Job实例，部署在一台机器上的多个Job实例也能分片），开发者需要自行处理分片项与真实数据的对应关系。框架也预置了一些分片策略：平均分配算法策略，作业名哈希值奇偶数算法策略，轮转分片策略。同时也提供了自定义分片策略的接口。</p>
+<h4 id="分片原理"><a href="#分片原理" class="headerlink" title="分片原理"></a>分片原理</h4><p>elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点分配，如下三种情况都会触发主节点上的分片算法执行：</p>
+<ol>
+<li>新的Job实例加入集群</li>
+<li>现有的Job实例下线（如果下线的是leader节点，那么先选举然后触发分片算法的执行）</li>
+<li>主节点选举<br>上述三种情况，会让zookeeper上leader节点的sharding节点上多出来一个necessary的临时节点，主节点每次执行Job前，都会去看一下这个节点，如果有则执行分片算法。</li>
+</ol>
+<p>分片的执行结果会存储在zookeeper上，5个分片，每个分片应该由哪个Job实例来运行都已经分配好。分配的过程就是上面触发分片算法之后的操作。分配完成之后，各个Job实例就会在下次执行的时候使用上这个分配结果。</p>
+<p>每个job实例任务触发前都会获取本任务在本实例上的分片情况，然后封装成shardingContext，传递给调用任务的实际执行方法：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">elastic-job</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/正则" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/正则/">正则</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/正则/" class="archive-article-date">
+  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h3><ul>
+<li><strong>^</strong> 匹配输入字符串的开始位置，在方括号中（[^]）表示不介绍该字符集合</li>
+<li><strong>$</strong> 匹配输入字符串的结尾位置，如果设置了RegExp对象的Multiline属性，则$也匹配’\n’或’\r’</li>
+<li><strong>()</strong> 标记一个子表达式的开始和结束位置。子表达式可以获取供以后使用</li>
+<li><strong>|</strong> 指明两项之间的一个选择</li>
+</ul>
+<h3 id="限定符"><a href="#限定符" class="headerlink" title="限定符"></a>限定符</h3><ul>
+<li><strong>*</strong>    \匹配子表达式零次或多次，* 等价于{0,}</li>
+<li><strong>+</strong>     匹配子表达式一次或多次，+ 等价于{1,}</li>
+<li><strong>?</strong>     匹配前面的子表达式零次或一次，? 等价于 {0,1}</li>
+<li><strong>{n}</strong>   n是一个非负整数。匹配确定的 n 次</li>
+<li><strong>{n,}</strong>  n是一个非负整数。至少匹配n 次</li>
+<li><strong>{n,m}</strong> m和 n 均为非负整数，其中n &lt;= m。最少匹配 n 次且最多匹配 m 次，请注意在逗号和两个数之间不能有空格</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">正则</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/Sentinel/">Sentinel</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/Sentinel/" class="archive-article-date">
+  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Sentinel介绍"><a href="#Sentinel介绍" class="headerlink" title="Sentinel介绍"></a>Sentinel介绍</h3><p>Sentinel是阿里中间件团队开源、面向分布式服务架构的轻量级的高可用的限流控制组件，主要以流量为切入点，从 <strong>流量控制、熔断降级、系统负载保护</strong><br>等多个维度来帮助用户保护服务的稳定性</p>
+<h3 id="Sentinel-与-Netflix-Hystrix-直接差异"><a href="#Sentinel-与-Netflix-Hystrix-直接差异" class="headerlink" title="Sentinel 与 Netflix Hystrix 直接差异"></a>Sentinel 与 Netflix Hystrix 直接差异</h3><table>
+<thead>
+<tr>
+<th>对比内容</th>
+<th>Sentinel</th>
+<th>Hystrix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>隔离策略</td>
+<td>型号量隔离</td>
+<td>线程池隔离/信号量隔离</td>
+</tr>
+<tr>
+<td>熔断降级策略</td>
+<td>基于响应时间或失败比率</td>
+<td>基于失败比率</td>
+</tr>
+<tr>
+<td>实时指标实现</td>
+<td>滑动窗口</td>
+<td>滑动窗口(RxJava)</td>
+</tr>
+<tr>
+<td>规则配置</td>
+<td>支持多种数据源</td>
+<td>支持多种数据源</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>多个扩展点</td>
+<td>插件的形式</td>
+</tr>
+<tr>
+<td>基于注解的支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>限流</td>
+<td>基于QPS,支持基于调用关系的限流</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>流量整形</td>
+<td>支持慢启动、均速器模式</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>系统负载保护</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>控制台</td>
+<td>开箱即用、可配置规则、查看秒级监控、机器发现等</td>
+<td>不完善</td>
+</tr>
+<tr>
+<td>常见框架的适配</td>
+<td>Servlet、Spring Cloud、Dubbo、gRPC等</td>
+<td>Servlet、Spring Cloud、Netflix</td>
+</tr>
+</tbody></table>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">sentinel</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Vue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/Vue/">Vue</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/Vue/" class="archive-article-date">
+  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h3><ul>
+<li><p>v-html 输出html代码 如 v-html=”message”</p>
+</li>
+<li><p>v-bind </p>
+<ul>
+<li>判断属性中的值 如 v-bind:class=”{‘class1’: use}”</li>
+<li>v-bind 指令被用来响应地更新 HTML 属性 <a v-bind:href="url"><br>v-bind:style  v-bind:style=”{ color: activeColor, fontSize: fontSize + ‘px’ }<br>v-bind:class  v-bind:class=”{ active: isActive, ‘text-danger’: hasError }”</a></li>
+</ul>
+</li>
+<li><p>v-if 条件判断</p>
+</li>
+<li><p>v-else 可以用 v-else 指令给 v-if 添加一个 “else” 块</p>
+</li>
+<li><p>v-else-if v-else-if 在 2.1.0 新增，顾名思义，用作 v-if 的 else-if 块。可以链式的多次使用</p>
+</li>
+<li><p>v-show 根据条件展示元素：</p>
+</li>
+<li><p>v-for</p>
+</li>
+<li><p>v-module 双向绑定</p>
+</li>
+<li><p>v-on:click 如 <a v-on:click="doSomething"></a></p>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
         		</li>
       		
 		</ul>
@@ -368,931 +1311,9 @@
 
 
   
-    <article id="post-学习笔记/Spring/Spring-session" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/26/学习笔记/Spring/Spring-session/">Spring Session 共享分析</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/09/26/学习笔记/Spring/Spring-session/" class="archive-article-date">
-  	<time datetime="2018-09-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="spring-session管理session分析"><a href="#spring-session管理session分析" class="headerlink" title="spring-session管理session分析"></a>spring-session管理session分析</h3><ul>
-<li>DelegatingFilterProxy 代理类</li>
-</ul>
-<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> void initFilterBean() throws ServletException &#123;</span><br><span class="line">    synchronized (<span class="keyword">this</span>.delegateMonitor) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.delegate == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// If no target bean name specified, use filter name.</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.targetBeanName == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.targetBeanName = getFilterName();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Fetch Spring root application context and initialize the delegate early,</span></span><br><span class="line">            <span class="comment">// if possible. If the root application context will be started after this</span></span><br><span class="line">            <span class="comment">// filter proxy, we'll have to resort to lazy initialization.</span></span><br><span class="line">            WebApplicationContext wac = findWebApplicationContext();</span><br><span class="line">            <span class="keyword">if</span> (wac != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.delegate = initDelegate(wac);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>DelegatingFilterProxy里没有实现过滤器的任何逻辑，具体逻辑在其指定的filter-name过滤器中。初始化过滤器，如果没有配置targetBeanName，<br>则直接使用filter-name，这里指定的是springSessionRepositoryFilter，这个名称是一个固定值此filter在RedisHttpSessionConfiguration中被定义。</p>
-<ul>
-<li>RedisHttpSessionConfiguration 配置类<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> &lt;S extends ExpiringSession&gt; SessionRepositoryFilter&lt;? extends ExpiringSession&gt; springSessionRepositoryFilter(</span><br><span class="line">        SessionRepository&lt;S&gt; sessionRepository) &#123;</span><br><span class="line">    SessionRepositoryFilter&lt;S&gt; sessionRepositoryFilter = new SessionRepositoryFilter&lt;S&gt;(</span><br><span class="line">            sessionRepository);</span><br><span class="line">    sessionRepositoryFilter.setServletContext(<span class="keyword">this</span>.servletContext);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.httpSessionStrategy instanceof MultiHttpSessionStrategy) &#123;</span><br><span class="line">        sessionRepositoryFilter.setHttpSessionStrategy(</span><br><span class="line">                (MultiHttpSessionStrategy) <span class="keyword">this</span>.httpSessionStrategy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        sessionRepositoryFilter.setHttpSessionStrategy(<span class="keyword">this</span>.httpSessionStrategy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sessionRepositoryFilter;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line">在RedisHttpSessionConfiguration的父类SpringHttpSessionConfiguration中定义了springSessionRepositoryFilter,此方法返回值是</span><br><span class="line">SessionRepositoryFilter，这个其实就是真实的过滤器。此方法的参数SessionRepository的实现类RedisOperationsSessionRepository</span><br><span class="line">其实就是就是将session持久化到redis中</span><br><span class="line"></span><br><span class="line">* SessionRepositoryFilter 过滤器</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>@Override<br>protected void doFilterInternal(HttpServletRequest request,<br>        HttpServletResponse response, FilterChain filterChain)<br>        throws ServletException, IOException {<br>    request.setAttribute(SESSION_REPOSITORY_ATTR, this.sessionRepository);</p>
-<pre><code>SessionRepositoryRequestWrapper wrappedRequest = new SessionRepositoryRequestWrapper(
-        request, response, this.servletContext);
-SessionRepositoryResponseWrapper wrappedResponse = new SessionRepositoryResponseWrapper(
-        wrappedRequest, response);
-
-HttpServletRequest strategyRequest = this.httpSessionStrategy
-        .wrapRequest(wrappedRequest, wrappedResponse);
-HttpServletResponse strategyResponse = this.httpSessionStrategy
-        .wrapResponse(wrappedRequest, wrappedResponse);
-
-try {
-    filterChain.doFilter(strategyRequest, strategyResponse);
-}
-finally {
-    wrappedRequest.commitSession();
-}</code></pre><p>}</p>
-<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">所有的请求都会先经过SessionRepositoryFilter过滤器，<span class="built_in">request</span>被包装成了SessionRepositoryRequestWrapper对象，<span class="built_in">response</span>被包装</span><br><span class="line">成了SessionRepositoryResponseWrapper对象，SessionRepositoryRequestWrapper中重写了getSession等方法；finally中执行了commitSession</span><br><span class="line">方法，将session进行持久化操作</span><br><span class="line"></span><br><span class="line">* SessionRepositoryRequestWrapper 包装类</span><br></pre></td></tr></table></figure>
-
-<p>@Override<br>public HttpSessionWrapper getSession(boolean create) {<br>    HttpSessionWrapper currentSession = getCurrentSession();<br>    if (currentSession != null) {<br>        return currentSession;<br>    }<br>    S requestedSession = getRequestedSession();<br>    if (requestedSession != null) {<br>        if (getAttribute(INVALID_SESSION_ID_ATTR) == null) {<br>            requestedSession.setLastAccessedTime(Instant.now());<br>            this.requestedSessionIdValid = true;<br>            currentSession = new HttpSessionWrapper(requestedSession, getServletContext());<br>            currentSession.setNew(false);<br>            setCurrentSession(currentSession);<br>            return currentSession;<br>        }<br>    }<br>    else {<br>        // This is an invalid session id. No need to ask again if<br>        // request.getSession is invoked for the duration of this request<br>        if (SESSION_LOGGER.isDebugEnabled()) {<br>            SESSION_LOGGER.debug(<br>                    “No session found by id: Caching result for getSession(false) for this HttpServletRequest.”);<br>        }<br>        setAttribute(INVALID_SESSION_ID_ATTR, “true”);<br>    }<br>    if (!create) {<br>        return null;<br>    }<br>    if (SESSION_LOGGER.isDebugEnabled()) {<br>        SESSION_LOGGER.debug(<br>                “A new session was created. To help you troubleshoot where the session was created we provided a StackTrace (this is not an error). You can prevent this from appearing by disabling DEBUG logging for “<br>                        + SESSION_LOGGER_NAME,<br>                new RuntimeException(<br>                        “For debugging purposes only (not an error)”));<br>    }<br>    S session = SessionRepositoryFilter.this.sessionRepository.createSession();<br>    session.setLastAccessedTime(Instant.now());<br>    currentSession = new HttpSessionWrapper(session, getServletContext());<br>    setCurrentSession(currentSession);<br>    return currentSession;<br>}<br>```</p>
-<p>重点看一下重写的getSession方法,大致分为三步</p>
-<ol>
-<li>首先去本地内存中获取session，如果获取不到去指定的数据库中获取，这里其实就是去redis里面获取,sessionRepository就是上面定义的RedisOperationsSessionRepository对象</li>
-<li>如果redis里面也没有则创建一个新的session</li>
-<li>然后再将session设置到redis中</li>
-</ol>
-<h3 id="保存的session"><a href="#保存的session" class="headerlink" title="保存的session"></a>保存的session</h3><p>每次在消息处理完之后，会执行finally中的commitSession方法，每个session被保存都会创建三组数据，</p>
-<ul>
-<li><strong>hash结构记录</strong> key格式：<strong>spring:session:sessions:[sessionId]</strong>，对应的value保存session的所有数据包括：creationTime，maxInactiveInterval，lastAccessedTime，attribute</li>
-<li><strong>set结构记录</strong> key格式：<strong>spring:session:expirations:[过期时间]</strong>，对应的value为expires:[sessionId]列表，有效期默认是30分钟，即1800秒</li>
-<li><strong>string结构记录</strong> key格式：<strong>spring:session:sessions:expires:[sessionId]</strong>，对应的value为空；该数据的TTL表示sessionId过期的剩余时间</li>
-</ul>
-<h3 id="定时清理"><a href="#定时清理" class="headerlink" title="定时清理"></a>定时清理</h3><p>除了依赖redis本身的有效期机制，spring-session提供了一个定时器，用来定期检查需要被清理的session，同样是通过roundDownMinute方法来获取key，<br>获取这一分钟内要被删除的session，此value是set数据结构，里面存放这需要被删除的sessionId</p>
-<blockquote>
-<p>注：这里面存放的的是spring:session:sessions:expires:[sessionId]，并不是实际存储session数据的spring:session:sessions:[sessionId]</p>
-</blockquote>
-<p>首先删除了spring:session:expirations:[过期时间]，然后遍历set执行touch方法，并没有直接执行删除操作，看touch方法的注释大致意义就是尝试访问一下key，<br>如果key已经过去则触发删除操作，利用了redis本身的特性</p>
-<h3 id="键空间通知"><a href="#键空间通知" class="headerlink" title="键空间通知"></a>键空间通知</h3><p>定期删除机制并没有删除实际存储session数据的spring:session:sessions:[sessionId]，这里利用了redis的keyspace notification功能，大致就是通过命令产生一个通知，具体什么命令可以配置（包括：删除，过期等）具体可以查看</p>
-<p><a href="http://www.sohu.com/a/260010804_464962" target="_blank" rel="noopener">参考地址</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/源码//" class="article-tag-list-link color3">源码</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Dubbo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/28/学习笔记/Dubbo/">Dubbo</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/08/28/学习笔记/Dubbo/" class="archive-article-date">
-  	<time datetime="2018-08-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-28</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="注册中心Zookeeper"><a href="#注册中心Zookeeper" class="headerlink" title="注册中心Zookeeper"></a><a href="http://dubbo.apache.org/zh-cn/docs/user/references/registry/zookeeper.html" target="_blank" rel="noopener">注册中心Zookeeper</a></h3><p>Dubbo支持多种注册中心，官方推荐使用Zookeeper，Zookeeper是Apache Hadoop的一个子项目，是一个树形的目录服务，支持变更推送</p>
-<p><img src="/images/dubbo/zookeeper.jpg" alt="zookeeper"></p>
-<ul>
-<li>流程说明<ul>
-<li>服务提供者启动时：向 /dubbo/com.foo.BarService/providers 目录下写入自己的 URL 地址</li>
-<li>服务消费者启动时：订阅 /dubbo/com.foo.BarService/providers 目录下的提供者 URL 地址。并向 /dubbo/com.foo.BarService/consumers 目录下写入自己的 URL 地址</li>
-<li>监控中心启动时：订阅 /dubbo/com.foo.BarService 目录下的所有提供者和消费者 URL 地址</li>
-</ul>
-</li>
-<li>支持以下功能：<ul>
-<li>当提供者出现断电等异常停机时，注册中心能自动删除提供者信息</li>
-<li>当注册中心重启时，能自动恢复注册数据，以及订阅请求</li>
-<li>当会话过期时，能自动恢复注册数据，以及订阅请求</li>
-<li>当设置&lt;dubbo:registry check=”false” /&gt; 时，记录失败注册和订阅请求，后台定时重试</li>
-<li>可通过&lt;dubbo:registry username=”admin” password=”1234” /&gt; 设置 zookeeper 登录信息</li>
-<li>可通过&lt;dubbo:registry group=”dubbo” /&gt; 设置 zookeeper 的根节点，不设置将使用无根树</li>
-<li>支持 * 号通配符 &lt;dubbo:reference group=”*” version=”*” /&gt;，可订阅服务的所有分组和所有版本的提供者</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>注意:在2.7.x的版本中已经移除了zkclient的实现,使用Consumer来实现（2.3版本添加）</p>
-</blockquote>
-<h3 id="配置的覆盖策略"><a href="#配置的覆盖策略" class="headerlink" title="配置的覆盖策略"></a>配置的覆盖策略</h3><p>下图展示了配置覆盖关系的优先级，从上到下优先级依次降低：</p>
-<p><img src="/images/dubbo/dubbo-configuration.jpg" alt="configuration"></p>
-<blockquote>
-<ul>
-<li>Java虚拟机 &gt; 外部配置（Spring application.properties | Apollo | Nacos）&gt; Spring API(Java Bean) &gt; 本地配置（dubbo.properties）</li>
-<li>方法级 &gt;  接口级 &gt; 全局配置</li>
-<li>如果级别一样，则消费者 &gt; 提供者</li>
-</ul>
-</blockquote>
-<h4 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h4><ul>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/preflight-check.html" target="_blank" rel="noopener">启动时检查</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/fault-tolerent-strategy.html" target="_blank" rel="noopener">集群容错</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/loadbalance.html" target="_blank" rel="noopener">负责均衡</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/service-downgrade.html" target="_blank" rel="noopener">服务降级</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/multi-versions.html" target="_blank" rel="noopener">多版本</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/local-stub.html" target="_blank" rel="noopener">本地存根</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/parameter-validation.html" target="_blank" rel="noopener">参数验证</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/result-cache.html" target="_blank" rel="noopener">结果缓存</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/async-call.html" target="_blank" rel="noopener">Consumer异步调用</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/async-execute-on-provider.html" target="_blank" rel="noopener">Provider异步调用</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/callback-parameter.html" target="_blank" rel="noopener">参数回调</a></li>
-<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/events-notify.html" target="_blank" rel="noopener">事件通知:远程方法调用之前、调用之后、执行异常</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/22/学习笔记/MyBatis/">MyBatis</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/08/22/学习笔记/MyBatis/" class="archive-article-date">
-  	<time datetime="2018-08-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ul>
-<li>是一个半自动化持久层框架</li>
-<li>编写sql -&gt; 预编译 -&gt; 设置参数 -&gt; 执行sql -&gt; 封装结果</li>
-</ul>
-<h4 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h4><ul>
-<li>Executor(update,query,flushStatements,commit,rollback,getTransaction,close,isClosed)</li>
-<li>ParameterHandler(getParameterObject,s  etParameters)</li>
-<li>ResultSetHandler(handleResultSets,handleOutputParameters)</li>
-<li>StatementHandler(prepare,parameter,batch,update,query)
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MyBatis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/04/学习笔记/Docker/">Docker</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/08/04/学习笔记/Docker/" class="archive-article-date">
-  	<time datetime="2018-08-03T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="虚拟机与Docker有何不同"><a href="#虚拟机与Docker有何不同" class="headerlink" title="虚拟机与Docker有何不同"></a><a href="https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html" target="_blank" rel="noopener">虚拟机与Docker有何不同</a></h3><p>Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。<br>虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。</p>
-<p>虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。</p>
-<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><ol>
-<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
-<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">CentOS Docker 安装</a></li>
-</ol>
-<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
-<li><strong>镜像(Images)</strong> 镜像是用于创建 Docker 容器的模板</li>
-<li><strong>容器(Container)</strong> 容器是独立运行的一个或一组应用</li>
-<li><strong>客户端(Client)</strong> Docker 客户端通过命令行或者其他工具使用 <a href="https://docs.docker.com/reference/api/docker_remote_api" target="_blank" rel="noopener">Docker API</a> 与 Docker 的守护进程通信</li>
-<li><strong>主机(Host)</strong> 一个物理或者虚拟的机器用于执行 Docker 守护进程和容器</li>
-<li><strong>仓库(Registry)</strong> Docker 仓库用来保存镜像，可以理解为代码控制中的代码仓库,<a href="https://hub.docker.com" target="_blank" rel="noopener">Docker Hub</a> 提供了庞大的镜像集合供使用</li>
-<li><strong>Machine</strong> Docker Machine是一个简化Docker安装的命令行工具，通过一个简单的命令行即可在相应的平台上安装Docker，比如VirtualBox、 Digital Ocean、Microsoft Azure</li>
-</ul>
-<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><h4 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h4><pre><code>service docker start 启动 Docker 进程
-docker command --help Docker命令使用方法</code></pre>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/SpringBoot/Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/学习笔记/SpringBoot/Springboot/">Spring boot</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/25/学习笔记/SpringBoot/Springboot/" class="archive-article-date">
-  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Spring-boot-优点"><a href="#Spring-boot-优点" class="headerlink" title="Spring boot 优点"></a>Spring boot 优点</h3><ul>
-<li>快速创建独立的Spring项目，以及主流框架集成</li>
-<li>使用嵌入式的Servlet容器，应用无需打成war包</li>
-<li>starter自动依赖与版本控制</li>
-<li>大量的自动配置，简化开发，也可以修改默认配置</li>
-<li>无需xml配置，无代码生成，开箱即用</li>
-<li>准生产环境的运行时应用监控</li>
-<li>与云计算的天然集成</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring boot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-问题总结/工作沟通" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/问题总结/工作沟通/">沟通</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/25/问题总结/工作沟通/" class="archive-article-date">
-  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="询问上级意见"><a href="#询问上级意见" class="headerlink" title="询问上级意见"></a>询问上级意见</h3><ul>
-<li>给出问题2-3选项</li>
-<li>说出你的倾向以及原因</li>
-<li>通知所有需要通知到的人</li>
-</ul>
-<h3 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h3><ul>
-<li>不要急</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">沟通</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/工作//" class="article-tag-list-link color3">工作</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/SpringBoot/Springboot-note" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/学习笔记/SpringBoot/Springboot-note/">Spring boot 遇到的坑</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/25/学习笔记/SpringBoot/Springboot-note/" class="archive-article-date">
-  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Spring-boot不使用继承-使用依赖"><a href="#Spring-boot不使用继承-使用依赖" class="headerlink" title="Spring boot不使用继承,使用依赖"></a>Spring boot不使用继承,使用依赖</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;parent&gt;</span></span><br><span class="line">    <span class="params">&lt;groupId&gt;</span>org.springframework.boot<span class="params">&lt;/groupId&gt;</span></span><br><span class="line">    <span class="params">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="params">&lt;/artifactId&gt;</span></span><br><span class="line">    <span class="params">&lt;version&gt;</span><span class="number">1.5</span><span class="number">.21</span>.RELEASE<span class="params">&lt;/version&gt;</span></span><br><span class="line"><span class="params">&lt;/parent&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 替换为</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;dependencyManagement&gt;</span></span><br><span class="line">    <span class="params">&lt;dependencies&gt;</span></span><br><span class="line">        <span class="params">&lt;dependency&gt;</span></span><br><span class="line">            <span class="params">&lt;groupId&gt;</span>org.springframework.boot<span class="params">&lt;/groupId&gt;</span></span><br><span class="line">            <span class="params">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="params">&lt;/artifactId&gt;</span></span><br><span class="line">            <span class="params">&lt;version&gt;</span><span class="number">1.5</span><span class="number">.21</span>.RELEASE<span class="params">&lt;/version&gt;</span></span><br><span class="line">            <span class="params">&lt;type&gt;</span>pom<span class="params">&lt;/type&gt;</span></span><br><span class="line">            <span class="params">&lt;scope&gt;</span>import<span class="params">&lt;/scope&gt;</span></span><br><span class="line">        <span class="params">&lt;/dependency&gt;</span></span><br><span class="line">    <span class="params">&lt;/dependencies&gt;</span></span><br><span class="line"><span class="params">&lt;/dependencyManagement&gt;</span></span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring boot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Nginx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/Nginx/">Nginx</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/19/学习笔记/Nginx/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="配置文件结构"><a href="#配置文件结构" class="headerlink" title="配置文件结构"></a>配置文件结构</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">..</span>.              #全局块</span><br><span class="line">events &#123;         #events块</span><br><span class="line">   <span class="built_in">..</span>.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http      #http块</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">..</span>.   #http全局块</span><br><span class="line">   <span class="built_in"> server </span>       #server块</span><br><span class="line">    &#123; </span><br><span class="line">        <span class="built_in">..</span>.       #server全局块</span><br><span class="line">        location [PATTERN]   #location块</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">..</span>.</span><br><span class="line">        &#125;</span><br><span class="line">        location [PATTERN] </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">..</span>.</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    server</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">..</span>.</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">..</span>.     #http全局块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>(全局设置)           设置的指令将影响其他所有设置<ul>
-<li>Events </li>
-<li>HTTP<ul>
-<li>upstream              负载均衡服务器设置</li>
-<li>Server (主机设置)     指定主机和端口<ul>
-<li>location          用于匹配网页位置</li>
-<li>location</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Server</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">server</span>继承全局块 | location继承<span class="keyword">server</span> | upstream既不会继承其他设置也不会被继承</span><br></pre></td></tr></table></figure>
-
-<h4 id="Nginx-的全局配置"><a href="#Nginx-的全局配置" class="headerlink" title="Nginx 的全局配置"></a>Nginx 的全局配置</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">user nobody nobody<span class="comment">;</span></span><br><span class="line">worker_processes <span class="number">2</span><span class="comment">;</span></span><br><span class="line">error_log logs/error.log notice<span class="comment">;</span></span><br><span class="line">pid logs/nginx.pid<span class="comment">;</span></span><br><span class="line">worker_rlimit_nofile <span class="number">65535</span><span class="comment">;</span></span><br><span class="line"> </span><br><span class="line">events&#123;</span><br><span class="line">    use epoll<span class="comment">;</span></span><br><span class="line">    worker_connections <span class="number">65536</span><span class="comment">;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>user</strong> 是个主模块指令，指定Nginx Worker进程运行用户以及用户组，默认由nobody账号运行</li>
-<li><strong>worker_processes</strong> 是个主模块指令，指定了Nginx要开启的进程数。每个Nginx进程平均消耗10M-12M内存。建议指定和CPU的数量一致即可</li>
-<li><strong>error_log</strong> 是个主模块指令，用来定义全局错误日志文件。日志输出级别有debug（最详细）、info、notice、warm、error、crit（最少）可供选择</li>
-<li><strong>pid</strong> 是个主模块指令，用来指定进程pid的存储文件位置</li>
-<li><strong>worker_rlimit_nofile</strong> 用于绑定worker进程和CPU,linux内核2.4以上</li>
-</ul>
-<p>events事件指令是设定Nginx的工作模式以及连接数上限：</p>
-<ul>
-<li><strong>user</strong> 是个事件模块指令，用来指定Nginx的工作模式。Nginx支持的工作模式有select、poll、kqueue、epoll、rtsig、和/dev/poll。<br>其中select和poll都是标准的工作模式、kqueue和epoll是高效的工作模式、不同的是epoll用在Linux平台上，而kqueue用在BSD系统中。对于Linux<br>系统，epoll工作模式首先</li>
-<li><strong>worker_connections</strong>也是事件模块指令，用于定义Nginx每个进程的最大默认连接数，默认是1024。最大客户端连接数由worker_processes和<br>worker_connections决定，即max_client=worker_processes<em>worker_connections。在作为反向代理时，max_client=worker_processes</em>worker_connections/4。<br>进程的最大连接数受Linux系统进程的最大打开文件数限制，在执行操作系统命令<strong>ulimit -n 65536</strong>后worker_connections的设置才能生效</li>
-</ul>
-<h4 id="HTTP服务器配置"><a href="#HTTP服务器配置" class="headerlink" title="HTTP服务器配置"></a>HTTP服务器配置</h4><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">http&#123;</span><br><span class="line">    include      conf/mime.types<span class="comment">;</span></span><br><span class="line">    default_type  application/octet-stream<span class="comment">; </span></span><br><span class="line">    log_format main <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$request</span>" <span class="variable">$status</span> <span class="variable">$bytes_sent</span> '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_referer</span>" "<span class="variable">$http_user_agent</span>" '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$gzip_ratio</span>"'</span><span class="comment">;</span></span><br><span class="line">     log_format download <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$request</span>" <span class="variable">$status</span> <span class="variable">$bytes_sent</span> '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_referer</span>" "<span class="variable">$http_user_agent</span>" '</span></span><br><span class="line">     <span class="string">'"<span class="variable">$http_range</span>" "<span class="variable">$sent_http_content_range</span>"'</span><span class="comment">;</span></span><br><span class="line">    client_max_body_size  <span class="number">20</span>m<span class="comment">; </span></span><br><span class="line">    client_header_buffer_size    <span class="number">32</span>K<span class="comment">;</span></span><br><span class="line">    large_client_header_buffers  <span class="number">4</span> <span class="number">32</span>k<span class="comment">;</span></span><br><span class="line">    Sendfile  <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    tcp_nopush     <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    tcp_nodelay    <span class="literal">on</span><span class="comment">;</span></span><br><span class="line">    keepalive_timeout <span class="number">60</span><span class="comment">;</span></span><br><span class="line">    client_header_timeout  <span class="number">10</span><span class="comment">;</span></span><br><span class="line">    client_body_timeout    <span class="number">10</span><span class="comment">;</span></span><br><span class="line">    send_timeout          <span class="number">10</span><span class="comment">;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>include</strong> 是实现对配置文件所包含的文件的设定，可以减少主配置文件的复杂度。</li>
-<li><strong>default_type</strong> 属于HTTP核心模块指令，这里设定默认类型为二进制流，也就是当文件类型未定义时使用这种方式，<br>例如在没有设置PHP环境是，Nginx是不予解析的，此时用浏览器访问PHP文件就会出现下载窗口</li>
-<li><strong>log_format</strong> 是Nginx的HttpLog模块指令，用于指定Nginx日志的输出格式。main为此日志输出格式的名称，可以在下面access_log指令中引用</li>
-<li><strong>client_max_body_size</strong> 用来设置允许客户端请求的最大的单个文件字节数</li>
-<li><strong>client_header_buffer_size</strong> 用来指定客户端请求的header buffer大小。对于大多数请求，1k的缓冲区大小已经足够了，如果自定义<br>了消息头或者有更大的cookie，可以增加缓冲区大小，这里设置为32K</li>
-<li><strong>large_client_header_buffers</strong>用来指定客户端请求中较大的消息头的缓存最大数量和大小， 4 为个数 32k为大小 最大缓冲缓存量4*32k</li>
-<li><strong>sendfile</strong> 参数用于开启高效文件传输模式，将tcp_nopush和tcp_nodelay两个指令设置为on用于防止网络阻塞</li>
-<li><strong>keepalive_timeout</strong> 设置客户端连接保持活动的超时时间，超过这个时间服务器将会关闭连接</li>
-<li><strong>client_header_timeout</strong> 设置客户端请求头读取超时时间，如果超过这个时间,客户端还没有发送任何数据，Nginx将返回“Request time out（408）”错误</li>
-<li><strong>client_body_timeout</strong> 设置客户端请求主体读取超时时间，如果超过这个时间,客户端还没有发送任何数据，Nginx将返回“Request time out（408）”错误，默认值60</li>
-<li><strong>send_timeout</strong> 指定响应客户端的超时时间，这个超时仅限于两个连续活动之间的时间，如果超过这个时间，客户端还没有任何活动，Nginx将会关闭连接</li>
-</ul>
-<h4 id="HttpGzip模块配置"><a href="#HttpGzip模块配置" class="headerlink" title="HttpGzip模块配置"></a>HttpGzip模块配置</h4><p>HttpGzip模块支持在线实时压缩传输数据流，通过/opt/nginx/sbin/nginx -V命令可以查看安装Nginx时的编译选项。</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@vps ~]<span class="comment"># /opt/nginx/sbin/nginx  -V</span></span><br><span class="line">nginx <span class="keyword">version</span>: nginx/1.0.14</span><br><span class="line">built by gcc 4.4.6 20110731 <span class="params">(Red Hat 4.4.6-3)</span> <span class="params">(GCC)</span></span><br><span class="line">configure arguments: <span class="params">--with-http_stub_status_module</span> <span class="params">--with-http_gzip_static_module</span> <span class="params">--prefix=/opt/nginx</span></span><br></pre></td></tr></table></figure>
-
-<p>下面是HttpGzip模块在Nginx配置中的相关属性设置</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gzip <span class="keyword">on</span>;</span><br><span class="line">gzip_min_length <span class="number">1</span>k;</span><br><span class="line">gzip_buffers <span class="number">4</span> <span class="number">16</span>k;</span><br><span class="line">gzip_http_version <span class="number">1.1</span>;</span><br><span class="line">gzip_comp_level <span class="number">2</span>;</span><br><span class="line">gzip_types <span class="built_in">text</span>/plain <span class="built_in">application</span>/x-javascript <span class="built_in">text</span>/css <span class="built_in">application</span>/xml</span><br><span class="line">gzip_vary <span class="keyword">on</span>;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>gzip</strong>用于设置开启或者关闭gzip模块</li>
-<li><strong>gzip_min_length</strong> 表示允许压缩的页面最小字节数，页面字节数据从header头中的Content-Length中获取，默认值0，建议设置成大于1K<br>,小于1K可能会越压缩越大</li>
-<li><strong>gzip_buffers</strong> 表示申请4个单位为16K的内存，作为压缩结果流缓存，默认值是申请与原始值大小相同的的内存空间来存储gzip压缩结果</li>
-<li><strong>gzip_http_version</strong> 用于设置识别HTTP协议版本，默认是1.1，目前大部分浏览器已支持Gzip解压，使用默认即可</li>
-<li><strong>gzip_comp_level</strong> 用来指定Gzip压缩比，1压缩比最小，处理速度快，9压缩比最大，传输速度快，但是处理最慢，也比较消耗cpu资源</li>
-<li><strong>gzip_types</strong> 用来指定压缩的类型，无论是否指定，”text/html”类型总是被压缩的</li>
-<li><strong>gzip_vary</strong> 选项可以让前端的缓存服务器经过Gzip压缩的页面，例如用Squid缓存经过Nginx压缩的数据</li>
-</ul>
-<h4 id="负载均衡配置"><a href="#负载均衡配置" class="headerlink" title="负载均衡配置"></a>负载均衡配置</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">upstream xiebiao123.com&#123;</span><br><span class="line">    ip_hash;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.11:80;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.12:80 down;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.13:8009 <span class="attribute">max_fails</span>=3 <span class="attribute">fail_timeout</span>=20s;</span><br><span class="line">   <span class="built_in"> server </span>192.168.8.146:8080;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>upstream是Nginx的HTTP Upstream模块，这个模块通过一个简单的调度算法来实现客户端IP到后端服务器的负载均衡。<br>在上面的设定中，通过upstream指令指定了一个负载均衡器的名称xiebiao123.com。这个名称可以任意指定，在后面需要的地方直接调用即可<br>Nginx的负载均衡模块目前支持4种调度算法:</p>
-<ul>
-<li>轮询（默认）：每个请求按时间顺序逐一分配到不同的后端服务，如果后端某台服务器宕机，故障系统被自动剔除。</li>
-<li>weigh ：指定轮询权值，weight值越大，分配到的访问几率越高</li>
-<li>ip_hash ： 每个请求按访问IP的hash结果分配，这样来自同一个IP的访客固定访问一个后台服务</li>
-<li>fair ： 根据后端服务的响应时间来分配请求，响应时间短的优先分配，Nginx本身不支持fair,需要使用必须下载Nginx的upstream_fair模块</li>
-<li>url_hash ：按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，可以进一步提升后端服务的效率，Nginx本身不支持url_hash<br>,可以安装Nginx的hash软件包</li>
-</ul>
-<p>在HTTP Upstream模块中，可以通过server指令指定后端服务器的IP地址和端口，同时还可以设定每个后端服务器在负载均衡调度中的状态。常用的状态有：</p>
-<ul>
-<li>down：表示当前的server暂时不参与负载均衡</li>
-<li>backup：预留的备份机器。当其他所有的非backup机器出现故障或者忙的时候，才会请求backup机器，因此这台机器的压力最轻；</li>
-<li>max_fails：允许请求失败的次数，默认为1。当超过最大次数时，返回proxy_next_upstream 模块定义的错误；</li>
-<li>fail_timeout：在经历了max_fails次失败后，暂停服务的时间。max_fails可以和fail_timeout一起使用。</li>
-</ul>
-<blockquote>
-<p>注意，当负载调度算法为ip_hash时，后端服务器在负载均衡调度中的状态不能是weight(权重)和backup。</p>
-</blockquote>
-<h4 id="server虚拟主机配置"><a href="#server虚拟主机配置" class="headerlink" title="server虚拟主机配置"></a>server虚拟主机配置</h4><figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">    listen         <span class="number">80</span><span class="comment">;</span></span><br><span class="line">    server_name    <span class="number">192.168</span>.<span class="number">12.188</span>  www.ixdba.net<span class="comment">;</span></span><br><span class="line">    index index.html index.htm index.jsp<span class="comment">;</span></span><br><span class="line">    root  /web/wwwroot/www.ixdba.net</span><br><span class="line">    charset gb2312<span class="comment">;</span></span><br><span class="line">    access_log logs/nginx.log main<span class="comment">;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>listen 用于指定虚拟机的服务端口</li>
-<li>server_name 用来指定IP地址或者域名，多个域名之间用空格分开</li>
-<li>index 用于设定访问的默认首页地址</li>
-<li>root 用于指定虚拟机的网页根目录，这个目录可以是相对路径也可以是绝对路径</li>
-<li>charset 用于网页的默认编码格式</li>
-<li>access_log 用来指定此虚拟机的访问日志存放路径，最后的main用于指定日志的格式（上文中的main）<blockquote>
-<p>建议将虚拟机配置写进另外一个文件，然后通过include指令包含进来，这样更方便管理和维护</p>
-</blockquote>
-</li>
-</ul>
-<h4 id="location-URL匹配配置"><a href="#location-URL匹配配置" class="headerlink" title="location URL匹配配置"></a>location URL匹配配置</h4><p>location 支持正则表达式匹配，也支持条件判断匹配，用户可以通过location指令实现Nginx对动、静态网页进行过滤<br>处理。使用location URL匹配配置还可以实现反向代理，用于实现PHP动态解析或者负载均衡策略。</p>
-<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location ~ .*\.(gif|<span class="type">jpg</span>|<span class="type">jpeg</span>|<span class="type">png</span>|<span class="type">bmp</span>|<span class="type">swf</span>)$  &#123;</span><br><span class="line">    root    /web/wwwroot/www.ixdba.net;</span><br><span class="line">    expires <span class="number">30</span>d;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上这段设置是通过location指令来对网页URL进行分析处理，所有扩展名以.gif、.jpg、.jpeg、.png、.bmp、.swf结尾的静态文件都交给nginx处理，<br>而expires用来指定静态文件的过期时间，这里是30天</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> <span class="regexp">~ .*.jsp$</span> &#123; </span><br><span class="line">    <span class="attribute">index</span> index.jsp;       </span><br><span class="line">    <span class="attribute">proxy_pass</span> http://localhost:8080;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在最后这段设置中，location是对此虚拟主机下动态网页的过滤处理，也就是将所有以.jsp为后缀的文件都交给本机的8080端口处理。</p>
-<h4 id="StubStatus模块配置"><a href="#StubStatus模块配置" class="headerlink" title="StubStatus模块配置"></a>StubStatus模块配置</h4><p>stubStatus模块能够获取Nginx自上次启动以来的工作状态，此模块非核心模块，需要在Nginx编译安装时手工指定才能使用此功能，<br>以下指令启用获取Nginx工作状态的功能</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /NginxStatus &#123;</span><br><span class="line">    <span class="attribute">stub_status</span>      <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">access_log</span>       logs/NginxStatus.log;</span><br><span class="line">    <span class="attribute">auth_basic</span>       <span class="string">"NginxStatus"</span>;</span><br><span class="line">    <span class="attribute">auth_basic_user_file</span>    ../htpasswd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>stub_status 设置为no,表示启用StubStatus的工作状态统计功能</li>
-<li>access_log 用来指定StubStatus模块的访问日志文件</li>
-<li>auth_basic Nginx的一种认证机制</li>
-<li>auth_basic_user_file 用来指定认证的密码文件</li>
-</ul>
-<h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
-<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1394,19 +1415,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1414,11 +1423,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1426,11 +1439,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1438,7 +1447,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1446,7 +1455,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1458,27 +1495,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1510,6 +1531,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
@@ -1518,19 +1547,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">logback</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>

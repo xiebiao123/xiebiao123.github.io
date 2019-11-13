@@ -182,14 +182,14 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-美好生活/我家小可爱" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Spring/Spring-session" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/美好生活/我家小可爱/">小璐璐</a>
+      <a class="article-title" href="/2018/09/26/学习笔记/Spring/Spring-session/">Spring Session 共享分析</a>
     </h1>
   
 
@@ -197,17 +197,65 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/19/美好生活/我家小可爱/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+        <a href="/2018/09/26/学习笔记/Spring/Spring-session/" class="archive-article-date">
+  	<time datetime="2018-09-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="配置详解"><a href="#配置详解" class="headerlink" title="配置详解"></a>配置详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5175711.html</a></p>
-<h3 id="负载均衡-amp-反向代理"><a href="#负载均衡-amp-反向代理" class="headerlink" title="负载均衡 &amp; 反向代理"></a>负载均衡 &amp; 反向代理</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5199046.html" target="_blank" rel="noopener">https://www.cnblogs.com/knowledgesea/p/5199046.html</a></p>
-        
+        <h3 id="spring-session管理session分析"><a href="#spring-session管理session分析" class="headerlink" title="spring-session管理session分析"></a>spring-session管理session分析</h3><ul>
+<li>DelegatingFilterProxy 代理类</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> void initFilterBean() throws ServletException &#123;</span><br><span class="line">    synchronized (<span class="keyword">this</span>.delegateMonitor) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.delegate == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// If no target bean name specified, use filter name.</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.targetBeanName == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.targetBeanName = getFilterName();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Fetch Spring root application context and initialize the delegate early,</span></span><br><span class="line">            <span class="comment">// if possible. If the root application context will be started after this</span></span><br><span class="line">            <span class="comment">// filter proxy, we'll have to resort to lazy initialization.</span></span><br><span class="line">            WebApplicationContext wac = findWebApplicationContext();</span><br><span class="line">            <span class="keyword">if</span> (wac != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.delegate = initDelegate(wac);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DelegatingFilterProxy里没有实现过滤器的任何逻辑，具体逻辑在其指定的filter-name过滤器中。初始化过滤器，如果没有配置targetBeanName，<br>则直接使用filter-name，这里指定的是springSessionRepositoryFilter，这个名称是一个固定值此filter在RedisHttpSessionConfiguration中被定义。</p>
+<ul>
+<li>RedisHttpSessionConfiguration 配置类<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> &lt;S extends ExpiringSession&gt; SessionRepositoryFilter&lt;? extends ExpiringSession&gt; springSessionRepositoryFilter(</span><br><span class="line">        SessionRepository&lt;S&gt; sessionRepository) &#123;</span><br><span class="line">    SessionRepositoryFilter&lt;S&gt; sessionRepositoryFilter = new SessionRepositoryFilter&lt;S&gt;(</span><br><span class="line">            sessionRepository);</span><br><span class="line">    sessionRepositoryFilter.setServletContext(<span class="keyword">this</span>.servletContext);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.httpSessionStrategy instanceof MultiHttpSessionStrategy) &#123;</span><br><span class="line">        sessionRepositoryFilter.setHttpSessionStrategy(</span><br><span class="line">                (MultiHttpSessionStrategy) <span class="keyword">this</span>.httpSessionStrategy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        sessionRepositoryFilter.setHttpSessionStrategy(<span class="keyword">this</span>.httpSessionStrategy);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sessionRepositoryFilter;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line">在RedisHttpSessionConfiguration的父类SpringHttpSessionConfiguration中定义了springSessionRepositoryFilter,此方法返回值是</span><br><span class="line">SessionRepositoryFilter，这个其实就是真实的过滤器。此方法的参数SessionRepository的实现类RedisOperationsSessionRepository</span><br><span class="line">其实就是就是将session持久化到redis中</span><br><span class="line"></span><br><span class="line">* SessionRepositoryFilter 过滤器</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>@Override<br>protected void doFilterInternal(HttpServletRequest request,<br>        HttpServletResponse response, FilterChain filterChain)<br>        throws ServletException, IOException {<br>    request.setAttribute(SESSION_REPOSITORY_ATTR, this.sessionRepository);</p>
+<pre><code>SessionRepositoryRequestWrapper wrappedRequest = new SessionRepositoryRequestWrapper(
+        request, response, this.servletContext);
+SessionRepositoryResponseWrapper wrappedResponse = new SessionRepositoryResponseWrapper(
+        wrappedRequest, response);
+
+HttpServletRequest strategyRequest = this.httpSessionStrategy
+        .wrapRequest(wrappedRequest, wrappedResponse);
+HttpServletResponse strategyResponse = this.httpSessionStrategy
+        .wrapResponse(wrappedRequest, wrappedResponse);
+
+try {
+    filterChain.doFilter(strategyRequest, strategyResponse);
+}
+finally {
+    wrappedRequest.commitSession();
+}</code></pre><p>}</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">所有的请求都会先经过SessionRepositoryFilter过滤器，<span class="built_in">request</span>被包装成了SessionRepositoryRequestWrapper对象，<span class="built_in">response</span>被包装</span><br><span class="line">成了SessionRepositoryResponseWrapper对象，SessionRepositoryRequestWrapper中重写了getSession等方法；finally中执行了commitSession</span><br><span class="line">方法，将session进行持久化操作</span><br><span class="line"></span><br><span class="line">* SessionRepositoryRequestWrapper 包装类</span><br></pre></td></tr></table></figure>
+
+<p>@Override<br>public HttpSessionWrapper getSession(boolean create) {<br>    HttpSessionWrapper currentSession = getCurrentSession();<br>    if (currentSession != null) {<br>        return currentSession;<br>    }<br>    S requestedSession = getRequestedSession();<br>    if (requestedSession != null) {<br>        if (getAttribute(INVALID_SESSION_ID_ATTR) == null) {<br>            requestedSession.setLastAccessedTime(Instant.now());<br>            this.requestedSessionIdValid = true;<br>            currentSession = new HttpSessionWrapper(requestedSession, getServletContext());<br>            currentSession.setNew(false);<br>            setCurrentSession(currentSession);<br>            return currentSession;<br>        }<br>    }<br>    else {<br>        // This is an invalid session id. No need to ask again if<br>        // request.getSession is invoked for the duration of this request<br>        if (SESSION_LOGGER.isDebugEnabled()) {<br>            SESSION_LOGGER.debug(<br>                    “No session found by id: Caching result for getSession(false) for this HttpServletRequest.”);<br>        }<br>        setAttribute(INVALID_SESSION_ID_ATTR, “true”);<br>    }<br>    if (!create) {<br>        return null;<br>    }<br>    if (SESSION_LOGGER.isDebugEnabled()) {<br>        SESSION_LOGGER.debug(<br>                “A new session was created. To help you troubleshoot where the session was created we provided a StackTrace (this is not an error). You can prevent this from appearing by disabling DEBUG logging for “<br>                        + SESSION_LOGGER_NAME,<br>                new RuntimeException(<br>                        “For debugging purposes only (not an error)”));<br>    }<br>    S session = SessionRepositoryFilter.this.sessionRepository.createSession();<br>    session.setLastAccessedTime(Instant.now());<br>    currentSession = new HttpSessionWrapper(session, getServletContext());<br>    setCurrentSession(currentSession);<br>    return currentSession;<br>}<br>```</p>
+<p>重点看一下重写的getSession方法,大致分为三步</p>
+<ol>
+<li>首先去本地内存中获取session，如果获取不到去指定的数据库中获取，这里其实就是去redis里面获取,sessionRepository就是上面定义的RedisOperationsSessionRepository对象</li>
+<li>如果redis里面也没有则创建一个新的session</li>
+<li>然后再将session设置到redis中</li>
+</ol>
+<h3 id="保存的session"><a href="#保存的session" class="headerlink" title="保存的session"></a>保存的session</h3><p>每次在消息处理完之后，会执行finally中的commitSession方法，每个session被保存都会创建三组数据，</p>
+<ul>
+<li><strong>hash结构记录</strong> key格式：<strong>spring:session:sessions:[sessionId]</strong>，对应的value保存session的所有数据包括：creationTime，maxInactiveInterval，lastAccessedTime，attribute</li>
+<li><strong>set结构记录</strong> key格式：<strong>spring:session:expirations:[过期时间]</strong>，对应的value为expires:[sessionId]列表，有效期默认是30分钟，即1800秒</li>
+<li><strong>string结构记录</strong> key格式：<strong>spring:session:sessions:expires:[sessionId]</strong>，对应的value为空；该数据的TTL表示sessionId过期的剩余时间</li>
+</ul>
+<h3 id="定时清理"><a href="#定时清理" class="headerlink" title="定时清理"></a>定时清理</h3><p>除了依赖redis本身的有效期机制，spring-session提供了一个定时器，用来定期检查需要被清理的session，同样是通过roundDownMinute方法来获取key，<br>获取这一分钟内要被删除的session，此value是set数据结构，里面存放这需要被删除的sessionId</p>
+<blockquote>
+<p>注：这里面存放的的是spring:session:sessions:expires:[sessionId]，并不是实际存储session数据的spring:session:sessions:[sessionId]</p>
+</blockquote>
+<p>首先删除了spring:session:expirations:[过期时间]，然后遍历set执行touch方法，并没有直接执行删除操作，看touch方法的注释大致意义就是尝试访问一下key，<br>如果key已经过去则触发删除操作，利用了redis本身的特性</p>
+<h3 id="键空间通知"><a href="#键空间通知" class="headerlink" title="键空间通知"></a>键空间通知</h3><p>定期删除机制并没有删除实际存储session数据的spring:session:sessions:[sessionId]，这里利用了redis的keyspace notification功能，大致就是通过命令产生一个通知，具体什么命令可以配置（包括：删除，过期等）具体可以查看</p>
+<p><a href="http://www.sohu.com/a/260010804_464962" target="_blank" rel="noopener">参考地址</a></p>
+
       
 
       
@@ -220,7 +268,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小璐璐</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -232,7 +280,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
+        			<a href="/categories/源码//" class="article-tag-list-link color3">源码</a>
         		</li>
       		
 		</ul>
@@ -267,14 +315,14 @@
 
 
   
-    <article id="post-学习笔记/单点登录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Dubbo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/单点登录/">单点登录</a>
+      <a class="article-title" href="/2018/08/28/学习笔记/Dubbo/">Dubbo</a>
     </h1>
   
 
@@ -282,16 +330,61 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/19/学习笔记/单点登录/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+        <a href="/2018/08/28/学习笔记/Dubbo/" class="archive-article-date">
+  	<time datetime="2018-08-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="原理详解"><a href="#原理详解" class="headerlink" title="原理详解"></a>原理详解</h3><p><a href="https://www.cnblogs.com/knowledgesea/p/5175711.html" target="_blank" rel="noopener">单点登录</a></p>
-        
+        <h3 id="注册中心Zookeeper"><a href="#注册中心Zookeeper" class="headerlink" title="注册中心Zookeeper"></a><a href="http://dubbo.apache.org/zh-cn/docs/user/references/registry/zookeeper.html" target="_blank" rel="noopener">注册中心Zookeeper</a></h3><p>Dubbo支持多种注册中心，官方推荐使用Zookeeper，Zookeeper是Apache Hadoop的一个子项目，是一个树形的目录服务，支持变更推送</p>
+<p><img src="/images/dubbo/zookeeper.jpg" alt="zookeeper"></p>
+<ul>
+<li>流程说明<ul>
+<li>服务提供者启动时：向 /dubbo/com.foo.BarService/providers 目录下写入自己的 URL 地址</li>
+<li>服务消费者启动时：订阅 /dubbo/com.foo.BarService/providers 目录下的提供者 URL 地址。并向 /dubbo/com.foo.BarService/consumers 目录下写入自己的 URL 地址</li>
+<li>监控中心启动时：订阅 /dubbo/com.foo.BarService 目录下的所有提供者和消费者 URL 地址</li>
+</ul>
+</li>
+<li>支持以下功能：<ul>
+<li>当提供者出现断电等异常停机时，注册中心能自动删除提供者信息</li>
+<li>当注册中心重启时，能自动恢复注册数据，以及订阅请求</li>
+<li>当会话过期时，能自动恢复注册数据，以及订阅请求</li>
+<li>当设置&lt;dubbo:registry check=”false” /&gt; 时，记录失败注册和订阅请求，后台定时重试</li>
+<li>可通过&lt;dubbo:registry username=”admin” password=”1234” /&gt; 设置 zookeeper 登录信息</li>
+<li>可通过&lt;dubbo:registry group=”dubbo” /&gt; 设置 zookeeper 的根节点，不设置将使用无根树</li>
+<li>支持 * 号通配符 &lt;dubbo:reference group=”*” version=”*” /&gt;，可订阅服务的所有分组和所有版本的提供者</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意:在2.7.x的版本中已经移除了zkclient的实现,使用Consumer来实现（2.3版本添加）</p>
+</blockquote>
+<h3 id="配置的覆盖策略"><a href="#配置的覆盖策略" class="headerlink" title="配置的覆盖策略"></a>配置的覆盖策略</h3><p>下图展示了配置覆盖关系的优先级，从上到下优先级依次降低：</p>
+<p><img src="/images/dubbo/dubbo-configuration.jpg" alt="configuration"></p>
+<blockquote>
+<ul>
+<li>Java虚拟机 &gt; 外部配置（Spring application.properties | Apollo | Nacos）&gt; Spring API(Java Bean) &gt; 本地配置（dubbo.properties）</li>
+<li>方法级 &gt;  接口级 &gt; 全局配置</li>
+<li>如果级别一样，则消费者 &gt; 提供者</li>
+</ul>
+</blockquote>
+<h4 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h4><ul>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/preflight-check.html" target="_blank" rel="noopener">启动时检查</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/fault-tolerent-strategy.html" target="_blank" rel="noopener">集群容错</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/loadbalance.html" target="_blank" rel="noopener">负责均衡</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/service-downgrade.html" target="_blank" rel="noopener">服务降级</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/multi-versions.html" target="_blank" rel="noopener">多版本</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/local-stub.html" target="_blank" rel="noopener">本地存根</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/parameter-validation.html" target="_blank" rel="noopener">参数验证</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/result-cache.html" target="_blank" rel="noopener">结果缓存</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/async-call.html" target="_blank" rel="noopener">Consumer异步调用</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/async-execute-on-provider.html" target="_blank" rel="noopener">Provider异步调用</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/callback-parameter.html" target="_blank" rel="noopener">参数回调</a></li>
+<li><a href="http://dubbo.apache.org/zh-cn/docs/user/demos/events-notify.html" target="_blank" rel="noopener">事件通知:远程方法调用之前、调用之后、执行异常</a></li>
+</ul>
+
       
 
       
@@ -304,7 +397,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">单点登录</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">dubbo</a>
         		</li>
       		
 		</ul>
@@ -351,14 +444,14 @@
 
 
   
-    <article id="post-学习笔记/freemarker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/MyBatis" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/freemarker/">Freemarker</a>
+      <a class="article-title" href="/2018/08/22/学习笔记/MyBatis/">MyBatis</a>
     </h1>
   
 
@@ -366,31 +459,23 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/19/学习笔记/freemarker/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
+        <a href="/2018/08/22/学习笔记/MyBatis/" class="archive-article-date">
+  	<time datetime="2018-08-21T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="取值指令"><a href="#取值指令" class="headerlink" title="取值指令"></a>取值指令</h3><ul>
-<li>常用${var}语法进行取值</li>
-<li>对null、不存在对象取值${var!}或${var!’defaultValue’}</li>
-<li>取包装对象的值,通过‘点’语法${user.name}</li>
-<li>取值的时候可以进行赋值、运算</li>
-<li>Date类型格式化${date?String(‘yyyy-MM-dd’)}</li>
-<li>转义HTML内容${date?html}</li>
-<li>{data?string.currency} – $20.00</li>
-<li>{data?string.percent} – 20%</li>
-<li>布尔类型${foo?string(“yes”,”no”)}</li>
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><ul>
+<li>是一个半自动化持久层框架</li>
+<li>编写sql -&gt; 预编译 -&gt; 设置参数 -&gt; 执行sql -&gt; 封装结果</li>
 </ul>
-<h3 id="内置函数-使用"><a href="#内置函数-使用" class="headerlink" title="内置函数(使用?)"></a>内置函数(使用?)</h3><h4 id="对于字符串"><a href="#对于字符串" class="headerlink" title="对于字符串"></a>对于字符串</h4><ul>
-<li>html 对字符串进行HTML编码</li>
-<li>cap_first 使字符串第一个字母大写</li>
-<li>lower_case 将字符串转换成小写</li>
-<li>trim 去掉字符串前后的空白字符</li>
-</ul>
+<h4 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h4><ul>
+<li>Executor(update,query,flushStatements,commit,rollback,getTransaction,close,isClosed)</li>
+<li>ParameterHandler(getParameterObject,s  etParameters)</li>
+<li>ResultSetHandler(handleResultSets,handleOutputParameters)</li>
+<li>StatementHandler(prepare,parameter,batch,update,query)
         
       
 
@@ -404,7 +489,377 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">freemarker</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MyBatis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/04/学习笔记/Docker/">Docker</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/08/04/学习笔记/Docker/" class="archive-article-date">
+  	<time datetime="2018-08-03T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="虚拟机与Docker有何不同"><a href="#虚拟机与Docker有何不同" class="headerlink" title="虚拟机与Docker有何不同"></a><a href="https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html" target="_blank" rel="noopener">虚拟机与Docker有何不同</a></h3><p>Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。<br>虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。</p>
+<p>虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。</p>
+<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><ol>
+<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">CentOS Docker 安装</a></li>
+</ol>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><strong>镜像(Images)</strong> 镜像是用于创建 Docker 容器的模板</li>
+<li><strong>容器(Container)</strong> 容器是独立运行的一个或一组应用</li>
+<li><strong>客户端(Client)</strong> Docker 客户端通过命令行或者其他工具使用 <a href="https://docs.docker.com/reference/api/docker_remote_api" target="_blank" rel="noopener">Docker API</a> 与 Docker 的守护进程通信</li>
+<li><strong>主机(Host)</strong> 一个物理或者虚拟的机器用于执行 Docker 守护进程和容器</li>
+<li><strong>仓库(Registry)</strong> Docker 仓库用来保存镜像，可以理解为代码控制中的代码仓库,<a href="https://hub.docker.com" target="_blank" rel="noopener">Docker Hub</a> 提供了庞大的镜像集合供使用</li>
+<li><strong>Machine</strong> Docker Machine是一个简化Docker安装的命令行工具，通过一个简单的命令行即可在相应的平台上安装Docker，比如VirtualBox、 Digital Ocean、Microsoft Azure</li>
+</ul>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><h4 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h4><pre><code>service docker start 启动 Docker 进程
+docker command --help Docker命令使用方法</code></pre>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/SpringBoot/Springboot-note" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/学习笔记/SpringBoot/Springboot-note/">Spring boot 遇到的坑</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/25/学习笔记/SpringBoot/Springboot-note/" class="archive-article-date">
+  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Spring-boot不使用继承-使用依赖"><a href="#Spring-boot不使用继承-使用依赖" class="headerlink" title="Spring boot不使用继承,使用依赖"></a>Spring boot不使用继承,使用依赖</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;parent&gt;</span></span><br><span class="line">    <span class="params">&lt;groupId&gt;</span>org.springframework.boot<span class="params">&lt;/groupId&gt;</span></span><br><span class="line">    <span class="params">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="params">&lt;/artifactId&gt;</span></span><br><span class="line">    <span class="params">&lt;version&gt;</span><span class="number">1.5</span><span class="number">.21</span>.RELEASE<span class="params">&lt;/version&gt;</span></span><br><span class="line"><span class="params">&lt;/parent&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta"># 替换为</span></span><br><span class="line"></span><br><span class="line"><span class="params">&lt;dependencyManagement&gt;</span></span><br><span class="line">    <span class="params">&lt;dependencies&gt;</span></span><br><span class="line">        <span class="params">&lt;dependency&gt;</span></span><br><span class="line">            <span class="params">&lt;groupId&gt;</span>org.springframework.boot<span class="params">&lt;/groupId&gt;</span></span><br><span class="line">            <span class="params">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="params">&lt;/artifactId&gt;</span></span><br><span class="line">            <span class="params">&lt;version&gt;</span><span class="number">1.5</span><span class="number">.21</span>.RELEASE<span class="params">&lt;/version&gt;</span></span><br><span class="line">            <span class="params">&lt;type&gt;</span>pom<span class="params">&lt;/type&gt;</span></span><br><span class="line">            <span class="params">&lt;scope&gt;</span>import<span class="params">&lt;/scope&gt;</span></span><br><span class="line">        <span class="params">&lt;/dependency&gt;</span></span><br><span class="line">    <span class="params">&lt;/dependencies&gt;</span></span><br><span class="line"><span class="params">&lt;/dependencyManagement&gt;</span></span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring boot</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-问题总结/工作沟通" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/问题总结/工作沟通/">沟通</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/25/问题总结/工作沟通/" class="archive-article-date">
+  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="询问上级意见"><a href="#询问上级意见" class="headerlink" title="询问上级意见"></a>询问上级意见</h3><ul>
+<li>给出问题2-3选项</li>
+<li>说出你的倾向以及原因</li>
+<li>通知所有需要通知到的人</li>
+</ul>
+<h3 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h3><ul>
+<li>不要急</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">沟通</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/工作//" class="article-tag-list-link color3">工作</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/SpringBoot/Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/学习笔记/SpringBoot/Springboot/">Spring boot</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2018/07/25/学习笔记/SpringBoot/Springboot/" class="archive-article-date">
+  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Spring-boot-优点"><a href="#Spring-boot-优点" class="headerlink" title="Spring boot 优点"></a>Spring boot 优点</h3><ul>
+<li>快速创建独立的Spring项目，以及主流框架集成</li>
+<li>使用嵌入式的Servlet容器，应用无需打成war包</li>
+<li>starter自动依赖与版本控制</li>
+<li>大量的自动配置，简化开发，也可以修改默认配置</li>
+<li>无需xml配置，无代码生成，开箱即用</li>
+<li>准生产环境的运行时应用监控</li>
+<li>与云计算的天然集成</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring boot</a>
         		</li>
       		
 		</ul>
@@ -535,14 +990,14 @@
 
 
   
-    <article id="post-学习笔记/Groovy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-美好生活/乌镇旅行" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/Groovy/">Groovy</a>
+      <a class="article-title" href="/2018/07/19/美好生活/乌镇旅行/">乌镇旅行</a>
     </h1>
   
 
@@ -550,7 +1005,7 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2018/07/19/学习笔记/Groovy/" class="archive-article-date">
+        <a href="/2018/07/19/美好生活/乌镇旅行/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -558,7 +1013,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*多行字符串可以使用三个连续的单引号或双引号包括*/</span></span><br><span class="line">def multiline=<span class="string">"""line1</span></span><br><span class="line"><span class="string">line2</span></span><br><span class="line"><span class="string">line3</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*内插字符串,变量直接插入到字符串中,当使用内插字符串的时候，字符串字面值是Groovy的字符串类型GString。这一点需要注意。</span></span><br><span class="line"><span class="comment">普通的Java字符串是不变的，而GString是可变的。另外它们的哈希值也不同。因此在使用Map等数据类型的时候需要格外注意，避</span></span><br><span class="line"><span class="comment">免使用GString作为Map的键。*/</span></span><br><span class="line">def name = <span class="string">'Guillaume'</span></span><br><span class="line">def greeting = <span class="string">"Hello $&#123;name&#125;"</span></span><br></pre></td></tr></table></figure>
+        <p><img src="/images/%E7%94%9F%E6%B4%BB/%E4%B9%8C%E9%95%87%E6%97%85%E8%A1%8C/%E4%B9%8C%E9%95%871.jpg" alt="乌镇1"></p>
         
       
 
@@ -572,7 +1027,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">groovy</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">乌镇旅行</a>
         		</li>
       		
 		</ul>
@@ -584,7 +1039,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
         		</li>
       		
 		</ul>
@@ -704,353 +1159,9 @@
 
 
   
-    <article id="post-美好生活/乌镇旅行" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/美好生活/乌镇旅行/">乌镇旅行</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/19/美好生活/乌镇旅行/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/images/%E7%94%9F%E6%B4%BB/%E4%B9%8C%E9%95%87%E6%97%85%E8%A1%8C/%E4%B9%8C%E9%95%871.jpg" alt="乌镇1"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">乌镇旅行</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/生活//" class="article-tag-list-link color3">生活</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/加密解密/">加密解密</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/19/学习笔记/加密解密/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
-<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
-<ul>
-<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
-<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
-<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
-</ul>
-<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/数据库/Mysql-lock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/数据库/Mysql-lock/">mysql-lock</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/19/学习笔记/数据库/Mysql-lock/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>用数据版本（Version）记录机制实现，这是乐观锁最常用的一种实现方式。何谓数据版本？即为数据增加一个版本标识，一般是通过为数据库表增加一个数字类型的 “version”<br>字段来实现。当读取数据时，将version字段的值一同读出，数据每更新一次，对此version值加1。当我们提交更新的时候，判断数据库表对应记录的当前版本信息与第一次取出<br>来的version值进行比对，如果数据库表当前版本号与第一次取出来的version值相等，则予以更新，否则认为是过期数据。</p>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据库表设计三个字段，分别是id,value、version</span></span><br><span class="line">    select <span class="built_in">id</span>,value,<span class="built_in">version</span> <span class="keyword">from</span> TABLE <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125;</span></span><br><span class="line"><span class="comment"># 每次更新表中的value字段时，为了防止发生冲突，需要这样操作</span></span><br><span class="line">    update TABLE <span class="keyword">set</span> value=<span class="number">2</span>,<span class="built_in">version</span>=<span class="built_in">version</span>+<span class="number">1</span> <span class="keyword">where</span> <span class="built_in">id</span>=<span class="comment">#&#123;id&#125; and version=#&#123;version&#125;</span></span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/IDEA" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/IDEA/">IDEA</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2018/07/19/学习笔记/IDEA/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a><a href="http://www.riaway.com/theme.php" target="_blank" rel="noopener">主题</a></h4><h4 id="常用plugins"><a href="#常用plugins" class="headerlink" title="常用plugins"></a>常用plugins</h4>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -1152,19 +1263,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">docker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1172,11 +1271,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+                <a href="javascript:void(0)" class="js-tag color4">markdown</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1184,11 +1287,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1196,7 +1295,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+                <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1204,7 +1303,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
+                <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1216,27 +1343,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">jwt</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">乌镇旅行</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1268,6 +1379,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
@@ -1276,19 +1395,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">logback</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>
