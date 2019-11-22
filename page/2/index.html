@@ -182,242 +182,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/Spring/Logback" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/学习笔记/Spring/Logback/">Logback</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/09/10/学习笔记/Spring/Logback/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>logback是java的日志开源组件，是log4j创始人写的，性能比log4j要好，目前主要分为3个模块：</p>
-<ol>
-<li><strong>logback-core</strong>:核心代码模块</li>
-<li><strong>logback-classic</strong>:log4j的一个改良版本，同时实现了slf4j的接口，这样你如果之后要切换其他日志组件也是一件很容易的事</li>
-<li><strong>logback-access</strong>:访问模块与Servlet容器集成提供通过Http来访问日志的功能</li>
-</ol>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="引入maven依赖"><a href="#引入maven依赖" class="headerlink" title="引入maven依赖"></a>引入maven依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--这个依赖直接包含了 logback-core 以及 slf4j-api的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="logback的配置"><a href="#logback的配置" class="headerlink" title="logback的配置"></a>logback的配置</h4><h5 id="配置获取顺序"><a href="#配置获取顺序" class="headerlink" title="配置获取顺序"></a>配置获取顺序</h5><p>logback在启动的时候，会按照下面的顺序加载配置文件</p>
-<ol>
-<li>如果java程序启动是指定<strong>logback.configurationFile</strong>属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test，<br>这样执行Test类的时候就会加载/path/to/mylogback.xml配置</li>
-<li>在classpath中查找 logback.groovy 文件</li>
-<li>在classpath中查找 logback-test.xml 文件</li>
-<li>在classpath中查找 logback.xml 文件</li>
-<li>如果是 jdk6+,那么会调用ServiceLoader 查找 com.qos.logback.classic.spi.Configurator接口的第一个实现类</li>
-<li>自动使用ch.qos.logback.classic.BasicConfigurator,在控制台输出日志</li>
-</ol>
-<p>上面的顺序表示优先级，使用java -D配置的优先级最高，只要获取到配置后就不会再执行下面的流程。相关代码可以看ContextInitializer#autoConfig()方法。</p>
-<h5 id="日志输出级别"><a href="#日志输出级别" class="headerlink" title="日志输出级别"></a>日志输出级别</h5><p>从小到大的日志级别依旧是 <strong>trace、debug、info、warn、error</strong></p>
-<h5 id="logback-xml-配置样例"><a href="#logback-xml-配置样例" class="headerlink" title="logback.xml 配置样例"></a>logback.xml 配置样例</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">de<span class="doctag">bug:</span> 要不要打印 logback内部日志信息，true则表示要打印。建议开启</span></span><br><span class="line"><span class="comment">scan: 配置发生改变时，要不要重新加载</span></span><br><span class="line"><span class="comment">scanPeriod: 检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">debug</span>=<span class="string">"true"</span> <span class="attr">scan</span>=<span class="string">"true"</span> <span class="attr">scanPeriod</span>=<span class="string">"1 seconds"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>logback<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--定义参数,后面可以通过$&#123;app.name&#125;使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"app.name"</span> <span class="attr">value</span>=<span class="string">"logback_test"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--ConsoleAppender 用于在屏幕上输出日志--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"stdout"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里定义了DEBUG，也就是控制台不会输出比DEBUG级别小的日志--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder 默认配置为PatternLayoutEncoder --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义控制台输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志输出的路径--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里的scheduler.manager.server.home 没有在上面的配置中设定，所以会使用java启动时配置的值--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--比如通过 java -Dscheduler.manager.server.home=/path/to XXXX 配置该属性--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志滚动的策略--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--定义文件滚动时的文件名的格式--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.%d&#123;yyyy-MM-dd.HH&#125;.log.gz</span><br><span class="line">            <span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--60天的时间周期，日志量最大20GB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>60<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 该属性在 1.1.6版本后 才开始支持--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">totalSizeCap</span>&gt;</span>20GB<span class="tag">&lt;/<span class="name">totalSizeCap</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">triggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--每个日志文件最大100MB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">maxFileSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">triggeringPolicy</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--root是默认的logger 这里设定输出级别是debug--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"trace"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了两个appender，日志会通过往这两个appender里面写--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"file"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--这个logger没有指定appender，它会继承root节点中定义的那些appender--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.example.logback"</span> <span class="attr">level</span>=<span class="string">"warn"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--通过 LoggerFactory.getLogger("mytest") 可以获取到这个logger--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--由于这个logger自动继承了root的appender，root中已经有stdout的appender了，自己这边又引入了stdout的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果没有设置 additivity="false" ,就会导致一条日志在控制台输出两次的情况--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--additivity表示要不要使用rootLogger配置的appender进行输出--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--由于设置了 additivity="false" ，所以输出时不会使用rootLogger的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--但是这个logger本身又没有配置appender，所以使用这个logger输出日志的话就不会输出到任何地方--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest2"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>configuration节点相关属性</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>属性名称</th>
-<th align="center">默认值</th>
-<th>介绍</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>debug</td>
-<td align="center">false</td>
-<td>要不要打印 logback内部日志信息，true则表示要打印。建议开启</td>
-</tr>
-<tr>
-<td>scan</td>
-<td align="center">true</td>
-<td>配置发送改变时，要不要重新加载</td>
-</tr>
-<tr>
-<td>scanPeriod</td>
-<td align="center">1 seconds</td>
-<td>检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</td>
-</tr>
-</tbody></table>
-<ul>
-<li>configuration子节点<ul>
-<li>contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称</li>
-<li>property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问</li>
-<li>appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class <ul>
-<li>name 无默认值 | appender组件的名称，后面给logger指定appender使用</li>
-<li>class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender<ul>
-<li>ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用</li>
-<li>FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用</li>
-<li>RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">logback</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/学习笔记/Git/">Git</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/09/10/学习笔记/Git/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
-<li>本地一直提示没有权限或账户密码错误<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--system --unset credential.helper</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-面试/面试总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -681,14 +445,14 @@
 
 
   
-    <article id="post-学习笔记/Nacos" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/Nacos/">Nacos</a>
+      <a class="article-title" href="/2019/09/10/学习笔记/Git/">Git</a>
     </h1>
   
 
@@ -696,7 +460,329 @@
         <!--显示阅读次数-->
         
         
-        <a href="/2019/07/19/学习笔记/Nacos/" class="archive-article-date">
+        <a href="/2019/09/10/学习笔记/Git/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
+<li>本地一直提示没有权限或账户密码错误<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git<span class="built_in"> config </span>--system --unset credential.helper</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-问题总结/重大漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/问题总结/重大漏洞/">重大漏洞</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/问题总结/重大漏洞/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="版本漏洞"><a href="#版本漏洞" class="headerlink" title="版本漏洞"></a>版本漏洞</h3><ul>
+<li><a href="https://www.anquanke.com/post/id/185909" target="_blank" rel="noopener">FastJson &lt; 1.2.60 拒绝服务攻击预警</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">重大漏洞</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/问题//" class="article-tag-list-link color3">问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Spring/Logback" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/Spring/Logback/">Logback</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/09/10/学习笔记/Spring/Logback/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>logback是java的日志开源组件，是log4j创始人写的，性能比log4j要好，目前主要分为3个模块：</p>
+<ol>
+<li><strong>logback-core</strong>:核心代码模块</li>
+<li><strong>logback-classic</strong>:log4j的一个改良版本，同时实现了slf4j的接口，这样你如果之后要切换其他日志组件也是一件很容易的事</li>
+<li><strong>logback-access</strong>:访问模块与Servlet容器集成提供通过Http来访问日志的功能</li>
+</ol>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="引入maven依赖"><a href="#引入maven依赖" class="headerlink" title="引入maven依赖"></a>引入maven依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--这个依赖直接包含了 logback-core 以及 slf4j-api的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="logback的配置"><a href="#logback的配置" class="headerlink" title="logback的配置"></a>logback的配置</h4><h5 id="配置获取顺序"><a href="#配置获取顺序" class="headerlink" title="配置获取顺序"></a>配置获取顺序</h5><p>logback在启动的时候，会按照下面的顺序加载配置文件</p>
+<ol>
+<li>如果java程序启动是指定<strong>logback.configurationFile</strong>属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test，<br>这样执行Test类的时候就会加载/path/to/mylogback.xml配置</li>
+<li>在classpath中查找 logback.groovy 文件</li>
+<li>在classpath中查找 logback-test.xml 文件</li>
+<li>在classpath中查找 logback.xml 文件</li>
+<li>如果是 jdk6+,那么会调用ServiceLoader 查找 com.qos.logback.classic.spi.Configurator接口的第一个实现类</li>
+<li>自动使用ch.qos.logback.classic.BasicConfigurator,在控制台输出日志</li>
+</ol>
+<p>上面的顺序表示优先级，使用java -D配置的优先级最高，只要获取到配置后就不会再执行下面的流程。相关代码可以看ContextInitializer#autoConfig()方法。</p>
+<h5 id="日志输出级别"><a href="#日志输出级别" class="headerlink" title="日志输出级别"></a>日志输出级别</h5><p>从小到大的日志级别依旧是 <strong>trace、debug、info、warn、error</strong></p>
+<h5 id="logback-xml-配置样例"><a href="#logback-xml-配置样例" class="headerlink" title="logback.xml 配置样例"></a>logback.xml 配置样例</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span></span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">de<span class="doctag">bug:</span> 要不要打印 logback内部日志信息，true则表示要打印。建议开启</span></span><br><span class="line"><span class="comment">scan: 配置发生改变时，要不要重新加载</span></span><br><span class="line"><span class="comment">scanPeriod: 检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">debug</span>=<span class="string">"true"</span> <span class="attr">scan</span>=<span class="string">"true"</span> <span class="attr">scanPeriod</span>=<span class="string">"1 seconds"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>logback<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--定义参数,后面可以通过$&#123;app.name&#125;使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"app.name"</span> <span class="attr">value</span>=<span class="string">"logback_test"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--ConsoleAppender 用于在屏幕上输出日志--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"stdout"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里定义了DEBUG，也就是控制台不会输出比DEBUG级别小的日志--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder 默认配置为PatternLayoutEncoder --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义控制台输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志输出的路径--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里的scheduler.manager.server.home 没有在上面的配置中设定，所以会使用java启动时配置的值--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--比如通过 java -Dscheduler.manager.server.home=/path/to XXXX 配置该属性--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志滚动的策略--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--定义文件滚动时的文件名的格式--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.%d&#123;yyyy-MM-dd.HH&#125;.log.gz</span><br><span class="line">            <span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--60天的时间周期，日志量最大20GB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>60<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 该属性在 1.1.6版本后 才开始支持--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">totalSizeCap</span>&gt;</span>20GB<span class="tag">&lt;/<span class="name">totalSizeCap</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">triggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--每个日志文件最大100MB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">maxFileSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">triggeringPolicy</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--root是默认的logger 这里设定输出级别是debug--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"trace"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了两个appender，日志会通过往这两个appender里面写--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"file"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--这个logger没有指定appender，它会继承root节点中定义的那些appender--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.example.logback"</span> <span class="attr">level</span>=<span class="string">"warn"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--通过 LoggerFactory.getLogger("mytest") 可以获取到这个logger--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--由于这个logger自动继承了root的appender，root中已经有stdout的appender了，自己这边又引入了stdout的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果没有设置 additivity="false" ,就会导致一条日志在控制台输出两次的情况--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--additivity表示要不要使用rootLogger配置的appender进行输出--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--由于设置了 additivity="false" ，所以输出时不会使用rootLogger的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--但是这个logger本身又没有配置appender，所以使用这个logger输出日志的话就不会输出到任何地方--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest2"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>configuration节点相关属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th align="center">默认值</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>debug</td>
+<td align="center">false</td>
+<td>要不要打印 logback内部日志信息，true则表示要打印。建议开启</td>
+</tr>
+<tr>
+<td>scan</td>
+<td align="center">true</td>
+<td>配置发送改变时，要不要重新加载</td>
+</tr>
+<tr>
+<td>scanPeriod</td>
+<td align="center">1 seconds</td>
+<td>检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</td>
+</tr>
+</tbody></table>
+<ul>
+<li>configuration子节点<ul>
+<li>contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称</li>
+<li>property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问</li>
+<li>appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class <ul>
+<li>name 无默认值 | appender组件的名称，后面给logger指定appender使用</li>
+<li>class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender<ul>
+<li>ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用</li>
+<li>FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用</li>
+<li>RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">logback</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Vue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/Vue/">Vue</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/Vue/" class="archive-article-date">
   	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
 </a>
         
@@ -704,19 +790,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="Nacos-Server"><a href="#Nacos-Server" class="headerlink" title="Nacos Server"></a>Nacos Server</h3><h4 id="启动nacos服务"><a href="#启动nacos服务" class="headerlink" title="启动nacos服务"></a>启动nacos服务</h4><ul>
-<li><a href="https://github.com/alibaba/nacos/releases" target="_blank" rel="noopener">下载源码或者安装包</a></li>
-<li>解压后进入nacos/bin目录</li>
-<li>输入命令启动服务<ul>
-<li>Linux： sh startup.sh -m standalone</li>
-<li>Windows：cmd startup.cmd</li>
+        <h3 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h3><ul>
+<li><p>v-html 输出html代码 如 v-html=”message”</p>
+</li>
+<li><p>v-bind </p>
+<ul>
+<li>判断属性中的值 如 v-bind:class=”{‘class1’: use}”</li>
+<li>v-bind 指令被用来响应地更新 HTML 属性 <a v-bind:href="url"><br>v-bind:style  v-bind:style=”{ color: activeColor, fontSize: fontSize + ‘px’ }<br>v-bind:class  v-bind:class=”{ active: isActive, ‘text-danger’: hasError }”</a></li>
 </ul>
 </li>
-<li>nacos默认使用8848端口，可通过 <strong><a href="http://127.0.0.1:8848/nacos/index.html" target="_blank" rel="noopener">http://127.0.0.1:8848/nacos/index.html</a></strong> 进入自带的控制台界面，默认用户名/密码是nacos/nacos</li>
-</ul>
-<h4 id="配置集群"><a href="#配置集群" class="headerlink" title="配置集群"></a>配置集群</h4><ul>
-<li>在nacos的解压目录conf下，有配置文件cluster.conf(若无则手动创建)，每行配置成ip:port。（配置3个或3个以上节点）<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#cluster</span><span class="selector-class">.conf</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.2</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.3</span><span class="selector-pseudo">:8848</span></span><br></pre></td></tr></table></figure>
-
+<li><p>v-if 条件判断</p>
+</li>
+<li><p>v-else 可以用 v-else 指令给 v-if 添加一个 “else” 块</p>
+</li>
+<li><p>v-else-if v-else-if 在 2.1.0 新增，顾名思义，用作 v-if 的 else-if 块。可以链式的多次使用</p>
+</li>
+<li><p>v-show 根据条件展示元素：</p>
+</li>
+<li><p>v-for</p>
+</li>
+<li><p>v-module 双向绑定</p>
+</li>
+<li><p>v-on:click 如 <a v-on:click="doSomething"></a></p>
 </li>
 </ul>
         
@@ -732,7 +827,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
         		</li>
       		
 		</ul>
@@ -825,6 +920,104 @@
 			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">elastic-job</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Nacos" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/19/学习笔记/Nacos/">Nacos</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/07/19/学习笔记/Nacos/" class="archive-article-date">
+  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Nacos-Server"><a href="#Nacos-Server" class="headerlink" title="Nacos Server"></a>Nacos Server</h3><h4 id="启动nacos服务"><a href="#启动nacos服务" class="headerlink" title="启动nacos服务"></a>启动nacos服务</h4><ul>
+<li><a href="https://github.com/alibaba/nacos/releases" target="_blank" rel="noopener">下载源码或者安装包</a></li>
+<li>解压后进入nacos/bin目录</li>
+<li>输入命令启动服务<ul>
+<li>Linux： sh startup.sh -m standalone</li>
+<li>Windows：cmd startup.cmd</li>
+</ul>
+</li>
+<li>nacos默认使用8848端口，可通过 <strong><a href="http://127.0.0.1:8848/nacos/index.html" target="_blank" rel="noopener">http://127.0.0.1:8848/nacos/index.html</a></strong> 进入自带的控制台界面，默认用户名/密码是nacos/nacos</li>
+</ul>
+<h4 id="配置集群"><a href="#配置集群" class="headerlink" title="配置集群"></a>配置集群</h4><ul>
+<li>在nacos的解压目录conf下，有配置文件cluster.conf(若无则手动创建)，每行配置成ip:port。（配置3个或3个以上节点）<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#cluster</span><span class="selector-class">.conf</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.2</span><span class="selector-pseudo">:8848</span></span><br><span class="line">192<span class="selector-class">.168</span><span class="selector-class">.0</span><span class="selector-class">.3</span><span class="selector-pseudo">:8848</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nacos</a>
         		</li>
       		
 		</ul>
@@ -1116,201 +1309,6 @@
 
 
   
-    <article id="post-学习笔记/Vue" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/Vue/">Vue</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/07/19/学习笔记/Vue/" class="archive-article-date">
-  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="常用指令"><a href="#常用指令" class="headerlink" title="常用指令"></a>常用指令</h3><ul>
-<li><p>v-html 输出html代码 如 v-html=”message”</p>
-</li>
-<li><p>v-bind </p>
-<ul>
-<li>判断属性中的值 如 v-bind:class=”{‘class1’: use}”</li>
-<li>v-bind 指令被用来响应地更新 HTML 属性 <a v-bind:href="url"><br>v-bind:style  v-bind:style=”{ color: activeColor, fontSize: fontSize + ‘px’ }<br>v-bind:class  v-bind:class=”{ active: isActive, ‘text-danger’: hasError }”</a></li>
-</ul>
-</li>
-<li><p>v-if 条件判断</p>
-</li>
-<li><p>v-else 可以用 v-else 指令给 v-if 添加一个 “else” 块</p>
-</li>
-<li><p>v-else-if v-else-if 在 2.1.0 新增，顾名思义，用作 v-if 的 else-if 块。可以链式的多次使用</p>
-</li>
-<li><p>v-show 根据条件展示元素：</p>
-</li>
-<li><p>v-for</p>
-</li>
-<li><p>v-module 双向绑定</p>
-</li>
-<li><p>v-on:click 如 <a v-on:click="doSomething"></a></p>
-</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-日常总结/Hexo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/02/日常总结/Hexo/">Hexo + Github Pages + yilia 搭建个人博客</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/07/02/日常总结/Hexo/" class="archive-article-date">
-  	<time datetime="2019-07-01T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="Github-Pages-是什么"><a href="#Github-Pages-是什么" class="headerlink" title="Github Pages 是什么"></a>Github Pages 是什么</h4><p>GitHub Pages 本用于介绍托管在GitHub的项目，不过由于他的空间免费稳定，很适合用来搭建一个博客。每个帐号只能有一个仓库<br>来存放个人主页，而且仓库的名字必须是username/username.github.io，这是特殊的命名约定。你可以通过<a href="http://username.github.io" target="_blank" rel="noopener">http://username.github.io</a><br>来访问你的个人主页，比如我的就是xiebiao123.github.io</p>
-<pre><code>这里特别提醒一下，需要注意的个人主页的网站内容是在master分支下的</code></pre><h4 id="创建自己的Github-Pages"><a href="#创建自己的Github-Pages" class="headerlink" title="创建自己的Github Pages"></a>创建自己的Github Pages</h4><pre><code>新建代码仓库(repository),此处命名格式有限制的，形如username.github.io</code></pre><h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><ol>
-<li>安装node.js</li>
-<li>安装git</li>
-</ol>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Hexo</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1415,7 +1413,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1423,11 +1421,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1439,23 +1437,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1467,23 +1461,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jwt</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1495,7 +1485,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1503,7 +1501,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1539,11 +1537,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">

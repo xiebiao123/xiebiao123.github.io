@@ -182,6 +182,185 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-学习笔记/数据库/Mysql-分库分表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/">mysql之分库分表</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/" class="archive-article-date">
+  	<time datetime="2019-11-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="为什么要分库分表"><a href="#为什么要分库分表" class="headerlink" title="为什么要分库分表"></a>为什么要分库分表</h3><p>当流量不大的时候，单机数据库就够了。后面因为业务的发展请求越来越多，但是我们发现大多数都是读请求，于是我们想到了将数据库的<br><strong>写操作</strong>和<strong>读操作</strong>进行分离，使用多个从库（Slaver）副本负责读，使用主库（Master）负责写，主库的数据同步给从库保持数据的一致，从<br>库可以水平拓展，所以更多的读请求也不成问题</p>
+<p>但是当用户量级上来后，写请求越来越多，该怎么办？加一个Master是不能解决问题的， 因为数据要保持一致性，写操作需要2个master<br>之间同步，相当于是重复了，而且更加复杂。这时就需要用到<strong>分库分表</strong>，对写操作进行切分</p>
+<h3 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h3><h4 id="垂直切分"><a href="#垂直切分" class="headerlink" title="垂直切分"></a>垂直切分</h4><h5 id="垂直分表"><a href="#垂直分表" class="headerlink" title="垂直分表"></a>垂直分表</h5><ul>
+<li>概念：以字段为依据，按照字段的活跃性，将表中字段拆分到不同的表（主表和拓展表）中</li>
+<li>场景：系统并发量并没有上来，表的记录并不多，但是字段多，并且热点数据和非热点数据在一起，单行数据所需的存储空间较大。<br>以至于数据库缓存的数据行减少，查询时会去读磁盘数据产生大量的随机读IO，产生IO瓶颈</li>
+</ul>
+<p><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9E%82%E7%9B%B4%E5%88%86%E8%A1%A8.png" alt="垂直分表"></p>
+<h5 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h5><ul>
+<li>概念：以表为依据，按照业务归属不同，将不同表拆分到不同的库中</li>
+<li>场景：系统并发量上来了，并且可以抽象出单独的业务模块</li>
+</ul>
+<p><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9E%82%E7%9B%B4%E5%88%86%E5%BA%93.png" alt="垂直分库"></p>
+<h5 id="垂直切分优点、缺点"><a href="#垂直切分优点、缺点" class="headerlink" title="垂直切分优点、缺点"></a>垂直切分优点、缺点</h5><ul>
+<li>优点<ul>
+<li>解决业务系统层面的耦合，业务清晰</li>
+<li>与微服务的治理类似，也能对不同业务的数据进行分级管理，维护，监控，扩展等</li>
+<li>高并发场景下，垂直切分一定程度的提升IO，数据库连接数，单机硬件资源的瓶颈</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>部分表无法join，只能通过接口聚合方式解决，提升了开发的复杂度</li>
+<li>分布式事处理复杂</li>
+<li>依然存在单表数据量过大的问题</li>
+</ul>
+</li>
+</ul>
+<h4 id="水平切分"><a href="#水平切分" class="headerlink" title="水平切分"></a>水平切分</h4><h5 id="水平分表"><a href="#水平分表" class="headerlink" title="水平分表"></a>水平分表</h5><ul>
+<li>概念：以字段为依据，按照一定的策略（hash、range等），将一个<strong>表</strong>中的数据拆分到多个<strong>表</strong>中</li>
+<li>场景：系统并发量并没有上来，只是单表的数据量太多，影响了SQL效率，加重了CPU负担，以至于成为瓶颈</li>
+</ul>
+<p><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B0%B4%E5%B9%B3%E5%88%86%E8%A1%A8.png" alt="水平分表"></p>
+<h5 id="水平分库"><a href="#水平分库" class="headerlink" title="水平分库"></a>水平分库</h5><ul>
+<li>概念：以字段为依据，按照一定的策略（hash、range等），将一个<strong>库</strong>中的数据拆分到多个<strong>库</strong>中</li>
+<li>场景：系统并发量上来了，分表难以根本上解决问题，并且还没有明显的业务归属来垂直分库</li>
+</ul>
+<p><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B0%B4%E5%B9%B3%E5%88%86%E5%BA%93.png" alt="水平分库"></p>
+<h5 id="水平切分优点、缺点"><a href="#水平切分优点、缺点" class="headerlink" title="水平切分优点、缺点"></a>水平切分优点、缺点</h5><ul>
+<li>优点<ul>
+<li>不存在单库数据量过大、高并发的性能瓶颈，提升系统稳定性和负载能力</li>
+<li>应用端改造较小，不需要拆分业务模块  </li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>跨分片的事务一致性难以保证</li>
+<li>跨库的join关联查询性能较差</li>
+<li>数据多次扩展维度和维护量极大</li>
+</ul>
+</li>
+</ul>
+<h5 id="路由规则"><a href="#路由规则" class="headerlink" title="路由规则"></a>路由规则</h5><ul>
+<li>范围路由（range）<ul>
+<li>概念：选取有序的数据列作为路由条件，不同分段分散到不同的数据库表中</li>
+<li>优点：可以随着数据的增加平滑的扩充新表</li>
+<li>缺点：可能存在数据库分布不均匀</li>
+</ul>
+</li>
+<li>hash算法<ul>
+<li>概念：选择某列（或几个列的组合）的值进行hash运算，然后根据运算结果分散到不同的数据库表中</li>
+<li>优点：表数据分布比较均匀</li>
+<li>缺点：初始表数据量不好选取，扩充新的表数据需要重新分布</li>
+</ul>
+</li>
+<li>路由配置<ul>
+<li>使用独立的表（或者配置文件等）记录路由配置信息</li>
+<li>优点：使用起来简单灵活，扩充表时只需要迁移指定的数据，然后修改路由表</li>
+<li>缺点：必须多查询一次，影响整体性能。<strong>路由表本事太多影响系统整体系统</strong></li>
+</ul>
+</li>
+</ul>
+<h3 id="分库分表组件-amp-中间件"><a href="#分库分表组件-amp-中间件" class="headerlink" title="分库分表组件&amp;中间件"></a>分库分表组件&amp;中间件</h3><p>简单易用的组件：</p>
+<ul>
+<li>当当sharding-jdbc</li>
+<li>蘑菇街TSharding</li>
+</ul>
+<p>强悍重量级的中间件：</p>
+<ul>
+<li>TDDL Smart Client的方式（淘宝）</li>
+<li>Atlas(Qihoo 360)</li>
+<li>alibaba.cobar(是阿里巴巴（B2B）部门开发)</li>
+<li>MyCAT（基于阿里开源的Cobar产品而研发）</li>
+<li>Oceanus(58同城数据库中间件)</li>
+<li>OneProxy(支付宝首席架构师楼方鑫开发)</li>
+<li>vitess（谷歌开发的数据库中间件）</li>
+</ul>
+<h3 id="分库分表步骤"><a href="#分库分表步骤" class="headerlink" title="分库分表步骤"></a>分库分表步骤</h3><ol>
+<li>根据容量（当前容量和增长量）评估分库或分表个数</li>
+<li>选key（均匀），确定分表规则（hash或range等）</li>
+<li>执行（一般选择双写），尽量减少数据的移动</li>
+</ol>
+<h3 id="分库分表常见问题"><a href="#分库分表常见问题" class="headerlink" title="分库分表常见问题"></a>分库分表常见问题</h3><h4 id="后台非分区key组合条件查询，报表统计"><a href="#后台非分区key组合条件查询，报表统计" class="headerlink" title="后台非分区key组合条件查询，报表统计"></a>后台非分区key组合条件查询，报表统计</h4><p><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5.png" alt="数据同步"></p>
+<h4 id="扩容问题"><a href="#扩容问题" class="headerlink" title="扩容问题"></a>扩容问题</h4><ul>
+<li><p>水平扩容库<br><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B0%B4%E5%B9%B3%E6%89%A9%E5%AE%B9%E5%BA%93.png" alt="水平扩容库"></p>
+</li>
+<li><p>水平扩容表<br><img src="/images/%E6%95%B0%E6%8D%AE%E5%BA%93/%E6%B0%B4%E5%B9%B3%E6%89%A9%E5%AE%B9%E8%A1%A8.png" alt="水平扩容表"></p>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-学习笔记/Java/线程池" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -335,6 +514,99 @@
 <li>FutureTask除了实现Future接口外，还实现了Runnable接口，所以可以交给Executor执行</li>
 <li>可以通过ExecutorService。submit(…)方法返回一个FutureTask，然后执行FutureTask.get()方法或FutureTask.cancel(…)方法</li>
 <li>FutureTask可以单独调用FutureTask.run()方法执行</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Java/jhat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/25/学习笔记/Java/jhat/">jhat</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/10/25/学习笔记/Java/jhat/" class="archive-article-date">
+  	<time datetime="2019-10-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/2c5ba79d8889" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>jhat(Java Heap Analysis Tool),是一个用来分析java的堆情况的命令。是java虚拟机自带的一种虚拟机堆转储快照分析工具。</p>
+<h4 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OOMObject</span>&#123;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;OOMObject&gt; <span class="built_in">list</span> = <span class="keyword">new</span> ArrayList&lt;OOMObject&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="built_in">list</span>.add(<span class="keyword">new</span> OOMObject());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="jhat分析代码"><a href="#jhat分析代码" class="headerlink" title="jhat分析代码"></a>jhat分析代码</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">F:\dump&gt;jhat java_pid15860.hprof</span><br><span class="line">Reading <span class="keyword">from</span> java_pid15860.hprof<span class="built_in">..</span>.</span><br><span class="line">Dump file created Tue Jun 25 17:43:13 CST 2019</span><br><span class="line">Snapshot read, resolving<span class="built_in">..</span>.</span><br><span class="line">Resolving 819118 objects<span class="built_in">..</span>.</span><br><span class="line">Chasing references, expect 163 dots<span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>.</span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line">Eliminating duplicate references<span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>.</span><br><span class="line">Snapshot resolved.</span><br><span class="line">Started HTTP<span class="built_in"> server </span>on<span class="built_in"> port </span>7000</span><br><span class="line">Server is ready.</span><br></pre></td></tr></table></figure>
+
+<h4 id="jhat分析结果"><a href="#jhat分析结果" class="headerlink" title="jhat分析结果"></a>jhat分析结果</h4><ul>
+<li>显示出堆中所包含的所有的类</li>
+<li>堆实例的分布表</li>
+<li><a href="https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html" target="_blank" rel="noopener">参考</a></li>
 </ul>
 
       
@@ -676,209 +948,6 @@
 
 
   
-    <article id="post-学习笔记/Java/jstat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/25/学习笔记/Java/jstat/">jstat</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/10/25/学习笔记/Java/jstat/" class="archive-article-date">
-  	<time datetime="2019-10-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/9f41d4a42c33" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利<br>用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控</p>
-<h4 id="命令详解"><a href="#命令详解" class="headerlink" title="命令详解"></a>命令详解</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/opt/java8/bin/jstat -h</span><br><span class="line"></span><br><span class="line">-h requires an <span class="built_in">integer</span> argument</span><br><span class="line">Usage: jstat -help|-options</span><br><span class="line">       jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;<span class="built_in">count</span>&gt;]]</span><br><span class="line"></span><br><span class="line">Definitions:</span><br><span class="line">  &lt;option&gt;      An option reported <span class="keyword">by</span> <span class="keyword">the</span> -options option</span><br><span class="line">  &lt;vmid&gt;        Virtual Machine Identifier. A vmid takes <span class="keyword">the</span> following form:</span><br><span class="line">                     &lt;lvmid&gt;[@&lt;hostname&gt;[:&lt;port&gt;]]</span><br><span class="line">                Where &lt;lvmid&gt; <span class="keyword">is</span> <span class="keyword">the</span> <span class="keyword">local</span> vm identifier <span class="keyword">for</span> <span class="keyword">the</span> target</span><br><span class="line">                Java virtual machine, typically a process <span class="built_in">id</span>; &lt;hostname&gt; <span class="keyword">is</span></span><br><span class="line">                <span class="keyword">the</span> <span class="built_in">name</span> <span class="keyword">of</span> <span class="keyword">the</span> host <span class="built_in">running</span> <span class="keyword">the</span> target Java virtual machine;</span><br><span class="line">                <span class="keyword">and</span> &lt;port&gt; <span class="keyword">is</span> <span class="keyword">the</span> port <span class="built_in">number</span> <span class="keyword">for</span> <span class="keyword">the</span> rmiregistry <span class="keyword">on</span> <span class="keyword">the</span></span><br><span class="line">                target host. See <span class="keyword">the</span> jvmstat documentation <span class="keyword">for</span> a more complete</span><br><span class="line">                description <span class="keyword">of</span> <span class="keyword">the</span> Virtual Machine Identifier.</span><br><span class="line">  &lt;lines&gt;       Number <span class="keyword">of</span> samples <span class="keyword">between</span> header lines.</span><br><span class="line">  &lt;interval&gt;    Sampling interval. The following forms are allowed:</span><br><span class="line">                    &lt;n&gt;[<span class="string">"ms"</span>|<span class="string">"s"</span>]</span><br><span class="line">                Where &lt;n&gt; <span class="keyword">is</span> an <span class="built_in">integer</span> <span class="keyword">and</span> <span class="keyword">the</span> suffix specifies <span class="keyword">the</span> units <span class="keyword">as</span> </span><br><span class="line">                milliseconds(<span class="string">"ms"</span>) <span class="keyword">or</span> seconds(<span class="string">"s"</span>). The default units are <span class="string">"ms"</span>.</span><br><span class="line">  &lt;<span class="built_in">count</span>&gt;       Number <span class="keyword">of</span> samples <span class="keyword">to</span> take <span class="keyword">before</span> terminating.</span><br><span class="line">  -J&lt;flag&gt;      Pass &lt;flag&gt; directly <span class="keyword">to</span> <span class="keyword">the</span> runtime system.</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>option 参数选项</li>
-<li>-t 可以在打印的列加上Timestamp列，用于显示系统运行的时间</li>
-<li>-h 可以在周期性数据数据的时候，可以在指定输出多少行以后输出一次表头</li>
-<li>vmid Virtual Machine ID（ 进程的 pid）</li>
-<li>interval 执行每次的间隔时间，单位为毫秒</li>
-<li>count 用于指定输出多少次记录，缺省则会一直打印</li>
-</ul>
-<h4 id="jstat-options参数"><a href="#jstat-options参数" class="headerlink" title="jstat options参数"></a>jstat options参数</h4><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/opt/java8/bin/jstat -options</span></span><br><span class="line">-<span class="ruby"><span class="class"><span class="keyword">class</span></span></span></span><br><span class="line"><span class="ruby">-compiler</span></span><br><span class="line"><span class="ruby">-gc</span></span><br><span class="line"><span class="ruby">-gccapacity</span></span><br><span class="line"><span class="ruby">-gccause</span></span><br><span class="line"><span class="ruby">-gcmetacapacity</span></span><br><span class="line"><span class="ruby">-gcnew</span></span><br><span class="line"><span class="ruby">-gcnewcapacity</span></span><br><span class="line"><span class="ruby">-gcold</span></span><br><span class="line"><span class="ruby">-gcoldcapacity</span></span><br><span class="line"><span class="ruby">-gcutil</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>-class 显示ClassLoad的相关信息</li>
-<li>-compiler 显示JIT编译的相关信息</li>
-<li>-gc 显示和gc相关的堆信息</li>
-<li>-gccapacity 显示各个代的容量以及使用情况</li>
-<li>-gcmetacapacity 显示metaspace的大小</li>
-<li>-gcnew 显示新生代信息</li>
-<li>-gcnewcapacity 显示新生代大小和使用情况</li>
-<li>-gcold 显示老年代和永久代的信息</li>
-<li>-gcoldcapacity 显示老年代的大小</li>
-<li>-gcutil 显示垃圾收集信息</li>
-<li>-gccause 显示垃圾回收的相关信息（通-gcutil）,同时显示最后一次或当前正在发生的垃圾回收的诱因</li>
-<li>-printcompilation 输出JIT编译的方法信息</li>
-</ul>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/<span class="meta">opt</span>/java8/<span class="keyword">bin/jstat </span>-class <span class="number">28367</span></span><br><span class="line"><span class="symbol">Loaded</span>  <span class="keyword">Bytes </span> Unloaded  <span class="keyword">Bytes </span>    Time   </span><br><span class="line"> <span class="number">10046</span> <span class="number">18032</span>.<span class="number">6</span>        <span class="number">0</span>     <span class="number">0</span>.<span class="number">0</span>       <span class="number">7</span>.<span class="number">34</span></span><br><span class="line"> </span><br><span class="line">* Loaded : 已经装载的类的数量</span><br><span class="line">* <span class="keyword">Bytes </span>: 装载类所占用的字节数</span><br><span class="line">* Unloaded：已经卸载类的数量</span><br><span class="line">* <span class="keyword">Bytes：卸载类的字节数</span></span><br><span class="line"><span class="keyword">* </span>Time：装载和卸载类所花费的时间</span><br><span class="line"></span><br><span class="line">/<span class="meta">opt</span>/java8/<span class="keyword">bin/jstat </span>-compiler <span class="number">28367</span></span><br><span class="line"><span class="symbol">Compiled</span> Failed Invalid   Time   FailedType FailedMethod</span><br><span class="line">   <span class="number">12036</span>      <span class="number">1</span>       <span class="number">0</span>    <span class="number">52</span>.<span class="number">31</span>          <span class="number">1</span> org/apache/skywalking/apm/dependencies/net/<span class="keyword">bytebuddy/jar/asm/ClassReader </span>readMethod</span><br><span class="line">   </span><br><span class="line"><span class="symbol">Compiled</span>：编译任务执行数量</span><br><span class="line"><span class="symbol">Failed</span>：编译任务执行失败数量</span><br><span class="line"><span class="symbol">Invalid</span> ：编译任务执行失效数量</span><br><span class="line"><span class="symbol">Time</span> ：编译任务消耗时间</span><br><span class="line"><span class="symbol">FailedType</span>：最后一个编译失败任务的类型</span><br><span class="line"><span class="symbol">FailedMethod</span>：最后一个编译失败任务所在的类及方法</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/Java/jhat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/25/学习笔记/Java/jhat/">jhat</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/10/25/学习笔记/Java/jhat/" class="archive-article-date">
-  	<time datetime="2019-10-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/2c5ba79d8889" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>jhat(Java Heap Analysis Tool),是一个用来分析java的堆情况的命令。是java虚拟机自带的一种虚拟机堆转储快照分析工具。</p>
-<h4 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OOMObject</span>&#123;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;OOMObject&gt; <span class="built_in">list</span> = <span class="keyword">new</span> ArrayList&lt;OOMObject&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="built_in">list</span>.add(<span class="keyword">new</span> OOMObject());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="jhat分析代码"><a href="#jhat分析代码" class="headerlink" title="jhat分析代码"></a>jhat分析代码</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">F:\dump&gt;jhat java_pid15860.hprof</span><br><span class="line">Reading <span class="keyword">from</span> java_pid15860.hprof<span class="built_in">..</span>.</span><br><span class="line">Dump file created Tue Jun 25 17:43:13 CST 2019</span><br><span class="line">Snapshot read, resolving<span class="built_in">..</span>.</span><br><span class="line">Resolving 819118 objects<span class="built_in">..</span>.</span><br><span class="line">Chasing references, expect 163 dots<span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>.</span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line">Eliminating duplicate references<span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span></span><br><span class="line"><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span><span class="built_in">..</span>.</span><br><span class="line">Snapshot resolved.</span><br><span class="line">Started HTTP<span class="built_in"> server </span>on<span class="built_in"> port </span>7000</span><br><span class="line">Server is ready.</span><br></pre></td></tr></table></figure>
-
-<h4 id="jhat分析结果"><a href="#jhat分析结果" class="headerlink" title="jhat分析结果"></a>jhat分析结果</h4><ul>
-<li>显示出堆中所包含的所有的类</li>
-<li>堆实例的分布表</li>
-<li><a href="https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html" target="_blank" rel="noopener">参考</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-学习笔记/Java/jmap" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -936,6 +1005,116 @@
 <li>以hprof二进制格式转储Java堆到指定filename的文件中。live子选项是可选的。如果指定了live子选项，堆中只有活动的对象会被转储。<br>想要浏览heap dump，你可以使用jhat(Java堆分析工具)读取生成的文件</li>
 </ul>
 
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Java/jstat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/25/学习笔记/Java/jstat/">jstat</a>
+    </h1>
+  
+
+
+        <!--显示阅读次数-->
+        
+        
+        <a href="/2019/10/25/学习笔记/Java/jstat/" class="archive-article-date">
+  	<time datetime="2019-10-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/9f41d4a42c33" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利<br>用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和<strong>垃圾回收</strong>状况的监控</p>
+<h4 id="命令详解"><a href="#命令详解" class="headerlink" title="命令详解"></a>命令详解</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/opt/java8/bin/jstat -h</span><br><span class="line"></span><br><span class="line">-h requires an <span class="built_in">integer</span> argument</span><br><span class="line">Usage: jstat -help|-options</span><br><span class="line">       jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;<span class="built_in">count</span>&gt;]]</span><br><span class="line"></span><br><span class="line">Definitions:</span><br><span class="line">  &lt;option&gt;      An option reported <span class="keyword">by</span> <span class="keyword">the</span> -options option</span><br><span class="line">  &lt;vmid&gt;        Virtual Machine Identifier. A vmid takes <span class="keyword">the</span> following form:</span><br><span class="line">                     &lt;lvmid&gt;[@&lt;hostname&gt;[:&lt;port&gt;]]</span><br><span class="line">                Where &lt;lvmid&gt; <span class="keyword">is</span> <span class="keyword">the</span> <span class="keyword">local</span> vm identifier <span class="keyword">for</span> <span class="keyword">the</span> target</span><br><span class="line">                Java virtual machine, typically a process <span class="built_in">id</span>; &lt;hostname&gt; <span class="keyword">is</span></span><br><span class="line">                <span class="keyword">the</span> <span class="built_in">name</span> <span class="keyword">of</span> <span class="keyword">the</span> host <span class="built_in">running</span> <span class="keyword">the</span> target Java virtual machine;</span><br><span class="line">                <span class="keyword">and</span> &lt;port&gt; <span class="keyword">is</span> <span class="keyword">the</span> port <span class="built_in">number</span> <span class="keyword">for</span> <span class="keyword">the</span> rmiregistry <span class="keyword">on</span> <span class="keyword">the</span></span><br><span class="line">                target host. See <span class="keyword">the</span> jvmstat documentation <span class="keyword">for</span> a more complete</span><br><span class="line">                description <span class="keyword">of</span> <span class="keyword">the</span> Virtual Machine Identifier.</span><br><span class="line">  &lt;lines&gt;       Number <span class="keyword">of</span> samples <span class="keyword">between</span> header lines.</span><br><span class="line">  &lt;interval&gt;    Sampling interval. The following forms are allowed:</span><br><span class="line">                    &lt;n&gt;[<span class="string">"ms"</span>|<span class="string">"s"</span>]</span><br><span class="line">                Where &lt;n&gt; <span class="keyword">is</span> an <span class="built_in">integer</span> <span class="keyword">and</span> <span class="keyword">the</span> suffix specifies <span class="keyword">the</span> units <span class="keyword">as</span> </span><br><span class="line">                milliseconds(<span class="string">"ms"</span>) <span class="keyword">or</span> seconds(<span class="string">"s"</span>). The default units are <span class="string">"ms"</span>.</span><br><span class="line">  &lt;<span class="built_in">count</span>&gt;       Number <span class="keyword">of</span> samples <span class="keyword">to</span> take <span class="keyword">before</span> terminating.</span><br><span class="line">  -J&lt;flag&gt;      Pass &lt;flag&gt; directly <span class="keyword">to</span> <span class="keyword">the</span> runtime system.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>option 参数选项</li>
+<li>-t 可以在打印的列加上Timestamp列，用于显示系统运行的时间</li>
+<li>-h 可以在周期性数据数据的时候，可以在指定输出多少行以后输出一次表头</li>
+<li>vmid Virtual Machine ID（ 进程的 pid）</li>
+<li>interval 执行每次的间隔时间，单位为毫秒</li>
+<li>count 用于指定输出多少次记录，缺省则会一直打印</li>
+</ul>
+<h4 id="jstat-options参数"><a href="#jstat-options参数" class="headerlink" title="jstat options参数"></a>jstat options参数</h4><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/opt/java8/bin/jstat -options</span></span><br><span class="line">-<span class="ruby"><span class="class"><span class="keyword">class</span></span></span></span><br><span class="line"><span class="ruby">-compiler</span></span><br><span class="line"><span class="ruby">-gc</span></span><br><span class="line"><span class="ruby">-gccapacity</span></span><br><span class="line"><span class="ruby">-gccause</span></span><br><span class="line"><span class="ruby">-gcmetacapacity</span></span><br><span class="line"><span class="ruby">-gcnew</span></span><br><span class="line"><span class="ruby">-gcnewcapacity</span></span><br><span class="line"><span class="ruby">-gcold</span></span><br><span class="line"><span class="ruby">-gcoldcapacity</span></span><br><span class="line"><span class="ruby">-gcutil</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-class 显示ClassLoad的相关信息</li>
+<li>-compiler 显示JIT编译的相关信息</li>
+<li>-gc 显示和gc相关的堆信息</li>
+<li>-gccapacity 显示各个代的容量以及使用情况</li>
+<li>-gcmetacapacity 显示metaspace的大小</li>
+<li>-gcnew 显示新生代信息</li>
+<li>-gcnewcapacity 显示新生代大小和使用情况</li>
+<li>-gcold 显示老年代和永久代的信息</li>
+<li>-gcoldcapacity 显示老年代的大小</li>
+<li><strong>-gcutil 显示垃圾收集信息</strong></li>
+<li>-gccause 显示垃圾回收的相关信息（通-gcutil）,同时显示最后一次或当前正在发生的垃圾回收的诱因</li>
+<li>-printcompilation 输出JIT编译的方法信息</li>
+</ul>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/<span class="meta">opt</span>/java8/<span class="keyword">bin/jstat </span>-class <span class="number">28367</span></span><br><span class="line"><span class="symbol">Loaded</span>  <span class="keyword">Bytes </span> Unloaded  <span class="keyword">Bytes </span>    Time   </span><br><span class="line"> <span class="number">10046</span> <span class="number">18032</span>.<span class="number">6</span>        <span class="number">0</span>     <span class="number">0</span>.<span class="number">0</span>       <span class="number">7</span>.<span class="number">34</span></span><br><span class="line"> </span><br><span class="line">* Loaded : 已经装载的类的数量</span><br><span class="line">* <span class="keyword">Bytes </span>: 装载类所占用的字节数</span><br><span class="line">* Unloaded：已经卸载类的数量</span><br><span class="line">* <span class="keyword">Bytes：卸载类的字节数</span></span><br><span class="line"><span class="keyword">* </span>Time：装载和卸载类所花费的时间</span><br><span class="line"></span><br><span class="line">/<span class="meta">opt</span>/java8/<span class="keyword">bin/jstat </span>-compiler <span class="number">28367</span></span><br><span class="line"><span class="symbol">Compiled</span> Failed Invalid   Time   FailedType FailedMethod</span><br><span class="line">   <span class="number">12036</span>      <span class="number">1</span>       <span class="number">0</span>    <span class="number">52</span>.<span class="number">31</span>          <span class="number">1</span> org/apache/skywalking/apm/dependencies/net/<span class="keyword">bytebuddy/jar/asm/ClassReader </span>readMethod</span><br><span class="line">   </span><br><span class="line"><span class="symbol">Compiled</span>：编译任务执行数量</span><br><span class="line"><span class="symbol">Failed</span>：编译任务执行失败数量</span><br><span class="line"><span class="symbol">Invalid</span> ：编译任务执行失效数量</span><br><span class="line"><span class="symbol">Time</span> ：编译任务消耗时间</span><br><span class="line"><span class="symbol">FailedType</span>：最后一个编译失败任务的类型</span><br><span class="line"><span class="symbol">FailedMethod</span>：最后一个编译失败任务所在的类及方法</span><br></pre></td></tr></table></figure>
       
 
       
@@ -1223,92 +1402,6 @@
 
 
   
-    <article id="post-问题总结/重大漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/问题总结/重大漏洞/">重大漏洞</a>
-    </h1>
-  
-
-
-        <!--显示阅读次数-->
-        
-        
-        <a href="/2019/09/10/问题总结/重大漏洞/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="版本漏洞"><a href="#版本漏洞" class="headerlink" title="版本漏洞"></a>版本漏洞</h3><ul>
-<li><a href="https://www.anquanke.com/post/id/185909" target="_blank" rel="noopener">FastJson &lt; 1.2.60 拒绝服务攻击预警</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">重大漏洞</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/问题//" class="article-tag-list-link color3">问题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1413,7 +1506,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1421,11 +1514,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1437,23 +1530,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1465,23 +1554,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jwt</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1493,7 +1578,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1501,7 +1594,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1537,11 +1630,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">

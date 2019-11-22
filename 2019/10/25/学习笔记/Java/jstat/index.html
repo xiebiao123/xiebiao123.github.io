@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="奔跑的蜗牛">
 <meta property="og:description" content="jhat简介Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控 命令详解1234567891011121314151617181920212223/o">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-29T09:48:58.346Z">
+<meta property="og:updated_time" content="2019-11-13T07:43:29.814Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jstat">
 <meta name="twitter:description" content="jhat简介Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控 命令详解1234567891011121314151617181920212223/o">
@@ -212,7 +212,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/9f41d4a42c33" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利<br>用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控</p>
+        <h3 id="jhat"><a href="#jhat" class="headerlink" title="jhat"></a><a href="https://www.jianshu.com/p/9f41d4a42c33" target="_blank" rel="noopener">jhat</a></h3><h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利<br>用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和<strong>垃圾回收</strong>状况的监控</p>
 <h4 id="命令详解"><a href="#命令详解" class="headerlink" title="命令详解"></a>命令详解</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/opt/java8/bin/jstat -h</span><br><span class="line"></span><br><span class="line">-h requires an <span class="built_in">integer</span> argument</span><br><span class="line">Usage: jstat -help|-options</span><br><span class="line">       jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;<span class="built_in">count</span>&gt;]]</span><br><span class="line"></span><br><span class="line">Definitions:</span><br><span class="line">  &lt;option&gt;      An option reported <span class="keyword">by</span> <span class="keyword">the</span> -options option</span><br><span class="line">  &lt;vmid&gt;        Virtual Machine Identifier. A vmid takes <span class="keyword">the</span> following form:</span><br><span class="line">                     &lt;lvmid&gt;[@&lt;hostname&gt;[:&lt;port&gt;]]</span><br><span class="line">                Where &lt;lvmid&gt; <span class="keyword">is</span> <span class="keyword">the</span> <span class="keyword">local</span> vm identifier <span class="keyword">for</span> <span class="keyword">the</span> target</span><br><span class="line">                Java virtual machine, typically a process <span class="built_in">id</span>; &lt;hostname&gt; <span class="keyword">is</span></span><br><span class="line">                <span class="keyword">the</span> <span class="built_in">name</span> <span class="keyword">of</span> <span class="keyword">the</span> host <span class="built_in">running</span> <span class="keyword">the</span> target Java virtual machine;</span><br><span class="line">                <span class="keyword">and</span> &lt;port&gt; <span class="keyword">is</span> <span class="keyword">the</span> port <span class="built_in">number</span> <span class="keyword">for</span> <span class="keyword">the</span> rmiregistry <span class="keyword">on</span> <span class="keyword">the</span></span><br><span class="line">                target host. See <span class="keyword">the</span> jvmstat documentation <span class="keyword">for</span> a more complete</span><br><span class="line">                description <span class="keyword">of</span> <span class="keyword">the</span> Virtual Machine Identifier.</span><br><span class="line">  &lt;lines&gt;       Number <span class="keyword">of</span> samples <span class="keyword">between</span> header lines.</span><br><span class="line">  &lt;interval&gt;    Sampling interval. The following forms are allowed:</span><br><span class="line">                    &lt;n&gt;[<span class="string">"ms"</span>|<span class="string">"s"</span>]</span><br><span class="line">                Where &lt;n&gt; <span class="keyword">is</span> an <span class="built_in">integer</span> <span class="keyword">and</span> <span class="keyword">the</span> suffix specifies <span class="keyword">the</span> units <span class="keyword">as</span> </span><br><span class="line">                milliseconds(<span class="string">"ms"</span>) <span class="keyword">or</span> seconds(<span class="string">"s"</span>). The default units are <span class="string">"ms"</span>.</span><br><span class="line">  &lt;<span class="built_in">count</span>&gt;       Number <span class="keyword">of</span> samples <span class="keyword">to</span> take <span class="keyword">before</span> terminating.</span><br><span class="line">  -J&lt;flag&gt;      Pass &lt;flag&gt; directly <span class="keyword">to</span> <span class="keyword">the</span> runtime system.</span><br></pre></td></tr></table></figure>
 
 <ul>
@@ -235,7 +235,7 @@
 <li>-gcnewcapacity 显示新生代大小和使用情况</li>
 <li>-gcold 显示老年代和永久代的信息</li>
 <li>-gcoldcapacity 显示老年代的大小</li>
-<li>-gcutil 显示垃圾收集信息</li>
+<li><strong>-gcutil 显示垃圾收集信息</strong></li>
 <li>-gccause 显示垃圾回收的相关信息（通-gcutil）,同时显示最后一次或当前正在发生的垃圾回收的诱因</li>
 <li>-printcompilation 输出JIT编译的方法信息</li>
 </ul>
@@ -364,18 +364,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/10/25/学习笔记/Linux/Linux-CPU/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/10/25/学习笔记/Java/jmap/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          运维知道多少
+          jmap
         
       </div>
     </a>
   
   
-    <a href="/2019/10/25/学习笔记/Java/jhat/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">jhat</div>
+    <a href="/2019/10/25/学习笔记/Java/HashMap/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">HashMap详解</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -550,7 +550,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -558,11 +558,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -574,23 +574,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">elastic-job</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MyBatis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -602,23 +598,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">单点登录</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">jwt</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,7 +622,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+                <a href="javascript:void(0)" class="js-tag color4">小璐璐</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,7 +638,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+                <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -674,11 +674,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Spring boot</a>
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
               </li>
              
               <li class="article-tag-list-item">
