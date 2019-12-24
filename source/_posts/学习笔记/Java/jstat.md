@@ -10,7 +10,7 @@ tags:
 ### [jhat](https://www.jianshu.com/p/9f41d4a42c33)
 #### 简介
 Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利
-用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和垃圾回收状况的监控
+用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和**垃圾回收**状况的监控
 
 #### 命令详解
 ```
@@ -73,7 +73,7 @@ Definitions:
 * -gcnewcapacity 显示新生代大小和使用情况
 * -gcold 显示老年代和永久代的信息
 * -gcoldcapacity 显示老年代的大小
-* -gcutil 显示垃圾收集信息
+* **-gcutil 显示垃圾收集信息**
 * -gccause 显示垃圾回收的相关信息（通-gcutil）,同时显示最后一次或当前正在发生的垃圾回收的诱因
 * -printcompilation 输出JIT编译的方法信息
 
