@@ -40,3 +40,30 @@ select * form table_test where field_A like "%23%"
 ```
 group_concat([DISTINCT] 要连接的字段 [Order BY ASC/DESC 排序字段] [Separator '分隔符'])
 ```
+
+* [数据库锁表](https://www.jianshu.com/p/aa99df051c8f)
+```
+-- 查询是否锁表
+
+show OPEN TABLES ;
+
+-- 查询进程
+
+show processlist ;
+
+-- 查询到相对应的进程，然后杀死进程
+
+kill id; -- 一般到这一步就解锁了
+
+-- 查看正在锁的事务
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCKS;
+
+-- 查看等待锁的事务
+
+SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;
+
+-- 解锁表
+
+UNLOCK TABLES;
+```
