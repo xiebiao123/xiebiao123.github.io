@@ -27,6 +27,8 @@ id  datetime0               datetime1                   datetime2               
 1   2019-02-22 13:02:59     2019-02-22 13:02:58.8       2019-02-22 13:02:58.79      2019-02-22 13:02:58.789
 ```
 
+<!-- more -->
+
 * FIND_IN_SET mysql查询匹配包含字符串 
 ```
 1.正确的方式：
@@ -67,3 +69,5 @@ SELECT * FROM INFORMATION_SCHEMA.INNODB_LOCK_WAITS;
 
 UNLOCK TABLES;
 ```
+
+* [**mysql** EXPLAIN用法和结果分析](https://blog.csdn.net/why15732625998/article/details/80388236)

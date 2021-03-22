@@ -72,7 +72,7 @@ events事件指令是设定Nginx的工作模式以及连接数上限：
 其中select和poll都是标准的工作模式、kqueue和epoll是高效的工作模式、不同的是epoll用在Linux平台上，而kqueue用在BSD系统中。对于Linux
 系统，epoll工作模式首先
 * **worker_connections**也是事件模块指令，用于定义Nginx每个进程的最大默认连接数，默认是1024。最大客户端连接数由worker_processes和
-worker_connections决定，即max_client=worker_processes*worker_connections。在作为反向代理时，max_client=worker_processes*worker_connections/4。
+worker_connections决定，即max_client=worker_processes\*worker_connections。在作为反向代理时，max_client=worker_processes\*worker_connections/4。
 进程的最大连接数受Linux系统进程的最大打开文件数限制，在执行操作系统命令**ulimit -n 65536**后worker_connections的设置才能生效
 
 #### HTTP服务器配置
