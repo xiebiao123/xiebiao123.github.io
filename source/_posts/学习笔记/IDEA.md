@@ -7,10 +7,12 @@ tags:
     - IDEA
 ---
 #### [主题](http://www.riaway.com/theme.php)
+
 #### 常用plugins
 <!-- more -->
 
 #### 常用设置
+
 * 不区分大小写提示
 ![不区分大小写提示](/images/idea/不区分大小写提示.png)
 

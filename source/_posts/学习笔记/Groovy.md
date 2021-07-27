@@ -8,8 +8,10 @@ tags:
 ---
 
 ### 类型
+
 #### 字符串
-```
+
+``` groovy
 /*多行字符串可以使用三个连续的单引号或双引号包括*/
 def multiline="""line1
 line2
@@ -26,13 +28,15 @@ def greeting = "Hello ${name}"
 <!-- more -->
 
 #### 布尔类型
-```
+
+``` groovy
 Groovy的布尔类型和Java类似，也有true和false两个值。不过Groovy的布尔语义更丰富。未到结尾的迭代器、非空对象引用、非零数
 字都认为是真；空集合、空字符串等认为是假
 ```
 
 #### 数字类型
-```
+
+``` groovy
 // Groovy支持byte、char 、short、 int 、long和 BigInteger等几种数字类型。如果使用普通方式声明，它们和Java中的变量很相似。
 
 // 如果使用def关键字声明，那么这些数字会自动选择可以容纳它们的类型
@@ -64,7 +68,8 @@ BigDecimal和float、double等类型计算，结果是double类型。*/
 ```
 
 #### 列表
-```
+
+``` groovy
 /*使用[....]语法声明列表，默认情况下列表是ArrayList实现。我们也可以使用as运算符自己选择合适的列表底层类型。*/
 def arrayList = [1, 2, 3]
 assert arrayList instanceof java.util.ArrayList
@@ -98,7 +103,8 @@ assert multi[1][0] == 2
 ```
 
 #### 数组
-```
+
+``` groovy
 /*声明数组的方式和列表一样，只不过需要显示指定数组类型。数组的使用方法也和列表类似，只不过由于数组是不可变的，所以不能像数组
 末尾添加元素。*/
 
@@ -107,7 +113,8 @@ def intArray2 = [1, 2, 3, 4, 5, 6] as int[]
 ```
 
 ### Map
-```
+
+``` groovy
 /*创建Map同样使用方括号，不过这次需要同时指定键和值了。Map创建好之后，我们可以使用[键]或.键来访问对应的值。默认情况下创建的
 Map是java.util.LinkedHashMap，我们可以声明变量类型或者使用as关键字改变Map的实际类型。*/
 
@@ -133,6 +140,7 @@ assert !person.containsKey('key')
 ```
 
 ### 运算符
+
 - Groovy的数学运算符和Java类似，只不过多了一个乘方运算**和乘方赋值**=。
 - Groovy的关系运算符（大于、小于等于这些）和Java类似。
 - Groovy的逻辑运算符（与或非这些）和Java类似，也支持短路计算。
@@ -140,14 +148,16 @@ assert !person.containsKey('key')
 - Groovy的三元运算符条件?值1:值2和Java类似。
 
 #### 可空运算
-```
+
+``` groovy
 /*Groovy支持Elvis操作符，当对象非空的时候结果是值1，为空时结果是值2。或者更直接，对象非空是使用对象本身，为空时给另一个值，常用于给定某个可空变量的默认值。*/
 displayName = user.name ? user.name : 'Anonymous'   
 displayName = user.name ?: 'Anonymous'
 ```
 
 #### 安全导航运算符
-```
+
+``` groovy
 /*当调用一个对象上的方法或属性时，如果该对象为空，就会抛出空指针异常。这时候可以使用?.运算符，当对象为空时表达式的值也是空，不会抛出空指针异常。*/
 def person = Person.find { it.id == 123 }    
 def name = person?.name                      
@@ -155,7 +165,8 @@ assert name == null
 ```
 
 #### 字段访问运算符
-```
+
+``` groovy
 /*在Groovy中默认情况下使用点运算符.会引用属性的Getter或Setter。如果希望直接访问字段，需要使用.@运算符。*/
 class User {
     public final String name                 
@@ -166,16 +177,20 @@ def user = new User('Bob')
 assert user.name == 'Name: Bob'   
 assert user.@name == 'Bob'
 ```
+
 #### 方法指针运算
-```
+
+``` groovy
 /* 我们可以将方法赋给变量，这需要使用.&运算符。然后我们就可以像调用方法那样使用变量。方法引用的实际类型是Groovy的闭包Closure。这种运算符可以将方法作为参数 */
 def str = 'example of method reference'            
 def fun = str.&toUpperCase                         
 def upper = fun()                                  
 assert upper == str.toUpperCase()
 ```
+
 #### 展开运算符
-```
+
+``` groovy
 /*展开运算符*.会调用一个列表上所有元素的相应方法或属性，然后将结果再组合成一个列表。*/
 class Car {
     String make
@@ -197,7 +212,8 @@ assert null*.make == null
 ```
 
 #### 范围运算符
-```
+
+``` groovy
 /*使用..创建范围。默认情况下范围是闭区间，如果需要开闭区间可以在结束范围上添加<符号。范围的类型是groovy.lang.Range，它继承了List接口，也就是说我们可以将范围当做List使用。*/
 
 def range = 0..5                                    
@@ -208,7 +224,8 @@ assert (0..5).size() == 6
 ```
 
 #### 比较运算符
-```
+
+``` groovy
 <=>运算符相当于调用compareTo方法。
 
 def list = ['Grace','Rob','Emmy']
@@ -216,14 +233,16 @@ assert ('Emmy' in list)
 ```
 
 #### 成员运算符
-```
+
+``` groovy
 /*成员运算符in相当于调用contains或isCase方法。*/
 def list = ['Grace','Rob','Emmy']
 assert ('Emmy' in list)
 ```
 
 #### 相等运算符
-```
+
+``` groovy
 ==运算符和Java中的不同。在Groovy中它相当于调用equals方法。如果需要比较引用，使用is。
 def list1 = ['Groovy 1.8','Groovy 2.0','Groovy 2.3']        
 def list2 = ['Groovy 1.8','Groovy 2.0','Groovy 2.3']        
@@ -232,7 +251,8 @@ assert !list1.is(list2)   //比较引用相等
 ```
 
 #### 转化运算符
-```
+
+``` groovy
 /*我们可以使用Java形式的(String) i来转换类型。但是假如类型不匹配的话，就会抛出ClassCastException。而使用as运算符就会避免这种情况。*/
 
 Integer x = 123
@@ -242,8 +262,10 @@ String s = x as String
 ```
 
 ### 表达式语句
+
 #### 声明变量
-```
+
+``` groovy
 /*Groovy支持以传统方式使用变量类型 变量名的方式声明变量，也可以使用def关键字声明变量。使用def关键字的时候，变量类型由编译器自动推断，无法推断时就是Object类型。*/
 
 // Groovy可以同时声明多个变量。
@@ -255,6 +277,5 @@ assert a == 1 && b == 2 && c == null
 如果等号右面比左面多，那么多余的值会被忽略。
 def (a, b) = [1, 2, 3]
 assert a == 1 && b == 2
-
 
 ```

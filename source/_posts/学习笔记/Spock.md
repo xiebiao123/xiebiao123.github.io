@@ -8,7 +8,8 @@ tags:
 ---
 
 ### 基本概念
-```
+
+``` groovy
 # 预先定义的几个函数
 def setup() {}          // run before every feature method
 def cleanup() {}        // run after every feature method
@@ -93,7 +94,8 @@ class DataDriven extends Specification {
 <!-- more -->
 
 ### mock
-```
+
+``` groovy
 class PublisherSpec extends Specification {
     Publisher publisher = new Publisher()
     Subscriber subscriber = Mock()

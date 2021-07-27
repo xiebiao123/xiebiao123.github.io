@@ -8,16 +8,19 @@ tags:
 ---
 
 ### [虚拟机与Docker有何不同](https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html)
+
 Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。
 虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。
 
 虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。
 
 ### Docker安装
+
 1. [Windows Docker 安装](https://www.runoob.com/docker/windows-docker-install.html)
 2. [CentOS Docker 安装](https://www.runoob.com/docker/centos-docker-install.html)
 
 ### 概念
+
 * **镜像(Images)** 镜像是用于创建 Docker 容器的模板
 * **容器(Container)** 容器是独立运行的一个或一组应用
 * **客户端(Client)** Docker 客户端通过命令行或者其他工具使用 [Docker API](https://docs.docker.com/reference/api/docker_remote_api) 与 Docker 的守护进程通信
@@ -28,6 +31,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
 ### 命令
 
 #### 常用
+
     service docker start 启动 Docker 进程
     docker command --help Docker命令使用方法
 
@@ -36,6 +40,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
 ### 容器
 
 #### docker run 创建并运行容器
+
     语法
         docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
     OPTIONS说明
@@ -53,6 +58,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         docker run -it nginx:latest /bin/bash
 
 #### docker start/stop/restart 启动/停止/重启容器
+
     语法
         启动一个或多个已经被停止的容器
         docker start [OPTIONS] CONTAINER [CONTAINER...]
@@ -66,6 +72,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         docker restart myrunoob
 
 #### docker rm 删除容器
+
     语法
         docker rm [OPTIONS] CONTAINER [CONTAINER...]
     OPTIONS说明
@@ -81,6 +88,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         docker rm -v nginx01
 
 #### docker exec 在容器内执行命令
+
     语法
         docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
     OPTIONS说明
@@ -91,8 +99,8 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         容器mynginx中开启一个交互模式的终端
         docker exec -it  mynginx /bin/bash
 
-
 #### docker logs 获取容器的日志
+
     语法
         docker logs [OPTIONS] CONTAINER
     OPTIONS说明
@@ -107,6 +115,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         docker logs --since="2018-07-01" --tail=10 mynginx
 
 #### docker ps/port/cp/diff/export
+
     docker ps 列出容器
     docker port 列出指定的容器的端口映射
     docker cp 用于容器与主机之间的数据拷贝
@@ -114,7 +123,9 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
     docker export 将文件系统作为一个tar归档文件导出到STDOUT
 
 ### 镜像
+
 #### docker build 创建镜像
+
     语法
         docker build [OPTIONS] PATH | URL | -
     OPTIONS说明
@@ -131,6 +142,7 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
         docker build -f /path/to/a/Dockerfile .
 
 #### docker images/pull/rmi/tag/search
+
     docker images 列出本地镜像
     docker pull 拉取镜像
     docker rmi 删除本地一个或多少镜像
@@ -143,4 +155,3 @@ Docker守护进程可以直接与主操作系统进行通信，为各个Docker�
 
 1. [Dockerfile](https://blog.csdn.net/u010884123/article/details/55213279)
 2. [Dockerfile命令详解](https://www.cnblogs.com/dazhoushuoceshi/p/7066041.html)
-

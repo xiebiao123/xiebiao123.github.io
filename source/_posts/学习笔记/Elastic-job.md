@@ -63,7 +63,7 @@ Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String 
 
 #### 2.作业名的哈希值奇偶数决定IP升降序算法的分片策略
 
-这个策略的对应的类是：OdevitySortByNameJobShardingStrategy，它内部其实也是使用AverageAllocationJobShardingStrategy实现，只是在传入的节点实例顺序不一样，也就是上面接口参数的List<JobInstance>。AverageAllocationJobShardingStrategy的缺点是一旦分片数小于Job实例数，作业将永远分配至IP地址靠前的Job实例上，导致IP地址靠后的Job实例空闲。而OdevitySortByNameJobShardingStrategy则可以根据作业名称重新分配Job实例负载。如：
+这个策略的对应的类是：OdevitySortByNameJobShardingStrategy，它内部其实也是使用AverageAllocationJobShardingStrategy实现，只是在传入的节点实例顺序不一样，也就是上面接口参数的List\<JobInstance>。AverageAllocationJobShardingStrategy的缺点是一旦分片数小于Job实例数，作业将永远分配至IP地址靠前的Job实例上，导致IP地址靠后的Job实例空闲。而OdevitySortByNameJobShardingStrategy则可以根据作业名称重新分配Job实例负载。如：
 
 如果有3个Job实例，分成2片，作业名称的哈希值为奇数，则每个Job实例分到的分片是：1=[0], 2=[1], 3=[]
 如果有3个Job实例，分成2片，作业名称的哈希值为偶数，则每个Job实例分到的分片是：3=[0], 2=[1], 1=[]
@@ -79,7 +79,7 @@ return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shar
 
 #### 3.根据作业名的哈希值对Job实例列表进行轮转的分片策略
 
-这个策略的对应的类是：RotateServerByNameJobShardingStrategy，和上面介绍的策略一样，内部同样是用AverageAllocationJobShardingStrategy实现，也是在传入的List<JobInstance>列表顺序上做文章。
+这个策略的对应的类是：RotateServerByNameJobShardingStrategy，和上面介绍的策略一样，内部同样是用AverageAllocationJobShardingStrategy实现，也是在传入的List\<JobInstance>列表顺序上做文章。
 
 #### 4.自定义分片策略
 
