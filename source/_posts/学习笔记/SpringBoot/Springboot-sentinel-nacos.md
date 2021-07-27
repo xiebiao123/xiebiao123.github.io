@@ -10,11 +10,14 @@ tags:
 ---
 
 ### 前言
+
 sentinel 原生版本的规则管理通过API，将规则推送至客户端并直接更新到内存中，服务重启自己定义的限流规则会丢失。如何避免这一问题？
 这是我们想到了使用Nacos、Apollo等配置中心来持久话配置，客户端监听配置变化并更新本地缓存。即解决上述问题
 
 ### sentinel 控制台
+
 #### 添加依赖
+
 ```xml
 <dependency>
     <groupId>com.alibaba.boot</groupId>
@@ -24,14 +27,17 @@ sentinel 原生版本的规则管理通过API，将规则推送至客户端并�
 ```
 
 #### 指定配置
-```
+
+``` yml
 nacos.config.server-addr = localhost:8848
 nacos.config.namespace = a2881d2a-5c21-4f9e-9c75-dd93872e9ce8
 ```
 
 #### 修改代码
+
 * AuthorityRuleController (授权规则)
-```
+  
+``` java
 private boolean publishRules(String app, String ip, Integer port) {
     List<AuthorityRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
     // 同步规则至nacos
@@ -46,8 +52,10 @@ private boolean publishRules(String app, String ip, Integer port) {
     return sentinelApiClient.setAuthorityRuleOfMachine(app, ip, port, rules);
 }
 ```
+
 * DegradeController
-```
+
+``` java
 private boolean publishRules(String app, String ip, Integer port) {
     List<DegradeRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
     // 同步规则至nacos
@@ -62,8 +70,10 @@ private boolean publishRules(String app, String ip, Integer port) {
     return sentinelApiClient.setDegradeRuleOfMachine(app, ip, port, rules);
 }
 ```
+
 * FlowControllerV1
-```
+  
+``` java
 private boolean publishRules(String app, String ip, Integer port) {
     List<FlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
     // 同步规则至nacos
@@ -78,8 +88,10 @@ private boolean publishRules(String app, String ip, Integer port) {
     return sentinelApiClient.setFlowRuleOfMachine(app, ip, port, rules);
 }
 ```
+
 * ParamFlowRuleController
-```
+  
+``` java
 private CompletableFuture<Void> publishRules(String app, String ip, Integer port) {
     List<ParamFlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
     // 同步规则至nacos
@@ -94,8 +106,10 @@ private CompletableFuture<Void> publishRules(String app, String ip, Integer port
     return sentinelApiClient.setParamFlowRuleOfMachine(app, ip, port, rules);
 }
 ```
+
 * SystemController
-```
+  
+``` java
 private boolean publishRules(String app, String ip, Integer port) {
     List<SystemRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
     // 同步规则至nacos
@@ -112,8 +126,10 @@ private boolean publishRules(String app, String ip, Integer port) {
 ```
 
 ### sentinel 客户端
+
 #### 添加依赖
-```
+
+``` xml
 <!-- 接入sentinel、nacos -->
 <dependency>
     <groupId>com.alibaba.boot</groupId>
@@ -178,8 +194,10 @@ private boolean publishRules(String app, String ip, Integer port) {
     <version>1.6.0</version>
 </dependency>
 ```
+
 #### 指定配置
-```
+
+``` yml
 nacos.config.server-addr = localhost:8848
 nacos.config.namespace = a2881d2a-5c21-4f9e-9c75-dd93872e9ce8
 spring.cloud.sentinel.transport.port = 6719
@@ -187,7 +205,8 @@ spring.cloud.sentinel.transport.dashboard = localhost:8088
 ```
 
 #### 监听配置、更新本地缓存
-```
+
+``` java
 @Slf4j
 @Getter
 public class SentinelNacosAutoReader {
@@ -278,4 +297,5 @@ public class SentinelNacosAutoReader {
 ```
 
 ### 小结
+
 Sentinel 控制台 → 配置中心（nacos、apollo） → Sentinel 数据源(mysql) → Sentinel 客户端监听到配置中心的变化更新到本地缓存

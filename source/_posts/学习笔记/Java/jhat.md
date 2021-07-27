@@ -8,11 +8,14 @@ tags:
 ---
 
 ### [jhat](https://www.jianshu.com/p/2c5ba79d8889)
+
 #### 简介
-jhat(Java Heap Analysis Tool),是一个用来分析java的堆情况的命令。是java虚拟机自带的一种虚拟机堆转储快照分析工具。
+
+    jhat(Java Heap Analysis Tool),是一个用来分析java的堆情况的命令。是java虚拟机自带的一种虚拟机堆转储快照分析工具。
 
 #### 测试代码
-```
+
+``` java
 public class HeapOOM {
 
     static class OOMObject{
@@ -29,7 +32,8 @@ public class HeapOOM {
 ```
 
 #### jhat分析代码
-```
+
+``` java
 F:\dump>jhat java_pid15860.hprof
 Reading from java_pid15860.hprof...
 Dump file created Tue Jun 25 17:43:13 CST 2019
@@ -47,6 +51,8 @@ Server is ready.
 ```
 
 #### jhat分析结果
+
 * 显示出堆中所包含的所有的类
 * 堆实例的分布表
 * [参考](https://www.cnblogs.com/baihuitestsoftware/articles/6406271.html)
+  

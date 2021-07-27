@@ -8,25 +8,26 @@ tags:
 ---
 
 ### 常用指令
-* v-html 输出html代码 如 v-html="message"
-* v-bind 
-    * 判断属性中的值 如 v-bind:class="{'class1': use}"
-    * v-bind 指令被用来响应地更新 HTML 属性 <a v-bind:href="url">
-    v-bind:style  v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }
-    v-bind:class  v-bind:class="{ active: isActive, 'text-danger': hasError }"
 
+* v-html 输出html代码 如 v-html="message"
+* v-bind
+  * 判断属性中的值 如 v-bind:class="{'class1': use}"
+  * v-bind 指令被用来响应地更新 HTML 属性 \<a v-bind:href="url"\>
+  * v-bind:style  v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }
+  * v-bind:class  v-bind:class="{ active: isActive, 'text-danger': hasError }"
 * v-if 条件判断
 * v-else 可以用 v-else 指令给 v-if 添加一个 "else" 块
 * v-else-if v-else-if 在 2.1.0 新增，顾名思义，用作 v-if 的 else-if 块。可以链式的多次使用
 * v-show 根据条件展示元素：
 * v-for
 * v-module 双向绑定
-* v-on:click 如 <a v-on:click="doSomething">
+* v-on:click 如 \<a v-on:click="doSomething"\>
 
 <!-- more -->
 
 #### 指令缩写
-```
+
+``` js
 v-bind 缩写
     <!-- 完整语法 -->
     <a v-bind:href="url"></a>
@@ -40,9 +41,9 @@ v-on 缩写
     <a @click="doSomething"></a>
 ```
 
-
 ### 过滤器
-```
+
+``` js
 <!-- 在两个大括号中 -->
 {{ message | capitalize }}
 
@@ -54,10 +55,11 @@ v-on 缩写
 
 过滤器是 JavaScript 函数，因此可以接受参数：
 {{ message | filterA('arg1', arg2) }}
-``` 
+```
 
 ### 事件装饰服
-```
+
+``` js
 <!-- 阻止单击事件冒泡 -->
 <a v-on:click.stop="doThis"></a>
 <!-- 提交事件不再重载页面 -->
@@ -75,8 +77,10 @@ v-on 缩写
 ```
 
 ### 自定义组件
+
 #### 全局组件
-```
+
+``` js
 Vue.component(tagName, options)
 <tagName></tagName>
 
@@ -95,8 +99,10 @@ new Vue({
 })
 </script>
 ```
+
 #### 局部组件
-```
+
+``` js
 <div id="app">
     <runoob></runoob>
 </div>
@@ -118,7 +124,8 @@ new Vue({
 ```
 
 #### 动态 Prop
-```
+
+``` js
 <div id="app">
     <div>
       <input v-model="parentMsg">
@@ -148,7 +155,8 @@ new Vue({
 ```
 
 #### 自定义事件
-```
+
+``` js
 父组件是使用 props 传递数据给子组件，但如果子组件要把数据传递回去，就需要使用自定义事件！
 我们可以使用 v-on 绑定自定义事件, 每个 Vue 实例都实现了事件接口(Events interface)，即：
 
@@ -195,21 +203,23 @@ new Vue({
 ```
 
 #### 自定义指令
+
 ##### 钩子函数
+
 钩子函数的参数有：
 
 * el: 指令所绑定的元素，可以用来直接操作 DOM 。
 * binding: 一个对象，包含以下属性：
-    * name: 指令名，不包括 v- 前缀。
-    * value: 指令的绑定值， 例如： v-my-directive="1 + 1", value 的值是 2。
-    * oldValue: 指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
-    * expression: 绑定值的表达式或变量名。 例如 v-my-directive="1 + 1" ， expression 的值是 "1 + 1"。
-    * arg: 传给指令的参数。例如 v-my-directive:foo， arg 的值是 "foo"。
-    * modifiers: 一个包含修饰符的对象。 例如： v-my-directive.foo.bar, 修饰符对象 modifiers 的值是 { foo: true, bar: true }。
+  * name: 指令名，不包括 v- 前缀。
+  * value: 指令的绑定值， 例如： v-my-directive="1 + 1", value 的值是 2。
+  * oldValue: 指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+  * expression: 绑定值的表达式或变量名。 例如 v-my-directive="1 + 1" ， expression 的值是 "1 + 1"。
+  * arg: 传给指令的参数。例如 v-my-directive:foo， arg 的值是 "foo"。
+  * modifiers: 一个包含修饰符的对象。 例如： v-my-directive.foo.bar, 修饰符对象 modifiers 的值是 { foo: true, bar: true }。
 * vnode: Vue 编译生成的虚拟节点。
 * oldVnode: 上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
 
-```
+``` js
 /* 局部指令 */
 <div id="app">
   <p>页面载入时，input 元素自动获取焦点：</p>
@@ -252,18 +262,18 @@ new Vue({
 
 ### 路由
 
-```
+``` js
 <router-link>
 ```
 
 ### 过度动画
 
-```
+``` js
 <transition name = "nameoftransition">
    <div></div>
 </transition>
 ```
 
 ### Ajax
-待续...
 
+待续...

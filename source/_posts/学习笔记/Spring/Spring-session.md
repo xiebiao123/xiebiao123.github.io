@@ -8,9 +8,10 @@ tags:
 ---
 
 ### spring-session管理session分析
+
 * DelegatingFilterProxy 代理类
 
-```
+``` java
 @Override
 protected void initFilterBean() throws ServletException {
     synchronized (this.delegateMonitor) {
@@ -30,11 +31,13 @@ protected void initFilterBean() throws ServletException {
     }
 }
 ```
+
 DelegatingFilterProxy里没有实现过滤器的任何逻辑，具体逻辑在其指定的filter-name过滤器中。初始化过滤器，如果没有配置targetBeanName，
 则直接使用filter-name，这里指定的是springSessionRepositoryFilter，这个名称是一个固定值此filter在RedisHttpSessionConfiguration中被定义。
 
 * RedisHttpSessionConfiguration 配置类
-```
+
+``` java
 @Bean
 public <S extends ExpiringSession> SessionRepositoryFilter<? extends ExpiringSession> springSessionRepositoryFilter(
         SessionRepository<S> sessionRepository) {
@@ -50,14 +53,15 @@ public <S extends ExpiringSession> SessionRepositoryFilter<? extends ExpiringSes
     }
     return sessionRepositoryFilter;
 }
-``` 
+```
+
 在RedisHttpSessionConfiguration的父类SpringHttpSessionConfiguration中定义了springSessionRepositoryFilter,此方法返回值是
 SessionRepositoryFilter，这个其实就是真实的过滤器。此方法的参数SessionRepository的实现类RedisOperationsSessionRepository
 其实就是就是将session持久化到redis中
 
 * SessionRepositoryFilter 过滤器
 
-```
+``` java
 @Override
 protected void doFilterInternal(HttpServletRequest request,
         HttpServletResponse response, FilterChain filterChain)
@@ -82,13 +86,14 @@ protected void doFilterInternal(HttpServletRequest request,
     }
 }
 ```
+
 所有的请求都会先经过SessionRepositoryFilter过滤器，request被包装成了SessionRepositoryRequestWrapper对象，response被包装
 成了SessionRepositoryResponseWrapper对象，SessionRepositoryRequestWrapper中重写了getSession等方法；finally中执行了commitSession
 方法，将session进行持久化操作
 
 * SessionRepositoryRequestWrapper 包装类
 
-```
+``` java
 @Override
 public HttpSessionWrapper getSession(boolean create) {
     HttpSessionWrapper currentSession = getCurrentSession();
@@ -134,17 +139,21 @@ public HttpSessionWrapper getSession(boolean create) {
 ```
 
 重点看一下重写的getSession方法,大致分为三步
+
 1. 首先去本地内存中获取session，如果获取不到去指定的数据库中获取，这里其实就是去redis里面获取,sessionRepository就是上面定义的RedisOperationsSessionRepository对象
 2. 如果redis里面也没有则创建一个新的session
 3. 然后再将session设置到redis中
 
 ### 保存的session
+
 每次在消息处理完之后，会执行finally中的commitSession方法，每个session被保存都会创建三组数据，
+
 * **hash结构记录** key格式：**spring:session:sessions:[sessionId]**，对应的value保存session的所有数据包括：creationTime，maxInactiveInterval，lastAccessedTime，attribute
 * **set结构记录** key格式：**spring:session:expirations:[过期时间]**，对应的value为expires:[sessionId]列表，有效期默认是30分钟，即1800秒
 * **string结构记录** key格式：**spring:session:sessions:expires:[sessionId]**，对应的value为空；该数据的TTL表示sessionId过期的剩余时间
 
 ### 定时清理
+
 除了依赖redis本身的有效期机制，spring-session提供了一个定时器，用来定期检查需要被清理的session，同样是通过roundDownMinute方法来获取key，
 获取这一分钟内要被删除的session，此value是set数据结构，里面存放这需要被删除的sessionId
 > 注：这里面存放的的是spring:session:sessions:expires:[sessionId]，并不是实际存储session数据的spring:session:sessions:[sessionId]
@@ -153,6 +162,7 @@ public HttpSessionWrapper getSession(boolean create) {
 如果key已经过去则触发删除操作，利用了redis本身的特性
 
 ### 键空间通知
+
 定期删除机制并没有删除实际存储session数据的spring:session:sessions:[sessionId]，这里利用了redis的keyspace notification功能，大致就是通过命令产生一个通知，具体什么命令可以配置（包括：删除，过期等）具体可以查看
 
 [参考地址](http://www.sohu.com/a/260010804_464962)

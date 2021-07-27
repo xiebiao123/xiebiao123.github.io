@@ -8,9 +8,11 @@ tags:
 ---
 
 ### 分片策略
+
 数据分片的目的在于把一个任务分散到不同的机器上运行，既可以解决单机计算能力上限的问题，也能降低部分任务失败对整体系统的影响。elastic-job并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器（其实是Job实例，部署在一台机器上的多个Job实例也能分片），开发者需要自行处理分片项与真实数据的对应关系。框架也预置了一些分片策略：平均分配算法策略，作业名哈希值奇偶数算法策略，轮转分片策略。同时也提供了自定义分片策略的接口。
 
 #### 分片原理
+
 elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点分配，如下三种情况都会触发主节点上的分片算法执行：
 
 1. 新的Job实例加入集群
@@ -24,7 +26,7 @@ elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点
 
 <!-- more -->
 
-```
+``` java
 /**
  * 执行作业.
  *
@@ -32,11 +34,12 @@ elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点
  */
 void execute(ShardingContext shardingContext);
 ```
- 
+
 ### 分片算法
+
 所有的分片策略都继承JobShardingStrategy接口。根据当前注册到ZK的实例列表和在客户端配置的分片数量来进行数据分片。最终将每个Job实例应该获得的分片数字返回出去。 方法签名如下：
 
-```
+``` java
 /**
  * 作业分片.
  * 
@@ -50,16 +53,13 @@ Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String 
 
 分片函数的触发，只会在leader选举的时候触发，也就是说只会在刚启动和leader节点离开的时候触发，并且是在leader节点上触发，而其他节点不会触发。
 
- 
-
-#### 1.基于平均分配算法的分片策略
+#### 1. 基于平均分配算法的分片策略
 
 基于平均分配算法的分片策略对应的类是：AverageAllocationJobShardingStrategy。它是默认的分片策略。它的分片效果如下：
 
 如果有3个Job实例, 分成9片, 则每个Job实例分到的分片是: 1=[0,1,2], 2=[3,4,5], 3=[6,7,8].
 如果有3个Job实例, 分成8片, 则每个Job实例分到的分片是: 1=[0,1,6], 2=[2,3,7], 3=[4,5].
 如果有3个Job实例, 分成10片, 则个Job实例分到的分片是: 1=[0,1,2,9], 2=[3,4,5], 3=[6,7,8].
- 
 
 #### 2.作业名的哈希值奇偶数决定IP升降序算法的分片策略
 
@@ -68,7 +68,8 @@ Map<JobInstance, List<Integer>> sharding(List<JobInstance> jobInstances, String 
 如果有3个Job实例，分成2片，作业名称的哈希值为奇数，则每个Job实例分到的分片是：1=[0], 2=[1], 3=[]
 如果有3个Job实例，分成2片，作业名称的哈希值为偶数，则每个Job实例分到的分片是：3=[0], 2=[1], 1=[]
 实现比较简单：
-```
+
+``` java
 long jobNameHash = jobName.hashCode();
 if (0 == jobNameHash % 2) {
     Collections.reverse(jobInstances);
@@ -80,23 +81,24 @@ return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shar
 
 这个策略的对应的类是：RotateServerByNameJobShardingStrategy，和上面介绍的策略一样，内部同样是用AverageAllocationJobShardingStrategy实现，也是在传入的List<JobInstance>列表顺序上做文章。
 
- 
-
 #### 4.自定义分片策略
 
 除了可以使用上述分片策略之外，elastic-job还允许自定义分片策略。我们可以自己实现JobShardingStrategy接口，并且配置到分片方法上去，整个过程比较简单，下面仅仅列出通过配置spring来切换自定义的分片算法的例子：
-```
+
+``` xml
 <job:simple id="MyShardingJob1" class="nick.test.elasticjob.MyShardingJob1" registry-center-ref="regCenter" cron="0/10 * * * * ?" 
 sharding-total-count="5" sharding-item-parameters="0=A,1=B,2=C,3=D,4=E" job-sharding-strategy-class="nick.test.elasticjob.MyJobShardingStrategy"/>
 ```
 
 ### 分片的执行*
+
 同一时间点会触发每个分片的任务，可根据 shardingContext.getShardingItem() 来判断具体在那个分片执行
+
 ``` java
 switch (shardingContext.getShardingItem()) {
    case 0:
-	   break;
+        break;
    default:
-	   break;
+        break;
 }
 ```

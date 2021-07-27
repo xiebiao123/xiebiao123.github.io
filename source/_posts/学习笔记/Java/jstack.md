@@ -8,8 +8,10 @@ tags:
 ---
 
 ### [jstack](https://jingyan.baidu.com/article/4f34706e3ec075e387b56df2.html)
+
 #### 简介
-```
+
+``` shell
 jstack用于打印出给定的java进程ID或core file或远程调试服务的Java堆栈信息，如果是在64位机器上，需要指定选项"-J-d64"，
 Windows的jstack使用方式只支持以下的这种方式
     jstack [-l] pid
@@ -36,7 +38,8 @@ Options
 ```
 
 #### jstack查看输出
-```
+
+``` shell
 /opt/java8/bin/jstack -l 28367
 
 2019-06-25 15:04:46
@@ -84,13 +87,16 @@ Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.77-b03 mixed mode):
 ```
 
 #### jstack统计线程数
-```
+
+``` shell
 /opt/java8/bin/jstack -l 28367 | grep 'java.lang.Thread.State' | wc -l
 ```
 
 #### jstack检测死锁
+
 ##### 死锁代码
-```
+
+``` java
 public class DeathLock {
 
     private static Lock lock1 = new ReentrantLock();
@@ -133,8 +139,10 @@ public class DeathLock {
     }
 }
 ```
+
 ##### 死锁日志
-```
+
+``` sehll
 "mythread2" #12 prio=5 os_prio=0 tid=0x0000000058ef7800 nid=0x1ab4 waiting on condition [0x0000000059f8f000]
    java.lang.Thread.State: WAITING (parking)
         at sun.misc.Unsafe.park(Native Method)
@@ -230,8 +238,10 @@ Found 1 deadlock.
 ```
 
 #### jstack检测cpu高
+
 ##### 步骤一：查看cpu占用高进程
-```
+
+``` sehll
 top
 
 Mem:  16333644k total,  9472968k used,  6860676k free,   165616k buffers
@@ -245,8 +255,10 @@ Swap:        0k total,        0k used,        0k free,  6665292k cached
     2 root      20   0     0    0    0 S  0.0  0.0   0:00.00 kthreadd    
     3 root      RT   0     0    0    0 S  0.0  0.0   0:00.14 migration/0 
 ```
+
 ##### 步骤二：查看cpu占用高线程
-```
+
+``` sehll
 top -H -p 17850
 
 top - 17:43:15 up 5 days,  7:31,  1 user,  load average: 0.99, 0.97, 0.91
@@ -266,13 +278,15 @@ Swap:        0k total,        0k used,        0k free,  6781620k cached
 ```
 
 ##### 步骤三：转换线程ID
-```
+
+``` shell
 printf "%x\n" 17880          
 45d8
 ```
 
 ##### 步骤四：定位cpu占用线程
-```
+
+``` shell
 jstack 17850|grep 45d8 -A 30
 "pool-1-thread-11" #20 prio=5 os_prio=0 tid=0x00007fc860352800 nid=0x45d8 runnable [0x00007fc8417d2000]
    java.lang.Thread.State: RUNNABLE

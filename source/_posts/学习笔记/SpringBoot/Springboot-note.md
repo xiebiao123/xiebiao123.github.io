@@ -7,8 +7,10 @@ tags:
     - Spring boot
     - maven
 ---
+
 ### Spring boot不使用继承,使用依赖
-```
+
+``` xml
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -32,7 +34,8 @@ tags:
 <!-- more -->
 
 如果你的pom是继承spring-boot-starter-parent的话，只需要下面的指定就行
-```
+
+``` xml
 <build>
     <plugins>
         <plugin>
@@ -42,30 +45,33 @@ tags:
     </plugins>
 </build>
 ```
+
 如果你的POM不是继承spring-boot-starter-parent的话，需要下面的指定
-```text
+
+```xml
 <build>
     <plugins>
-		<plugin>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
-			<configuration>
-                 <mainClass>com.johnny.LaonongminManagerApplication</mainClass>
-			</configuration>
-			<executions>
-				<execution>
-					<goals>
-						<goal>repackage</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
-	</plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                    <mainClass>com.johnny.LaonongminManagerApplication</mainClass>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
 </build>
 ```
 
 ### springboot读取.properties配置文件中的map和list类型配置参数
-```
+
+``` java
 #map 第一种方式
 data.person.name=zhangsan
 data.person.sex=man
@@ -83,7 +89,8 @@ data.list[2]=apple2
 #list 第二种方式
 data.list=apple0,apple1,apple2
 ```
-```
+
+``` java
 /**
  * data.person.name
  * 这里map名需要和application.properties中的参数一致

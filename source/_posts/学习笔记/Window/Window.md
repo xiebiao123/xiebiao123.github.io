@@ -8,8 +8,10 @@ tags:
 ---
 
 ### [Windows10关闭占用某一端口号的进程](https://blog.csdn.net/eagleuniversityeye/article/details/79985027)
+
 * 查看端口的使用情况
-```
+  
+``` shell
 netstat -ano | findstr 8080(端口号)
 
   TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       3732
@@ -21,7 +23,8 @@ netstat -ano | findstr 8080(端口号)
 ```
 
 * 强制关闭指定进程号的进程
-```
+  
+``` shell
 taskkill -PID 3732(进程号) -F
 
 成功: 已终止 PID 为 3732 的进程。

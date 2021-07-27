@@ -8,12 +8,14 @@ tags:
 ---
 
 ### [jmap](https://www.jianshu.com/p/2499c0cbf7a3)
+
 #### 简介
-jmap是一个JDK自带的多功能的命令。它可以生成 java 程序的 dump 文件， 也可以查看堆内对象示例的统计信息、查看 ClassLoader 的
-信息以及 finalizer 队列
+
+   jmap是一个JDK自带的多功能的命令。它可以生成 java 程序的 dump 文件， 也可以查看堆内对象示例的统计信息、查看 ClassLoader 的信息以及 finalizer 队列
 
 #### jmap命令
-```
+
+``` shell
 Usage:
     jmap [option] <pid>
         (to connect to running process) 连接活动线程
@@ -45,7 +47,8 @@ where <option> is one of:
 ```
 
 #### jmap -heap例子
-```
+
+``` shell
 /opt/java8/bin/jmap -heap 28367
 Attaching to process ID 28367, please wait...
 Debugger attached successfully.
@@ -99,6 +102,7 @@ concurrent mark-sweep generation:
 
 22841 interned Strings occupying 2735144 bytes.
 ```
+
 * MaxHeapSize = 3221225472 (3072.0MB) 最大堆大小
 * NewSize = 1073741824 (1024.0MB) 新生成堆大小
 * MaxNewSize = 1073741824 (1024.0MB) 最大新生代堆大小
@@ -107,7 +111,8 @@ concurrent mark-sweep generation:
 * SurvivorRatio = 8 新生代中Eden/S0的比例，例子中Eden占8/10，from和to各占1/10
 
 #### jmap histo[:live]例子
-```
+
+``` shell
  num     #instances         #bytes  class name
 ----------------------------------------------
    1:        372501      512486688  [B
@@ -144,6 +149,7 @@ concurrent mark-sweep generation:
   32:         11387        1002056  java.lang.reflect.Method
   33:         17692         990752  org.apache.skywalking.apm.dependencies.io.grpc.CallOptions
 ```
+
 * B byte
 * C char
 * D double
@@ -156,7 +162,8 @@ concurrent mark-sweep generation:
 * [L + 类名 其他对象
 
 #### 生成堆转储快照dump文件
-```
+
+``` sell
 /opt/java8/bin/jmap -dump:format=b,file=/home/buser/heapdump.phrof  28367 
 Dumping heap to /home/buser/heapdump.phrof ...
 Heap dump file created
@@ -164,6 +171,7 @@ Heap dump file created
 
 -rw------- 1 root root 911642981 Jun 25 17:28 heapdump.phrof
 ```
+
 * 命令：jmap -dump:format=b,file=heapdump.phrof pid
 * 以hprof二进制格式转储Java堆到指定filename的文件中。live子选项是可选的。如果指定了live子选项，堆中只有活动的对象会被转储。
 想要浏览heap dump，你可以使用jhat(Java堆分析工具)读取生成的文件

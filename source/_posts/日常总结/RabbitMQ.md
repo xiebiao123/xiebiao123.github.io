@@ -8,6 +8,7 @@ tags:
 ---
 
 ##### 1.配置详解
+
     spring.rabbitmq.addresses =＃客户端应连接的地址的逗号分隔列表。
     spring.rabbitmq.cache.channel.checkout-timeout =＃如果已经达到缓存大小，等待获得频道的毫秒数。
     spring.rabbitmq.cache.channel.size =＃要在缓存中保留的通道数。

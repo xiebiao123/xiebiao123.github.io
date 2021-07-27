@@ -8,13 +8,17 @@ tags:
 ---
 
 ### 简介
+
 logback是java的日志开源组件，是log4j创始人写的，性能比log4j要好，目前主要分为3个模块：
+
 1. **logback-core**:核心代码模块
 2. **logback-classic**:log4j的一个改良版本，同时实现了slf4j的接口，这样你如果之后要切换其他日志组件也是一件很容易的事
 3. **logback-access**:访问模块与Servlet容器集成提供通过Http来访问日志的功能
 
 ### 使用
+
 #### 引入maven依赖
+
 ```xml
 <!--这个依赖直接包含了 logback-core 以及 slf4j-api的依赖-->
 <dependency>
@@ -23,10 +27,14 @@ logback是java的日志开源组件，是log4j创始人写的，性能比log4j�
      <version>1.2.3</version>
 </dependency>
 ```
+
 #### logback的配置
+
 ##### 配置获取顺序
+
 logback在启动的时候，会按照下面的顺序加载配置文件
-1. 如果java程序启动是指定**logback.configurationFile**属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test，
+
+1. 如果java程序启动是指定**logback.configurationFile**属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test
 这样执行Test类的时候就会加载/path/to/mylogback.xml配置
 2. 在classpath中查找 logback.groovy 文件
 3. 在classpath中查找 logback-test.xml 文件
@@ -37,9 +45,11 @@ logback在启动的时候，会按照下面的顺序加载配置文件
 上面的顺序表示优先级，使用java -D配置的优先级最高，只要获取到配置后就不会再执行下面的流程。相关代码可以看ContextInitializer#autoConfig()方法。
 
 ##### 日志输出级别
+
 从小到大的日志级别依旧是 **trace、debug、info、warn、error**
 
 ##### logback.xml 配置样例
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
@@ -125,15 +135,11 @@ scanPeriod: 检测配置发生变化的时间间隔。如果没给出时间单�
 | scanPeriod  |1 seconds | 检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒 |
 
 * configuration子节点
-    * contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称
-    * property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问
-    * appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class 
-        * name 无默认值 | appender组件的名称，后面给logger指定appender使用
-        * class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender
-            * ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用
-            * FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用
-            * RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件
- 
-
-    
-
+  * contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称
+  * property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问
+  * appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class
+    * name 无默认值 | appender组件的名称，后面给logger指定appender使用
+    * class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender
+      * ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用
+      * FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用
+      * RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件

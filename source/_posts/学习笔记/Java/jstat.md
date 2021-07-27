@@ -8,12 +8,14 @@ tags:
 ---
 
 ### [jhat](https://www.jianshu.com/p/9f41d4a42c33)
+
 #### 简介
-Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利
-用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和**垃圾回收**状况的监控
+
+    Jstat是JDK自带的一个轻量级小工具。全称“Java Virtual Machine statistics monitoring tool”，它位于java的bin目录下，主要利用JVM内建的指令对Java应用程序的资源和性能进行实时的命令行的监控，包括了对Heap size和**垃圾回收**状况的监控
 
 #### 命令详解
-```
+
+``` shell
 /opt/java8/bin/jstat -h
 
 -h requires an integer argument
@@ -47,7 +49,8 @@ Definitions:
 * count 用于指定输出多少次记录，缺省则会一直打印
 
 #### jstat options参数
-```
+
+``` shell
 /opt/java8/bin/jstat -options
 -class
 -compiler
@@ -60,8 +63,6 @@ Definitions:
 -gcold
 -gcoldcapacity
 -gcutil
-
-
 ```
 
 * -class 显示ClassLoad的相关信息
@@ -78,7 +79,8 @@ Definitions:
 * -printcompilation 输出JIT编译的方法信息
 
 #### 举例
-```
+
+``` shell
 /opt/java8/bin/jstat -class 28367
 Loaded  Bytes  Unloaded  Bytes     Time   
  10046 18032.6        0     0.0       7.34

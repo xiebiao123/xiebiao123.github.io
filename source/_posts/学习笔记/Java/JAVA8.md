@@ -8,6 +8,7 @@ tags:
 ---
 
 ##### Lambada表达式
+
 * **可选类型声明** - 无需声明参数的类型。编译器可以从该参数的值推断。
 * **可选圆括号参数** - 无需在括号中声明参数。对于多个参数，括号是必需的。
 * **可选大括号** - 表达式主体没有必要使用大括号，如果主体中含有一个单独的语句。
@@ -15,7 +16,8 @@ tags:
 
 <!-- more -->
 
-###### 示例：
+###### 示例
+
 ```java
 /**
  * lambda表达式
@@ -57,26 +59,33 @@ public class LambdaDemo {
     }
 }
 ```
-###### 结果：
+
+###### 结果
+
+```text
     10 + 5 = 15
     10 - 5 = 5
     10 x 5 = 50
     10 / 5 = 2
     Hello Mahesh
     Hello Suresh
+```
 
 * lambda表达式主要用于定义内联执行的功能的接口，即只有一个单一的方法接口。
 * Lambda表达式消除匿名类的需求，并给出了一个非常简单但功能强大的函数式编程能力。
 
 ###### 变量的作用域
-    在lambda表达式中，可以指任何最终的变量（final）或有效的最后一个变量
-    
+
+&emsp;&emsp; 在lambda表达式中，可以指任何最终的变量（final）或有效的最后一个变量
+
 ##### 方法引用
+
 * 静态方法
 * 实例方法
 * 使用new运算符构造函数(TreeSet::new)
 
-###### 示例：
+###### 示例
+
 ```java
 public class MethdQuote {
     
@@ -99,26 +108,30 @@ class GreetingService {
     }
 }
 ```
-###### 结果：
+
+###### 结果
+
+```text
     Mahesh
     Suresh
     Ramesh
     Naresh
     Kalpesh
+```
 
-##### 函数式接口：
+##### 函数式接口
 
 |序号| 接口名 | 说明 |
 | --|:-------------:| -----|
 | 1 | BiConsumer<T,U>   | 表示接收两个输入参数和不返回结果的操作。 |
 | 2 | BiFunction<T,U,R> | 表示接受两个参数，并产生一个结果的函数。 |
-| 3 | BinaryOperator<T> | 表示在相同类型的两个操作数的操作，生产相同类型的操作数的结果。 |
+| 3 | BinaryOperator\<T> | 表示在相同类型的两个操作数的操作，生产相同类型的操作数的结果。 |
 | 4 | BiPredicate<T,U>  | 代表两个参数谓词（布尔值函数）。 |
 | 5 | BooleanSupplier   | 代表布尔值结果的提供者。 |
-| 6 | Consumer<T> | 表示接受一个输入参数和不返回结果的操作。|
+| 6 | Consumer\<T> | 表示接受一个输入参数和不返回结果的操作。|
 | 7 | DoubleBinaryOperator | 代表在两个double值操作数的运算，并产生一个double值结果。 |
 | 8 | DoubleConsumer | 表示接受一个double值参数，不返回结果的操作。 |
-| 9 | DoubleFunction<R> | 表示接受double值参数，并产生一个结果的函数。 |
+| 9 | DoubleFunction\<R> | 表示接受double值参数，并产生一个结果的函数。 |
 | 10 | DoublePredicate | 代表一个double值参数谓词（布尔值函数）。 |
 | 11 | DoubleSupplier | 表示double值结果的提供者。 |
 | 12 | DoubleToIntFunction | 表示接受double值参数，并产生一个int值结果的函数。|
@@ -127,7 +140,7 @@ class GreetingService {
 | 15 | Function<T,R> | 表示接受一个参数，并产生一个结果的函数。 |
 | 16 | IntBinaryOperator | 表示对两个int值操作数的运算，并产生一个int值结果。 |
 | 17 | IntConsumer | 表示接受单个int值的参数并没有返回结果的操作。 |
-| 18 | IntFunction<R> | 表示接受一个int值参数，并产生一个结果的函数。 |
+| 18 | IntFunction\<R> | 表示接受一个int值参数，并产生一个结果的函数。 |
 | 19 | IntPredicate | 表示一个整数值参数谓词（布尔值函数）。 |
 | 20 | IntSupplier | 代表整型值的结果的提供者。 |
 | 21 | IntToDoubleFunction | 表示接受一个int值参数，并产生一个double值结果的功能。 |
@@ -135,27 +148,28 @@ class GreetingService {
 | 23 | IntUnaryOperator | 表示产生一个int值结果的单个int值操作数的运算。 |
 | 24 | LongBinaryOperator | 表示在两个long值操作数的操作，并产生一个long值结果。 |
 | 25 | LongConsumer | 表示接受一个long值参数和不返回结果的操作。 |
-| 26 | LongFunction<R>  | 表示接受long值参数，并产生一个结果的函数。 |
+| 26 | LongFunction\<R>  | 表示接受long值参数，并产生一个结果的函数。 |
 | 27 | LongPredicate | 代表一个long值参数谓词（布尔值函数）。|
 | 28 | LongSupplier | 表示long值结果的提供者。 |
 | 29 | LongToDoubleFunction | 表示接受double参数，并产生一个double值结果的函数。 |
 | 30 | LongToIntFunction | 表示接受long值参数，并产生一个int值结果的函数。 |
 | 31 | LongUnaryOperator | 表示上产生一个long值结果单一的long值操作数的操作。 |
-| 32 | ObjDoubleConsumer<T> | 表示接受对象值和double值参数，并且没有返回结果的操作。 |
-| 33 | ObjIntConsumer<T> | 表示接受对象值和整型值参数，并返回没有结果的操作。 |
-| 34 | ObjLongConsumer<T> | 表示接受对象的值和long值的说法，并没有返回结果的操作。 |
-| 35 | Predicate<T> | 代表一个参数谓词（布尔值函数）。 |
-| 36 | Supplier<T> | 表示一个提供者的结果。 |
+| 32 | ObjDoubleConsumer\<T> | 表示接受对象值和double值参数，并且没有返回结果的操作。 |
+| 33 | ObjIntConsumer\<T> | 表示接受对象值和整型值参数，并返回没有结果的操作。 |
+| 34 | ObjLongConsumer\<T> | 表示接受对象的值和long值的说法，并没有返回结果的操作。 |
+| 35 | Predicate\<T> | 代表一个参数谓词（布尔值函数）。 |
+| 36 | Supplier\<T> | 表示一个提供者的结果。 |
 | 37 | ToDoubleBiFunction<T,U> | 表示接受两个参数，并产生一个double值结果的功能。 |
-| 38 | ToDoubleFunction<T> | 代表一个产生一个double值结果的功能。 |
+| 38 | ToDoubleFunction\<T> | 代表一个产生一个double值结果的功能。 |
 | 39 | ToIntBiFunction<T,U> | 表示接受两个参数，并产生一个int值结果的函数。 |
-| 40 | ToIntFunction<T> | 代表产生一个int值结果的功能。 |
+| 40 | ToIntFunction\<T> | 代表产生一个int值结果的功能。 |
 | 41 | ToLongBiFunction<T,U> | 表示接受两个参数，并产生long值结果的功能。|
-| 42 | ToLongFunction<T> | 代表一个产生long值结果的功能。 |
-| 43 | UnaryOperator<T> | 表示上产生相同类型的操作数的结果的单个操作数的操作。 |
+| 42 | ToLongFunction\<T> | 代表一个产生long值结果的功能。 |
+| 43 | UnaryOperator\<T> | 表示上产生相同类型的操作数的结果的单个操作数的操作。 |
 
-###### 示例：
-```java
+###### 示例
+
+``` java
 public class FunctionInterface {
     public static void main(String args[]) {
 
@@ -203,7 +217,10 @@ public class FunctionInterface {
     }
 }
 ```
-###### 结果：
+
+###### 结果
+
+``` text
     Print all numbers:
     1 
     2 
@@ -223,13 +240,16 @@ public class FunctionInterface {
     x:1,y:0
     x:1,y:4
     x:1,y:1
-    
-##### 默认方法：
+```
+
+##### 默认方法
+
 * 多重默认，使用超指定接口的默认方法
 * 静态默认方法
 
-###### 示例：
-```java
+###### 示例
+
+``` java
 public class DefaultFunction implements Vehicle,FourWheeler{
 
     public static void main(String args[]) {
@@ -260,11 +280,16 @@ interface FourWheeler {
     }
 }
 ```
-###### 结果：
+
+###### 结果
+
+``` text
     I am a vehicle!
     Blowing horn!!!
-    
-##### 数据流：
+```
+
+##### 数据流
+
 * 元素序列 - 流提供了一组特定类型的以顺序方式元素。流获取/计算需求的元素。它不存储元素。
 * 源- 流使用集合，数组或I/O资源为输入源。
 * 聚合操作 - 数据流支持如filter, map, limit, reduced, find, match等聚合操作。
@@ -282,7 +307,7 @@ interface FourWheeler {
 7. collect（收集器）用来处理组合在一个数据流的元素的结果。收集器可用于返回一个列表或一个字符串。
 8. summaryStatistics（统计）统计收集器引入计算所有统计数据
 
-###### 示例：
+###### 示例
 
 ```java
 public class StreamDemo {
@@ -331,7 +356,10 @@ public class StreamDemo {
     }
 }
 ```
-###### 运行结果：
+
+###### 运行结果
+
+```text
     8
     7
     7
@@ -358,11 +386,14 @@ public class StreamDemo {
     efg
     abcd
     jkl
-    
-##### Optional类：
-    Optional用于包含非空对象的容器对象
+```
 
-###### 示例：
+##### Optional类
+
+&emsp;&emsp; Optional用于包含非空对象的容器对象
+
+###### 示例
+
 ```java
 public class OptionalDemo {
 
@@ -387,14 +418,20 @@ public class OptionalDemo {
       //Optional.get - gets the value, value should be present
       Integer value2 = b.get();
       return value1 + value2;
-   }	
+   }
 }
 ```
-###### 结果：
+
+###### 结果
+
+```text
     First parameter is present: false
     Second parameter is present: true
     10
-##### 时间：
+```
+
+##### 时间
+
 * LocalDate/LocalDateTime | 本地日期时间API
 * ZonedDateTime | 时区日期时间API
 * ChronoUnit | 计时单位枚举
@@ -402,7 +439,8 @@ public class OptionalDemo {
 * TemporalAdjuster | 时间调节器
 * toInstant() | 向后兼容性
 
-###### LocalDate示例：
+###### LocalDate示例
+
 ```java
 /**
  * 本地时间
@@ -441,10 +479,13 @@ public class LocalDateApi {
       //parse a string
       LocalTime date6 = LocalTime.parse("20:15:30");
       System.out.println("date6: " + date6);
-   }	
+   }
 }
 ```
-###### LocalDate结果：
+
+###### LocalDate结果
+
+``` shell
     Current DateTime: 2018-07-01T22:23:51.761
     date0: 22:23:51.761
     date1: 2018-07-01
@@ -454,8 +495,10 @@ public class LocalDateApi {
     date4: 22:15
     date5: 22:15:10
     date6: 20:15:30
+```
 
-###### ZonedDateTime示例：
+###### ZonedDateTime示例
+
 ```java
 /**
  * 时区时间
@@ -478,12 +521,17 @@ public class ZonedDateTimeApi {
    }
 }
 ```
-###### ZonedDateTime结果：
+
+###### ZonedDateTime结果
+
+```text
     date1: 2007-12-03T10:15:30+05:00[Asia/Karachi]
     ZoneId: Europe/Paris
     CurrentZone: Asia/Shanghai
-    
-###### Period | Duration示例：
+```
+
+###### Period | Duration示例
+
 ```java
 /**
  * 计算时间间隔
@@ -523,7 +571,10 @@ public class PeriodAndDurationApi {
    }
 }
 ```
-###### Period | Duration结果：
+
+###### Period | Duration结果
+
+```text
     Current date: 2018-07-01
     Next month: 2019-08-02
     Period: P1Y1M1D
@@ -532,8 +583,10 @@ public class PeriodAndDurationApi {
     Period: 1
     Duration: PT1H
     Duration: 7200 
+```
 
-###### ChromoUnits示例：
+###### ChromoUnits示例
+
 ```java
 /**
  * 时区枚举ChromoUnits
@@ -564,14 +617,19 @@ public class ChromoUnitsApi {
    }
 }
 ```
-###### ChromoUnits结果：
+
+###### ChromoUnits结果
+
+```text
     Current date: 2018-07-01
     Next week: 2018-07-08
     Next month: 2018-08-01
     Next year: 2019-07-01
     Date after ten year: 2028-07-01
-    
-###### TemporalAdjusters示例：
+```
+
+###### TemporalAdjusters示例
+
 ```java
 /**
  * TemporalAdjusters 是做日期数学计算
@@ -600,13 +658,18 @@ public class AdjustersApi {
    }
 }
 ```
-###### TemporalAdjusters结果：
+
+###### TemporalAdjusters结果
+
+```text
     Current date: 2018-07-01
     Next Tuesday on : 2018-07-03
     Second saturday on : 2018-07-14
     2019-01-01
+```
 
-###### toInstant()示例：
+###### toInstant()示例
+
 ```java
 /**
  * 新旧日期兼容 toInstant()
@@ -632,17 +695,23 @@ public class BackwardCompatability {
    }
 }
 ```
-###### toInstant()结果：
+
+###### toInstant()结果
+
+```text
     Current date: Sun Jul 01 22:34:20 CST 2018
     Local date: 2018-07-01T22:34:20.804
     Zoned date: 2018-07-01T22:34:20.804+08:00[Asia/Shanghai]
+```
 
-##### Base64：
+##### Base64
+
 * 简单 - 输出映射设置字符在A-ZA-Z0-9+/。编码器不添加任何换行输出和解码器拒绝在A-Za-z0-9+/以外的任何字符。
 * URL - 输出映射设置字符在A-Za-z0-9+_。输出URL和文件名安全。
 * MIME - 输出映射到MIME友好的格式。输出表示在每次不超过76个字符行和使用'\r'后跟一个换行符'\n'回车作为行分隔符。无行隔板的存在是为了使编码的结束输出。
 
-###### Base64.Decoder(解码器) | Base64.Encoder(编码器) 方法：
+###### Base64.Decoder(解码器) | Base64.Encoder(编码器) 方法
+
 |序号| 接口名 | 说明 |
 | --|:-------------:| -----|
 | 1 | static Base64.Decoder getDecoder() |返回Base64.Decoder解码使用基本型base64编码方案。|
@@ -653,7 +722,8 @@ public class BackwardCompatability {
 | 6 | static Base64.Decoder getUrlDecoder() |返回Base64.Decoder解码使用URL和文件名安全型base64编码方案。|
 | 7 | static Base64.Encoder getUrlEncoder() |返回Base64.Decoder解码使用URL和文件名安全型base64编码方案。|
 
-###### 示例：
+###### 示例
+
 ```java
 public class Base64Demo {
 
@@ -683,7 +753,9 @@ public class Base64Demo {
 }
 ```
 
-###### 结果：
+###### 结果
+
+```text
     Base64 Encoded String (Basic) :WWlpQmFpP2phdmE4
     Original String: YiiBai?java8
     Base64 Encoded String (URL) :WWlpQmFpP2phdmE4
@@ -694,3 +766,4 @@ public class Base64Demo {
     NS00YjUyLTk4ZTMtYTZmMmQ2ZTljMDg2Zjk4OGUxZGEtMDM3OC00NmY3LThjZDctODVhMDc0NzRk
     YThlY2I1YzYwZTItMGI3ZS00YTQ4LWI5YzAtMjI0MTFlMmMxYmU2MTdmMTJhZjgtMTRiZC00NGZj
     LWJmYzItODM5NTczMTVlNGVk
+```

@@ -6,9 +6,12 @@ categories:
 tags:
     - Spring
 ---
+
 ### 实现步骤
+
 Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展XML配置的机制。通过该机制，我们可以编写自己的Schema，并根据
 自定义的Schema用自定的标签配置Bean。要使用的Spring的扩展XML配置机制，也比较简单，有以下4个步骤：
+
 * 编写自定义Schema文件
 * 编写自定义NamespaceHandler
 * 编写解析BeanDefinition的parser
@@ -17,7 +20,8 @@ Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展
 <!-- more -->
 
 #### Maven 依赖
-```
+
+``` xml
 <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>spring-core</artifactId>
@@ -46,8 +50,10 @@ Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展
 ```
 
 #### 自定义schema文件
-参考：http://www.w3school.com.cn/schema/schema_elements_ref.asp , 如下people.xsd文件
-```
+
+参考：<http://www.w3school.com.cn/schema/schema_elements_ref.asp> , 如下people.xsd文件
+
+``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://www.pomelo.com/schema/people"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -82,7 +88,8 @@ Spring 2.5在2.0的基于Schema的Bean配置的基础之上，再增加了扩展
 ```
 
 #### 自定义NamespaceHandler
-```
+
+``` java
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 public class StudentNamespaceHandler extends NamespaceHandlerSupport {
@@ -94,7 +101,8 @@ public class StudentNamespaceHandler extends NamespaceHandlerSupport {
 ```
 
 #### 编写BeanDefinition
-```
+
+``` java
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.util.StringUtils;
@@ -119,7 +127,8 @@ public class StudentBeanDefinitionParser extends AbstractSingleBeanDefinitionPar
 ```
 
 实体类：
-```
+
+``` java
 public class Student {
 
     private String name;  
@@ -146,19 +155,25 @@ public class Student {
 ```
 
 #### 注册schema组件
+
 最后在META-INFO目录下添加两个配置文件（spring.handler 和 spring.schema）:
 **spring.handler**配置文件如下：
-```
+
+``` html
 http\://www.pomelo.com/schema/people=schema.StudentNamespaceHandler
 ```
+
 **spring.schema**配置文件如下：
-```
+
+``` html
 http\://www.pomelo.com/schema/people.xsd=META-INF/people.xsd
 ```
 
 #### 测试
+
 新建applicationContext.xml放在clasapath下面：
-```
+
+``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:people="http://www.pomelo.com/schema/people"
@@ -176,8 +191,10 @@ http\://www.pomelo.com/schema/people.xsd=META-INF/people.xsd
 
 </beans>
 ```
+
 java调用：
-```
+
+``` java
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
