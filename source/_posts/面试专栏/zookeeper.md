@@ -2,7 +2,7 @@
 title: zookeeper
 date: 2021-01-05
 categories:
-    - 面试
+    - 专栏
 tags:
     - zookeeper
 ---
