@@ -767,3 +767,36 @@ public class Base64Demo {
     YThlY2I1YzYwZTItMGI3ZS00YTQ4LWI5YzAtMjI0MTFlMmMxYmU2MTdmMTJhZjgtMTRiZC00NGZj
     LWJmYzItODM5NTczMTVlNGVk
 ```
+
+##### CompletableFuture
+
+* supplyAsync / runAsync
+  * supplyAsync表示创建带返回值的异步任务的，相当于ExecutorService submit(Callable<T> task) 方法
+  * runAsync表示创建无返回值的异步任务，相当于ExecutorService submit(Runnable task)方法
+
+ 这两方法各有一个重载版本，可以指定执行异步任务的Executor实现，如果不指定，默认使用ForkJoinPool.commonPool()，如果机器是单核的，则默认使用ThreadPerTaskExecutor，该类是一个内部类，每次执行execute都会创建一个新线程
+
+* thenApply / thenApplyAsync
+  * thenApply 表示某个任务执行完成后执行的动作，即回调方法，会将该任务的执行结果即方法返回值作为入参传递到回调方法中
+  * thenApplyAsync thenApplyAsync与thenApply的区别在于，前者是将job2提交到线程池中异步执行，实际执行job2的线程可能是另外一个线程，后者是由执行job1的线程立即执行job2，即两个job都是同一个线程执行的
+* thenAccept / thenRun
+  * thenAccept 同 thenApply 接收上一个任务的返回值作为参数，但是无返回值
+  * thenRun 的方法没有入参，也买有返回值
+* exceptionally
+  * exceptionally方法指定某个任务执行异常时执行的回调方法，会将抛出异常作为参数传递到回调方法中，如果该任务正常执行则会exceptionally方法返回的CompletionStage的result就是该任务正常执行的结果
+* whenComplete
+  * whenComplete是当某个任务执行完成后执行的回调方法，会将执行结果或者执行期间抛出的异常传递给回调方法，如果是正常执行则异常为null，回调方法对应的CompletableFuture的result和该任务一致，如果该任务正常执行，则get方法返回执行结果，如果是执行异常，则get方法抛出异常
+* handle
+  * 跟whenComplete基本一致，区别在于handle的回调方法有返回值，且handle方法返回的CompletableFuture的result是回调方法的执行结果或者回调方法执行期间抛出的异常，与原始CompletableFuture的result无关了
+
+###### 组合处理
+
+* thenCombine / thenAcceptBoth / runAfterBoth
+  * 这三个方法都是将两个CompletableFuture组合起来，只有这两个都正常执行完了才会执行某个任务，区别在于thenCombine会将两个任务的执行结果作为方法入参传递到指定方法中，且该方法有返回值,thenAcceptBoth同样将两个任务的执行结果作为方法入参，但是无返回值,runAfterBoth没有入参，也没有返回值.注意两个任务中只要有一个执行异常，则将该异常信息作为指定任务的执行结果
+* applyToEither / acceptEither / runAfterEither
+  * 这三个方法都是将两个CompletableFuture组合起来，只要其中一个执行完了就会执行某个任务，其区别在于applyToEither会将已经执行完成的任务的执行结果作为方法入参，并有返回值；acceptEither同样将已经执行完成的任务的执行结果作为方法入参，但是没有返回值；runAfterEither没有方法入参，也没有返回值。注意两个任务中只要有一个执行异常，则将该异常信息作为指定任务的执行结果
+* thenCompose
+  * thenCompose方法会在某个任务执行完成后，将该任务的执行结果作为方法入参然后执行指定的方法，该方法会返回一个新的CompletableFuture实例，如果该CompletableFuture实例的result不为null，则返回一个基于该result的新的CompletableFuture实例；如果该CompletableFuture实例为null，则，然后执行这个新任务
+* allOf / anyOf
+  * allOf 是多个CompletableFuture任务都执行完成后才会执行，只要有一个任务执行异常，则返回的CompletableFuture执行get方法时会抛出异常，如果都是正常执行，则get返回null
+  * anyOf 只要一个CompletableFuture任务都执行完成后就会执行

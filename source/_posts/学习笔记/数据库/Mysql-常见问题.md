@@ -12,8 +12,7 @@ tags:
 * datetime mysql精度丢失的问题
   
 ```sql
-    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们
-说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)
+    mysql如果创建表示字段类型为datetime或者timestamp时，默认精度是到秒的。当你传入的数据包含毫秒时会自动的四舍五入也就是我们说的精度丢失问题。如果想保存毫秒的精度需要指定精度。如datetime(1),datetime(2),datetime(3)
 
 create table test_date (
     id bigint(20) ,
