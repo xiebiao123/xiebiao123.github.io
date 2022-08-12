@@ -30,7 +30,7 @@ Sentinel是阿里中间件团队开源、面向分布式服务架构的轻量级
 <!-- more -->
 ### 原理图
 
-![原理图](/images/sentinel原理图.png)
+![原理图](/images/java/sentinel原理图.png)
 
 ### 框架
 

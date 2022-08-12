@@ -7,7 +7,45 @@ tags:
     - MQ
 ---
 
-##### 1.配置详解
+##### [1.生产RabbitMQ队列阻塞该如何处理](https://www.jianshu.com/p/b18ea3a7c482)
+* 现象：
+  
+由于代码原因，导致消息没有ack，重新入队列头，恶性循环，最终导致消费挤压，无法消费新的消息
+* 原因：
+
+由于没有进行ack导致队里阻塞。那么问题来了，这是为什么呢？其实这是RabbitMQ的一种保护机制。防止当消息激增的时候，海量的消息进入consumer而引发consumer宕机。
+
+RabbitMQ提供了一种**QOS(服务质量保证)功能**，即在非自动确认的消息的前提下，限制信道上的消费者所能保持的最大未确认的数量。可以通过设置PrefetchCount实现。
+
+举例说明:可以理解为在consumer前面加了一个缓冲容器，容器能容纳最大的消息数量就是PrefetchCount。如果容器没有满RabbitMQ就会将消息投递到容器内，如果满了就不投递了。当consumer对消息进行ack以后就会将此消息移除，从而放入新的消息。
+
+```yml
+listener:
+simple:
+    # 消费端最小并发数
+    concurrency: 1
+    # 消费端最大并发数
+    max-concurrency: 5
+    # 一次处理的消息数量
+    prefetch: 2
+    # 手动应答
+    acknowledge-mode: manual
+```
+通过上面的配置发现prefetch我只配置了2，并且concurrency配置的只有1，所以当我发送了2条错误消息以后，由于解密失败这2条消息一直没有被ack。将缓冲区沾满了，这个时候RabbitMQ认为这个consumer已经没有消费能力了就不继续给它推送消息了，所以就造成了队列阻塞
+
+> **注意**
+> 在自动确认的情况下，RabbitMQ消息监听程序异常时，consumer会向rabbitmq server发送Basic.Reject，表示消息拒绝接受，由于Spring默认requeue-rejected配置为true，消息会重新入队，然后rabbitmq server重新投递。就相当于死循环了，所以控制台在疯狂刷错误日志造成磁盘利用率飙升的原因
+
+* 解决办法
+1. 解决代码问题
+2. 将default-requeue-rejected: false即可
+   
+* 总结
+  * 个人建议，生产环境不建议使用自动ack，这样会QOS*无法生效。
+  * 在使用手动ack的时候，需要非常注意消息签收。
+  * 其实在将有问题的MQ重置时，是将错误的消息给清除才没有问题了，相当于是消息丢失了
+
+##### 2.配置详解
 
     spring.rabbitmq.addresses =＃客户端应连接的地址的逗号分隔列表。
     spring.rabbitmq.cache.channel.checkout-timeout =＃如果已经达到缓存大小，等待获得频道的毫秒数。

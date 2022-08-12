@@ -43,105 +43,106 @@ tags:
 
 ```java
 
-public final class SnowflakeShardingKeyGenerator implements ShardingKeyGenerator{
-    @Getter
-    @Setter
-    private Properties properties = new Properties();
-    
-    public String getType() {
-        return "SNOWFLAKE";
-    }
-    
-    public synchronized Comparable<?> generateKey() {
-     /**
-      * 当前系统时间毫秒数 
-      */ 
-        long currentMilliseconds = timeService.getCurrentMillis();
-        /**
-         * 判断是否需要等待容忍时间差，如果需要，则等待时间差过去，然后再获取当前系统时间 
-         */ 
-        if (waitTolerateTimeDifferenceIfNeed(currentMilliseconds)) {
-            currentMilliseconds = timeService.getCurrentMillis();
-        }
-        /**
-         * 如果最后一次毫秒与 当前系统时间毫秒相同，即还在同一毫秒内 
-         */
-        if (lastMilliseconds == currentMilliseconds) {
-         /**
-          * &位与运算符：两个数都转为二进制，如果相对应位都是1，则结果为1，否则为0
-          * 当序列为4095时，4095+1后的新序列与掩码进行位与运算结果是0
-          * 当序列为其他值时，位与运算结果都不会是0
-          * 即本毫秒的序列已经用到最大值4096，此时要取下一个毫秒时间值
-          */
-            if (0L == (sequence = (sequence + 1) & SEQUENCE_MASK)) {
-                currentMilliseconds = waitUntilNextTime(currentMilliseconds);
-            }
-        } else {
-         /**
-          * 上一毫秒已经过去，把序列值重置为1 
-          */
-            vibrateSequenceOffset();
-            sequence = sequenceOffset;
-        }
-        lastMilliseconds = currentMilliseconds;
-        
-        /**
-         * XX......XX XX000000 00000000 00000000 时间差 XX
-         *    XXXXXX XXXX0000 00000000 机器ID XX
-         *               XXXX XXXXXXXX 序列号 XX
-         *  三部分进行|位或运算：如果相对应位都是0，则结果为0，否则为1
-         */
-        return ((currentMilliseconds - EPOCH) << TIMESTAMP_LEFT_SHIFT_BITS) | (getWorkerId() << WORKER_ID_LEFT_SHIFT_BITS) | sequence;
-    }
-    
-    /**
-     * 判断是否需要等待容忍时间差
-     */
-    @SneakyThrows
-    private boolean waitTolerateTimeDifferenceIfNeed(final long currentMilliseconds) {
-     /**
-      * 如果获取ID时的最后一次时间毫秒数小于等于当前系统时间毫秒数，属于正常情况，则不需要等待 
-      */
-        if (lastMilliseconds <= currentMilliseconds) {
-            return false;
-        }
-        /**
-         * ===>时钟回拨的情况（生成序列的时间大于当前系统的时间），需要等待时间差 
-         */
-        /**
-         * 获取ID时的最后一次毫秒数减去当前系统时间毫秒数的时间差 
-         */
-        long timeDifferenceMilliseconds = lastMilliseconds - currentMilliseconds;
-        /**
-         * 时间差小于最大容忍时间差，即当前还在时钟回拨的时间差之内 
-         */
-        Preconditions.checkState(timeDifferenceMilliseconds < getMaxTolerateTimeDifferenceMilliseconds(), 
-                "Clock is moving backwards, last time is %d milliseconds, current time is %d milliseconds", lastMilliseconds, currentMilliseconds);
-        /**
-         * 线程休眠时间差 
-         */
-        Thread.sleep(timeDifferenceMilliseconds);
-        return true;
-    }
-    
-    // 配置的机器ID
-    private long getWorkerId() {
-        long result = Long.valueOf(properties.getProperty("worker.id", String.valueOf(WORKER_ID)));
-        Preconditions.checkArgument(result >= 0L && result < WORKER_ID_MAX_VALUE);
-        return result;
-    }
-    
-    private int getMaxTolerateTimeDifferenceMilliseconds() {
-        return Integer.valueOf(properties.getProperty("max.tolerate.time.difference.milliseconds", String.valueOf(MAX_TOLERATE_TIME_DIFFERENCE_MILLISECONDS)));
-    }
-    
-    private long waitUntilNextTime(final long lastTime) {
-        long result = timeService.getCurrentMillis();
-        while (result <= lastTime) {
-            result = timeService.getCurrentMillis();
-        }
-        return result;
-    }
+publicfinalclassSnowflakeShardingKeyGeneratorimplementsShardingKeyGenerator{
+  @Getter
+  @Setter
+  privatePropertiesproperties=newProperties();
+
+  publicStringgetType(){
+    return"SNOWFLAKE";
+  }
+
+  publicsynchronizedComparable<?>generateKey(){
+    /**
+    *当前系统时间毫秒数
+    */
+    longcurrentMilliseconds=timeService.getCurrentMillis();
+    /**
+    *判断是否需要等待容忍时间差，如果需要，则等待时间差过去，然后再获取当前系统时间
+    */
+    if(waitTolerateTimeDifferenceIfNeed(currentMilliseconds)){
+    currentMilliseconds=timeService.getCurrentMillis();
+  }
+  /**
+  *如果最后一次毫秒与当前系统时间毫秒相同，即还在同一毫秒内
+  */
+  if(lastMilliseconds==currentMilliseconds){
+    /**
+    *&位与运算符：两个数都转为二进制，如果相对应位都是1，则结果为1，否则为0
+    *当序列为4095时，4095+1后的新序列与掩码进行位与运算结果是0
+    *当序列为其他值时，位与运算结果都不会是0
+    *即本毫秒的序列已经用到最大值4096，此时要取下一个毫秒时间值
+    */
+    if(0L==(sequence=(sequence+1)&SEQUENCE_MASK)){
+      currentMilliseconds=waitUntilNextTime(currentMilliseconds);
+    }
+  }else{
+    /**
+    *上一毫秒已经过去，把序列值重置为1
+    */
+    vibrateSequenceOffset();
+    sequence=sequenceOffset;
+  }
+  lastMilliseconds=currentMilliseconds;
+
+  /**
+  *XX......XXXX0000000000000000000000时间差XX
+  *XXXXXXXXXX000000000000机器IDXX
+  *XXXXXXXXXXXX序列号XX
+  *三部分进行|位或运算：如果相对应位都是0，则结果为0，否则为1
+  */
+  return((currentMilliseconds-EPOCH)<<TIMESTAMP_LEFT_SHIFT_BITS)|
+      (getWorkerId() <<WORKER_ID_LEFT_SHIFT_BITS)|sequence;
+  }
+
+  /**
+  *判断是否需要等待容忍时间差
+  */
+  @SneakyThrows
+  privatebooleanwaitTolerateTimeDifferenceIfNeed(finallongcurrentMilliseconds){
+    /**
+    *如果获取ID时的最后一次时间毫秒数小于等于当前系统时间毫秒数，属于正常情况，则不需要等待
+    */
+    if(lastMilliseconds<=currentMilliseconds){
+      returnfalse;
+    }
+    /**
+    *===>时钟回拨的情况（生成序列的时间大于当前系统的时间），需要等待时间差
+    */
+    /**
+    *获取ID时的最后一次毫秒数减去当前系统时间毫秒数的时间差
+    */
+    longtimeDifferenceMilliseconds=lastMilliseconds-currentMilliseconds;
+    /**
+    *时间差小于最大容忍时间差，即当前还在时钟回拨的时间差之内
+    */
+    Preconditions.checkState(timeDifferenceMilliseconds<getMaxTolerateTimeDifferenceMilliseconds(),
+    "Clockismovingbackwards,lasttimeis%dmilliseconds,currenttimeis%dmilliseconds",lastMilliseconds,currentMilliseconds);
+    /**
+    *线程休眠时间差
+    */
+    Thread.sleep(timeDifferenceMilliseconds);
+    returntrue;
+  }
+
+  //配置的机器ID
+  privatelonggetWorkerId(){
+    longresult=Long.valueOf(properties.getProperty("worker.id",String.valueOf(WORKER_ID)));
+    Preconditions.checkArgument(result>=0L&&result<WORKER_ID_MAX_VALUE);
+    returnresult;
+  }
+
+  privateintgetMaxTolerateTimeDifferenceMilliseconds(){
+    returnInteger.valueOf(properties.getProperty("max.tolerate.time.difference.milliseconds",String.valueOf(MAX_TOLERATE_TIME_DIFFERENCE_MILLISECONDS)));
+  }
+
+  privatelongwaitUntilNextTime(finallonglastTime){
+    longresult=timeService.getCurrentMillis();
+    while(result<=lastTime){
+    result=timeService.getCurrentMillis();
+    }
+    returnresult;
+  }
 }
 ```
 
