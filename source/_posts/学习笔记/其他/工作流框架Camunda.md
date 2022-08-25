@@ -15,7 +15,8 @@ tags:
 
 ### SpringBoot 集成Camunda
 
-1. pom文件配置 
+* pom文件配置
+
 ```xml
 <!-- SpringBoot 2.2.0以上版本 -->
 <dependency>
@@ -51,7 +52,8 @@ tags:
 </dependency>
 ```
 
-2. yml文件配置
+* yml文件配置
+
 ```yml
 spring:
   application:
@@ -73,11 +75,11 @@ camunda:
     auto-deployment-enabled: false
 ```
 
-3. 下载bpmn建模工具：https://camunda.com/download/modeler/
+* 下载bpmn建模工具：https://camunda.com/download/modeler/
 
-4.  画一个流程图另存为 apply.bpmn
+*  画一个流程图另存为 apply.bpmn
 
-5. testDemo
+* testDemo
 
 ```java
 @RestController

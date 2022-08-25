@@ -24,6 +24,7 @@
     "hexo-renderer-stylus": "^0.3.1",
     "hexo-server": "^0.2.0",
     "live2d-widget-model-koharu": "^1.0.5",
+    "nvm": "^0.0.4",
     "opencollective-postinstall": "^2.0.3"
   }
 }

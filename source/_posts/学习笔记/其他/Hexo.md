@@ -105,4 +105,6 @@ deploy:
     type: git
     branch: develop
     repo: https://github.com/xiebiao123/xiebiao123.github.com
+
 ```
+> [!解决 nodejs 版本过高，deploy 失败](https://www.cnblogs.com/bingshanyishu/p/15956569.html)
