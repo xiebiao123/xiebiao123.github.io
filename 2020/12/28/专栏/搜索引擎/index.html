@@ -6,24 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://xiebiao123.github.io">
-  <title>分布式 | 奔跑的蜗牛</title>
+  <title>搜索引擎多连炮 | 奔跑的蜗牛</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
-<meta name="keywords" content="分布式">
+  <meta name="description" content="es分布式架构的原理？es 设计的概念就是分布式搜索引擎，底层其实还是基于Lucene的 核心的思想就是在多台机器上启动多个es进程实例，组成了一个es集群。es中存储数据的基本单位是索引，这个索引可以拆分出多个shard每个shard存储部分数据 。index -&amp;gt; type -&amp;gt; mapping -&amp;gt; document -&amp;gt; field shard 又分为 primar">
+<meta name="keywords" content="搜索引擎">
 <meta property="og:type" content="article">
-<meta property="og:title" content="分布式">
-<meta property="og:url" content="https://xiebiao123.github.io/2021/01/05/面试专栏/分布式/index.html">
+<meta property="og:title" content="搜索引擎多连炮">
+<meta property="og:url" content="https://xiebiao123.github.io/2020/12/28/专栏/搜索引擎/index.html">
 <meta property="og:site_name" content="奔跑的蜗牛">
-<meta property="og:description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
+<meta property="og:description" content="es分布式架构的原理？es 设计的概念就是分布式搜索引擎，底层其实还是基于Lucene的 核心的思想就是在多台机器上启动多个es进程实例，组成了一个es集群。es中存储数据的基本单位是索引，这个索引可以拆分出多个shard每个shard存储部分数据 。index -&amp;gt; type -&amp;gt; mapping -&amp;gt; document -&amp;gt; field shard 又分为 primar">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png">
-<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7.png">
-<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%80%E5%A4%A7%E5%8A%AA%E5%8A%9B%E9%80%9A%E7%9F%A5.png">
-<meta property="og:updated_time" content="2022-01-26T01:34:46.397Z">
+<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/es%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE%E5%8E%9F%E7%90%86.png">
+<meta property="og:updated_time" content="2022-01-11T09:21:45.511Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分布式">
-<meta name="twitter:description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
-<meta name="twitter:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png">
+<meta name="twitter:title" content="搜索引擎多连炮">
+<meta name="twitter:description" content="es分布式架构的原理？es 设计的概念就是分布式搜索引擎，底层其实还是基于Lucene的 核心的思想就是在多台机器上启动多个es进程实例，组成了一个es集群。es中存储数据的基本单位是索引，这个索引可以拆分出多个shard每个shard存储部分数据 。index -&amp;gt; type -&amp;gt; mapping -&amp;gt; document -&amp;gt; field shard 又分为 primar">
+<meta name="twitter:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/es%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE%E5%8E%9F%E7%90%86.png">
   
     <link rel="alternative" href="/atom.xml" title="奔跑的蜗牛" type="application/atom+xml">
   
@@ -167,104 +165,102 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-面试专栏/分布式" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-专栏/搜索引擎" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      分布式
+      搜索引擎多连炮
     </h1>
   
 
         
-        <a href="/2021/01/05/面试专栏/分布式/" class="archive-article-date">
-  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
+        <a href="/2020/12/28/专栏/搜索引擎/" class="archive-article-date">
+  	<time datetime="2020-12-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-28</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="什么是分布式事务？"><a href="#什么是分布式事务？" class="headerlink" title="什么是分布式事务？"></a>什么是分布式事务？</h4><h4 id="怎么解决分布式事务？"><a href="#怎么解决分布式事务？" class="headerlink" title="怎么解决分布式事务？"></a>怎么解决分布式事务？</h4><ul>
-<li>两阶段提交方案 / XA方案</li>
-</ul>
-<p>两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok<br>,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务</p>
-<p>这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务，效率很低<br>绝对不适合高并发的场景。可以通过Spring + JTA来实现</p>
-<ul>
-<li>TCC方案 （Try + Confirm + Cancel）<ul>
-<li>Try阶段：这个阶段说的就是对各个服务的资源做检测以及对资源进行锁定或者预留</li>
-<li>Confirm阶段： 这个阶段就是在各个服务中执行实际的操作</li>
-<li>Cancel阶段： 如果任何一个服务的业务方法执行出错，那么这里就需要进行补偿，就是执行已经执行成功业务逻辑的回滚操作</li>
-</ul>
-</li>
-</ul>
-<p>除非你的系统对一致性要求非常高，是你系统中核心中的核心场景，并且最好各个业务的执行时间较短。比如常见的就是资金类的场景，那就可以用TCC方案。<br>自己编写大量的业务逻辑，自己判断一个事务中的各个环节是否ok，不ok就执行回滚代码</p>
-<p>这种方案几乎很少人使用，因为这个事务回滚实际严重依赖于你写的代码来回滚和补偿，会造成补偿代码巨大，非常恶心</p>
-<ul>
-<li>本地消息表<ol>
-<li>A系统在自己本地一个事务里面操作，同时插入一条数据到消息表里面</li>
-<li>接着A系统将这个消息发送到MQ中去</li>
-<li>B系统接收到消息之后，在一个事务里，往自己本地消息表里面插入一条数据，同时执行其他的业务操作，如果这个消息已经被处理过了那么这个事务会回滚，这样保证消息不会重复处理</li>
-<li>B系统执行成功之后，就会更新自己本地消息表的状态，以及A系统消息表的状态</li>
-<li>如果B系统处理失败了，那么就不会更新消息表的状态，那么此时A系统会定时扫描自己的消息表，如果有没有处理的消息，会再次发送到MQ中去，让B再次处理</li>
-<li>这个方案保证了最终的一致性，哪怕B事务失败了，但是A会不断重发消息，直到B那边成功为止</li>
+        <h4 id="es分布式架构的原理？"><a href="#es分布式架构的原理？" class="headerlink" title="es分布式架构的原理？"></a>es分布式架构的原理？</h4><p>es 设计的概念就是分布式搜索引擎，底层其实还是基于Lucene的</p>
+<p>核心的思想就是在多台机器上启动多个es进程实例，组成了一个es集群。es中存储数据的基本单位是索引，这个索引可以拆分出多个shard<br>每个shard存储部分数据 。index -&gt; type -&gt; mapping -&gt; document -&gt; field</p>
+<p>shard 又分为 primary shard 和 replica shard 并且分不到集群中的不同机器中 。 数据只能写入primary shard ，然后primary shard<br>再将数据同步到replica shard上去， es客户端获取数据既可以从primary shard 又可以从 replica shard 读</p>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/es%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE%E5%8E%9F%E7%90%86.png" alt="es读写数据原理"></p>
+<h4 id="es写入数据的工作原理？"><a href="#es写入数据的工作原理？" class="headerlink" title="es写入数据的工作原理？"></a>es写入数据的工作原理？</h4><ol>
+<li>客户端选择一个node发送请求过去，这个node就是协调节点（coordinating node）</li>
+<li>协调节点对document进行路由(根据docId hash)，将请求转发给对应的node(有primary shard)</li>
+<li>实际上是由node的 primary shard 处理请求，然后将数据同步到其他node(有replica shard)</li>
+<li>协调节点发现primary shard 和 所有 replica node都搞定之后，就返回响应结果给客户端</li>
 </ol>
-</li>
-</ul>
-<p>这个方案说实话最大的问题在于严重依赖于数据库的消息表来管理事务，这就导致高并发的场景下有性能瓶颈。怎么拓展？所以一般很少使用</p>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png" alt="分布式事务-本地消息表"></p>
-<ul>
-<li>可靠消息最终一致性方案 (基于RacketMQ事务消息)<ol>
-<li>A系统先发一个prepared消息到MQ,如果这个prepared消息发送失败，那么直接取消操作</li>
-<li>如果这个消息发送成了，那么接着执行一个本地事务，如果成功就告诉MQ发送确认消息，如果失败就告诉MQ发送回滚消息</li>
-<li>如果发送了确认消息，那么此时B系统会接收到确认消息，然后执行本地事务</li>
-<li>MQ会自动定时轮询所有prepared消息回调你的接口，问你这个消息是不是本地事务处理失败了，所以没有发送确认消息？那是继续重试还是回滚？一般来说这里我们就可以查询下数据库，之前本地事务是否执行了，如果回滚了那么这里也回滚吧。<br>这样可以避免本地事务执行成功了，确认消息发送失败</li>
-<li>这个方案里，要是系统B的事务处理失败怎么办？重试，自动不断重试直到成功，如果实在是不行，那么就要针对重要的资金业务进行回滚。比如B系统本地回滚以后，想办法通知系统A也回滚；或者发送报警由人工来回滚或者补偿</li>
-</ol>
-</li>
-</ul>
-<p>这个还是比较合适的，目前国内互联网公司大都是这么玩的。要不你举用RocketMQ支持的</p>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7.png" alt="分布式事务-可靠消息最终一致性"></p>
-<ul>
-<li>最大努力通知方案<ol>
-<li>系统A本地事务执行完之后，发送个消息到MQ中</li>
-<li>这里会有一个专门消费MQ的最大努力通知服务，这个服务会消费MQ，然后写入数据库中记录下来或者放入一个内存队列中，接着调用系统B的接口</li>
-<li>要是系统B执行成功就ok了；要是系统B执行失败了，那么最大努力通知服务就定时尝试重新调用系统B。反复N次，最后还是不行就放弃</li>
-</ol>
-</li>
-</ul>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%80%E5%A4%A7%E5%8A%AA%E5%8A%9B%E9%80%9A%E7%9F%A5.png" alt="分布式事务-最大努力通知"></p>
-<p>如果是一个资金严格要求决定不能出错的场景，你可以说你用的TCC方案，如果是一般的分布式场景，如订单插入之后要更新库存，库存数据没有资金那么敏感<br>可以用可靠消息最终一致性方案</p>
 <blockquote>
-<p>注意：rocketMQ 3.2.6之前的版本，是可以按照上面的思路来的，但是之后接口做了一些改变</p>
+<p>数据如何写入磁盘：</p>
 </blockquote>
-<h4 id="如何设计一个高并发的系统架构？"><a href="#如何设计一个高并发的系统架构？" class="headerlink" title="如何设计一个高并发的系统架构？"></a>如何设计一个高并发的系统架构？</h4><ol>
-<li>系统拆分<ul>
-<li>将一个系统拆分为多个子系统，用dubbo来搞。然后每个系统连一个数据库，这样本来就一个库，现在多了数据库，也可以支持高并发</li>
+<ol>
+<li>primary shard 先将数据写入buffer（在buffer里面的数据是搜索不到的），同时将数据写入translog日志文件</li>
+<li>如果buffer快写满了或者到了一定的时间（默认1秒），就会将buffer数据<strong>refresh</strong>到os cache中（在os cache中的数据可以被搜索到）<ul>
+<li><strong>es是准实时的</strong>，写入的数据1秒以后才能被看到，可以调用es API手动<strong>refresh</strong>，将buffer中的数据刷入os cache中，让数据可以立马被搜索到</li>
 </ul>
 </li>
-<li>缓存（高并发读 必须用）<ul>
-<li>大部分的高并发请求，都是读多写少，所以完全可以数据库和缓存各写一份，然后读的时候大量走缓存redis，毕竟redis单机就可以支持几万的并发</li>
+<li>当translog不断变大，达到一定阈值就会触发<strong>flush/commit</strong>操作<ul>
+<li>primary shard 写入一个commit point到磁盘文件，里面标识了这个commit point对应的所有segment file</li>
+<li>强行将os cache中目前所有的数据都fsync 到磁盘中去</li>
+<li>将现有的translog清空，然后重新启用一个translog，此时commit操作完成<ul>
+<li>默认每隔30分钟会自动执行一次flush，我们也可以调用es API手动flush</li>
 </ul>
 </li>
-<li>MQ （高并发写 必须用）<ul>
-<li>把大量的写请求灌入MQ中，后面系统慢慢消费慢慢写，控制在mysql的承受范围内就可以了</li>
 </ul>
 </li>
-<li>Elasticsearch （可以考虑用）<ul>
-<li>es 是分布式的，可以随便扩容，分布式天然就可以支持高并发，因为动不动就可以扩容机器来抗更高的并发。那么一些简单的查询、统计类的操作，可以用es来承载，特别是全文检索类的操作</li>
+<li>translog其实也是先写入os cache的，每隔5秒刷一次到磁盘中去<ul>
+<li>最多丢失5秒的数据，可以设置成每次写操作必须直接fsync到磁盘，但是性能较差</li>
 </ul>
 </li>
-<li>分库分表<ul>
-<li>可能到最后数据库层面还是免不了抗高并发的要求。这样我们可以将数据库拆分为多个库，多个库来抗更高的并发；如果一个表的数据量过大，我们还可以将一个表拆分成多个表，每个表的数据量保持少一点，提高sql的性能</li>
+</ol>
+<h4 id="es读取数据的工作原理？"><a href="#es读取数据的工作原理？" class="headerlink" title="es读取数据的工作原理？"></a>es读取数据的工作原理？</h4><ol>
+<li>客户端发送请求到任意一个node, 成为协调节点</li>
+<li>协调节点对document进行路由，将请求转发到对应的node,此时会使用round-robin(随机轮询算法)，在primary shard以及所有replica<br>shard 中随机选择一个，让读请求做负载均衡</li>
+<li>接收到请求的node返回document给协调节点</li>
+<li>协调节点返回document给客户端</li>
+</ol>
+<h4 id="es搜索数据的过程？"><a href="#es搜索数据的过程？" class="headerlink" title="es搜索数据的过程？"></a>es搜索数据的过程？</h4><ol>
+<li>客户端发送请求到一个协调节点</li>
+<li>协调节点将请求转发到所有的shard（primary或replica）</li>
+<li>每个shard将自己的搜索结果（其实就是一些docId）， 返回给协调节点，然后由协调节点进行数据的合并、排序、分页等操作</li>
+<li>最后协调节点根据docId去各个节点上去拉取实际的document数据返回给客户端</li>
+</ol>
+<h4 id="es数据量很大的情况（数10亿级别），如何提高查询效率？"><a href="#es数据量很大的情况（数10亿级别），如何提高查询效率？" class="headerlink" title="es数据量很大的情况（数10亿级别），如何提高查询效率？"></a>es数据量很大的情况（数10亿级别），如何提高查询效率？</h4><ol>
+<li>性能优化的杀手锏 – filesystem cache<ul>
+<li>es设计时只存储需要搜索的字段</li>
+<li>es + hbase / mysql</li>
 </ul>
 </li>
-<li>读写分离<ul>
-<li>如果说大部分请求必须要落库，且读多写少，我们可以搞主从架构，主库写入，从库读取。当流量太多的时候，还可以加更多的从库</li>
+<li>数据预热<ul>
+<li>定时任务手动搜索热点数据</li>
 </ul>
 </li>
+<li>冷热分离<ul>
+<li>将热点数据和冷数据分索引存储</li>
+</ul>
+</li>
+<li>document模型设计<ul>
+<li>涉及多表提前关联好需要查询的字段</li>
+</ul>
+</li>
+<li>es分页<ul>
+<li>不允许深度搜索，默认深度分页性能很差</li>
+<li>用scroll api ，顺序分页，类似于微博一页页的拉取，不允许跨页<ul>
+<li>scroll会一次性给你生成所有数据的一个快照，然后每次翻页就是通过游标移动，获取下一页数据</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="es生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少分片？"><a href="#es生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少分片？" class="headerlink" title="es生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少分片？"></a>es生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少分片？</h4><ol>
+<li>es生产集群我们部署了5台机器，每台机器是6核64G的，集群总内存是320G</li>
+<li>我们es集群的日增数据量大概是2000万条，每天日增数据量大概是500MB,每月增量数据大概是6亿/15G。目前系统已经运行了几个月<br>，现在es集群里数据总量大概是100G左右</li>
+<li>目前线上有5个索引（这个结合业务来），每个索引的数据量大概是20G,所以这个数据量之内，我们索引分配的是8个shard,比默认的5个shard<br>多了3个shard</li>
 </ol>
 
       
@@ -310,7 +306,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">搜索引擎</a>
         		</li>
       		
 		</ul>
@@ -377,7 +373,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2021/01/05/面试专栏/分布式/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2020/12/28/专栏/搜索引擎/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -391,7 +387,7 @@
   
 <nav id="article-nav">
   
-    <a href="/2021/01/05/面试专栏/zookeeper/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2021/01/05/专栏/zookeeper/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
@@ -401,8 +397,8 @@
     </a>
   
   
-    <a href="/2021/01/05/面试专栏/dubbo/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">dubbo</div>
+    <a href="/2020/12/16/专栏/消息队列/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">消息队列多连炮</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -532,19 +528,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -552,23 +540,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,6 +549,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -600,11 +596,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -620,10 +628,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -636,23 +640,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -664,15 +660,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -680,11 +684,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -700,6 +700,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -708,7 +712,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -716,11 +720,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">

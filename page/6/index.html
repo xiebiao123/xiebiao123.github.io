@@ -164,52 +164,45 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-问题总结/工作沟通" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/docker/Docker" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/25/问题总结/工作沟通/">沟通</a>
+      <a class="article-title" href="/2018/08/04/学习笔记/docker/Docker/">Docker</a>
     </h1>
   
 
         
-        <a href="/2018/07/25/问题总结/工作沟通/" class="archive-article-date">
-  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+        <a href="/2018/08/04/学习笔记/docker/Docker/" class="archive-article-date">
+  	<time datetime="2018-08-03T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-04</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="询问上级意见"><a href="#询问上级意见" class="headerlink" title="询问上级意见"></a>询问上级意见</h3><ul>
-<li>给出问题2-3选项</li>
-<li>说出你的倾向以及原因</li>
-<li>通知所有需要通知到的人</li>
+        <h3 id="虚拟机与Docker有何不同"><a href="#虚拟机与Docker有何不同" class="headerlink" title="虚拟机与Docker有何不同"></a><a href="https://www.techug.com/post/comparing-virtual-machines-vs-docker-containers.html" target="_blank" rel="noopener">虚拟机与Docker有何不同</a></h3><p>Docker守护进程可以直接与主操作系统进行通信，为各个Docker容器分配资源；它还可以将容器与主操作系统隔离，并将各个容器互相隔离。<br>虚拟机启动需要数分钟，而Docker容器可以在数毫秒内启动。由于没有臃肿的从操作系统，Docker可以节省大量的磁盘空间以及其他系统资源。</p>
+<p>虚拟机更擅长于彻底隔离整个运行环境。例如，云服务提供商通常采用虚拟机技术隔离不同的用户。而Docker通常用于隔离不同的应用，例如前端，后端以及数据库。</p>
+<h3 id="Docker安装"><a href="#Docker安装" class="headerlink" title="Docker安装"></a>Docker安装</h3><ol>
+<li><a href="https://www.runoob.com/docker/windows-docker-install.html" target="_blank" rel="noopener">Windows Docker 安装</a></li>
+<li><a href="https://www.runoob.com/docker/centos-docker-install.html" target="_blank" rel="noopener">CentOS Docker 安装</a></li>
+</ol>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><strong>镜像(Images)</strong> 镜像是用于创建 Docker 容器的模板</li>
+<li><strong>容器(Container)</strong> 容器是独立运行的一个或一组应用</li>
+<li><strong>客户端(Client)</strong> Docker 客户端通过命令行或者其他工具使用 <a href="https://docs.docker.com/reference/api/docker_remote_api" target="_blank" rel="noopener">Docker API</a> 与 Docker 的守护进程通信</li>
+<li><strong>主机(Host)</strong> 一个物理或者虚拟的机器用于执行 Docker 守护进程和容器</li>
+<li><strong>仓库(Registry)</strong> Docker 仓库用来保存镜像，可以理解为代码控制中的代码仓库,<a href="https://hub.docker.com" target="_blank" rel="noopener">Docker Hub</a> 提供了庞大的镜像集合供使用</li>
+<li><strong>Machine</strong> Docker Machine是一个简化Docker安装的命令行工具，通过一个简单的命令行即可在相应的平台上安装Docker，比如VirtualBox、 Digital Ocean、Microsoft Azure</li>
 </ul>
-<h3 id="如何清除的表达观点"><a href="#如何清除的表达观点" class="headerlink" title="如何清除的表达观点"></a>如何清除的表达观点</h3><p>不是为了让自己说的开心，而是让听的人清楚<br>诉求，比如传递一个信息，比如达成某种共识，或者解决一个问题</p>
-<p><strong>结构化思维</strong>，就是我们在解决问题，沟通表达，汇报工作，甚至在写文章的时候，能够快速梳理出一个结构或者框架，把杂乱无章的信息结构化。</p>
-<p>第一原则，是<strong>论*。什么意思呢，就是表达的时候，可以尝试</strong>结论先行**</p>
-<p>每一次表达，最好只有一个主题思想，一个观点，解决一个重要问题。而且最好出现在开头。就像是一篇文章的标题，这是对你要表达的内容的高度提炼和总结，让对方一开始就知道你的重点是什么。</p>
-<p>第二原则，是<strong>证</strong>，就是去<strong>论证结论</strong></p>
-<p>有论点，就要有论据。有结果，就要有原因。所以开头抛出一个结论或一个观点。下一步就是去论证这个观点。比如，你去汇报工作，你说我们部门2月份业绩表现不错，这是一个结论。接下来你就要通过数据或客观事实来论证，为什么不错。为什么呢？因为跟1月份相比，收入同比增长了30%。</p>
-<p>第三个原则，是<strong>类</strong>，也就是<strong>归类分组</strong>。就是每一组要点必须要属于同一个范畴</p>
-<p>比如，你买了一堆东西。别人问你买了什么，你是不是得先归类分组。比如有水果，蔬菜，饮品三大类。再往下呢，水果有哪些，蔬菜有哪些，饮品有哪些。你不能把蔬菜归在水果里，也不能把饮品归在蔬菜里。汇报工作，沟通表达也是一样，不能在汇报A事件的时候，突然跳到BCD事件。</p>
-<p>第四个原则，是<strong>比</strong>，也就是<strong>逻辑递进</strong></p>
-<p>什么意思呢，就是每个点，都需要按照一定的逻辑顺序来排列。根据你的主题，在表达汇报前，找到一个逻辑。这个逻辑就像一条线，把你表达的内容穿起来，层层递进，有据可依。</p>
-<p>比如，关于一件事，你可以先给出一个结论。<br>然后，针对这个结论，找到三个原因，这些原因之间还要符合“论证类比”的原则。<br>横向上，要符合“类”和“比”，话题不能有遗漏和疏忽，还要有先后次序；<br>纵向上，要符合“论”和“证”，挖掘思考的深度。</p>
-<h3 id="重要的事情说三点"><a href="#重要的事情说三点" class="headerlink" title="重要的事情说三点"></a>重要的事情说三点</h3><p>为什么是三点呢？“三”其实是给表达设定了一个范围，相当于一种结构，有助于你把比较杂乱的信息，按照一定的逻辑归纳整理。</p>
-<p>我举个例子。</p>
-<p>你问A，这件事你有什么看法，他滔滔不绝地跟你说了一个小时。你的感觉可能是他好像什么都说了，又好像什么都没说。<br>你问B，他跟你说，这个问题我有三点看法。</p>
-<p><strong>第一点是什么，第二点是什么，第三点是什么。你听完就会清晰很多。</strong></p>
-<p>这是因为他通过归纳、整理、提炼，把和你问题相关的信息，理出了一个结构。</p>
-<p>很多时候，你说完“关于这件事我有三点看法”。可能会有几种情况。<br>第一种情况，正好说三点。<br>第二种情况，说完两点以后就没有了。你只能说，我再强调一下第二点。<br>第三种情况，说完三点以后，发现还有两点特别重要，你只能说我再补充两点。<br>所以，“重要的事情说三点”看起来不难，其实需要你具备很强的结构化思考能力。</p>
-<h3 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h3><ul>
-<li>不要急</li>
-</ul>
-
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><h4 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h4><pre><code>service docker start 启动 Docker 进程
+docker command --help Docker命令使用方法</code></pre>
+        
+          <a class="article-more-a" href="/2018/08/04/学习笔记/docker/Docker/#more">more >></a>
+        
       
 
       
@@ -222,7 +215,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">沟通</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">docker</a>
         		</li>
       		
 		</ul>
@@ -234,7 +227,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/工作//" class="article-tag-list-link color3">工作</a>
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
         		</li>
       		
 		</ul>
@@ -243,7 +236,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/25/问题总结/工作沟通/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/08/04/学习笔记/docker/Docker/">展开全文 >></a>
         </p>
       
 
@@ -335,6 +328,208 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/07/25/学习笔记/Spring/SpringBoot/Springboot-note/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Spring/SpringBoot/Springboot" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/学习笔记/Spring/SpringBoot/Springboot/">Spring boot</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/25/学习笔记/Spring/SpringBoot/Springboot/" class="archive-article-date">
+  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Spring-boot-优点"><a href="#Spring-boot-优点" class="headerlink" title="Spring boot 优点"></a>Spring boot 优点</h3><ul>
+<li>快速创建独立的Spring项目，以及主流框架集成</li>
+<li>使用嵌入式的Servlet容器，应用无需打成war包</li>
+<li>starter自动依赖与版本控制</li>
+<li>大量的自动配置，简化开发，也可以修改默认配置</li>
+<li>无需xml配置，无代码生成，开箱即用</li>
+<li>准生产环境的运行时应用监控</li>
+<li>与云计算的天然集成</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring boot</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/25/学习笔记/Spring/SpringBoot/Springboot/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-问题总结/工作沟通" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/25/问题总结/工作沟通/">沟通</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/25/问题总结/工作沟通/" class="archive-article-date">
+  	<time datetime="2018-07-24T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="询问上级意见"><a href="#询问上级意见" class="headerlink" title="询问上级意见"></a>询问上级意见</h3><ul>
+<li>给出问题2-3选项</li>
+<li>说出你的倾向以及原因</li>
+<li>通知所有需要通知到的人</li>
+</ul>
+<h3 id="如何清除的表达观点"><a href="#如何清除的表达观点" class="headerlink" title="如何清除的表达观点"></a>如何清除的表达观点</h3><p>不是为了让自己说的开心，而是让听的人清楚<br>诉求，比如传递一个信息，比如达成某种共识，或者解决一个问题</p>
+<p><strong>结构化思维</strong>，就是我们在解决问题，沟通表达，汇报工作，甚至在写文章的时候，能够快速梳理出一个结构或者框架，把杂乱无章的信息结构化。</p>
+<p>第一原则，是<strong>论*。什么意思呢，就是表达的时候，可以尝试</strong>结论先行**</p>
+<p>每一次表达，最好只有一个主题思想，一个观点，解决一个重要问题。而且最好出现在开头。就像是一篇文章的标题，这是对你要表达的内容的高度提炼和总结，让对方一开始就知道你的重点是什么。</p>
+<p>第二原则，是<strong>证</strong>，就是去<strong>论证结论</strong></p>
+<p>有论点，就要有论据。有结果，就要有原因。所以开头抛出一个结论或一个观点。下一步就是去论证这个观点。比如，你去汇报工作，你说我们部门2月份业绩表现不错，这是一个结论。接下来你就要通过数据或客观事实来论证，为什么不错。为什么呢？因为跟1月份相比，收入同比增长了30%。</p>
+<p>第三个原则，是<strong>类</strong>，也就是<strong>归类分组</strong>。就是每一组要点必须要属于同一个范畴</p>
+<p>比如，你买了一堆东西。别人问你买了什么，你是不是得先归类分组。比如有水果，蔬菜，饮品三大类。再往下呢，水果有哪些，蔬菜有哪些，饮品有哪些。你不能把蔬菜归在水果里，也不能把饮品归在蔬菜里。汇报工作，沟通表达也是一样，不能在汇报A事件的时候，突然跳到BCD事件。</p>
+<p>第四个原则，是<strong>比</strong>，也就是<strong>逻辑递进</strong></p>
+<p>什么意思呢，就是每个点，都需要按照一定的逻辑顺序来排列。根据你的主题，在表达汇报前，找到一个逻辑。这个逻辑就像一条线，把你表达的内容穿起来，层层递进，有据可依。</p>
+<p>比如，关于一件事，你可以先给出一个结论。<br>然后，针对这个结论，找到三个原因，这些原因之间还要符合“论证类比”的原则。<br>横向上，要符合“类”和“比”，话题不能有遗漏和疏忽，还要有先后次序；<br>纵向上，要符合“论”和“证”，挖掘思考的深度。</p>
+<h3 id="重要的事情说三点"><a href="#重要的事情说三点" class="headerlink" title="重要的事情说三点"></a>重要的事情说三点</h3><p>为什么是三点呢？“三”其实是给表达设定了一个范围，相当于一种结构，有助于你把比较杂乱的信息，按照一定的逻辑归纳整理。</p>
+<p>我举个例子。</p>
+<p>你问A，这件事你有什么看法，他滔滔不绝地跟你说了一个小时。你的感觉可能是他好像什么都说了，又好像什么都没说。<br>你问B，他跟你说，这个问题我有三点看法。</p>
+<p><strong>第一点是什么，第二点是什么，第三点是什么。你听完就会清晰很多。</strong></p>
+<p>这是因为他通过归纳、整理、提炼，把和你问题相关的信息，理出了一个结构。</p>
+<p>很多时候，你说完“关于这件事我有三点看法”。可能会有几种情况。<br>第一种情况，正好说三点。<br>第二种情况，说完两点以后就没有了。你只能说，我再强调一下第二点。<br>第三种情况，说完三点以后，发现还有两点特别重要，你只能说我再补充两点。<br>所以，“重要的事情说三点”看起来不难，其实需要你具备很强的结构化思考能力。</p>
+<h3 id="心态"><a href="#心态" class="headerlink" title="心态"></a>心态</h3><ul>
+<li>不要急</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">沟通</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/工作//" class="article-tag-list-link color3">工作</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/25/问题总结/工作沟通/">展开全文 >></a>
         </p>
       
 
@@ -463,19 +658,19 @@
 
 
   
-    <article id="post-学习笔记/其他/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/其他/Spock" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/其他/加密解密/">加密解密</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/其他/Spock/">Spock</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/其他/加密解密/" class="archive-article-date">
+        <a href="/2018/07/19/学习笔记/其他/Spock/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -483,16 +678,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
-<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
-<ul>
-<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
-<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
-<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
-</ul>
-<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
+        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"># 预先定义的几个函数</span><br><span class="line"><span class="keyword">def</span> setup() &#123;&#125;          <span class="comment">// run before every feature method</span></span><br><span class="line"><span class="keyword">def</span> cleanup() &#123;&#125;        <span class="comment">// run after every feature method</span></span><br><span class="line"><span class="keyword">def</span> setupSpec() &#123;&#125;      <span class="comment">// run before the first feature method</span></span><br><span class="line"><span class="keyword">def</span> cleanupSpec() &#123;&#125;    <span class="comment">// run after the last feature method</span></span><br><span class="line"></span><br><span class="line"># 每个method又被划分为不同的block，不同的block处于测试执行的不同阶段，在测试运行时，各个block按照不同的顺序和规则被执行</span><br><span class="line"></span><br><span class="line"># setup / given 在这个block中会放置与这个测试函数相关的初始化程序</span><br><span class="line"><span class="string">setup:</span></span><br><span class="line">    <span class="keyword">def</span> stack = <span class="keyword">new</span> Stack()</span><br><span class="line">    <span class="keyword">def</span> elem = <span class="string">"push me"</span></span><br><span class="line">    </span><br><span class="line"># when与then需要搭配使用，在when中执行待测试的函数，在then中判断是否符合预期</span><br><span class="line"><span class="string">when:</span></span><br><span class="line">    stack.push(elem)  </span><br><span class="line"><span class="string">then:</span></span><br><span class="line">    !stack.empty</span><br><span class="line">    stack.size() == <span class="number">1</span></span><br><span class="line">    stack.peek() == elem</span><br><span class="line"></span><br><span class="line"># 在then或expect中会默认assert所有返回值是boolean型的顶级语句。如果要在其它地方增加断言，需要显式增加assert关键字</span><br><span class="line"><span class="keyword">def</span> setup() &#123;</span><br><span class="line">  stack = <span class="keyword">new</span> Stack()</span><br><span class="line">  <span class="keyword">assert</span> stack.empty</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 如果要验证有没有抛出异常，可以用thrown()，如果要验证没有抛出某种异常，可以用notThrown()</span><br><span class="line"><span class="string">when:</span></span><br><span class="line">    stack.pop()  </span><br><span class="line"><span class="string">then:</span></span><br><span class="line">    <span class="keyword">def</span> e = thrown(EmptyStackException)</span><br><span class="line">    e.cause == <span class="literal">null</span></span><br><span class="line">    </span><br><span class="line"><span class="string">setup:</span></span><br><span class="line">    <span class="keyword">def</span> map = <span class="keyword">new</span> HashMap()  </span><br><span class="line"><span class="string">when:</span></span><br><span class="line">    map.put(<span class="literal">null</span>, <span class="string">"elem"</span>)  </span><br><span class="line"><span class="string">then:</span></span><br><span class="line">    notThrown(NullPointerException)</span><br><span class="line">    </span><br><span class="line"># expect可以看做精简版的when+then</span><br><span class="line"><span class="string">when:</span></span><br><span class="line">    <span class="keyword">def</span> x = Math.max(<span class="number">1</span>, <span class="number">2</span>)   ==&gt;&gt;   <span class="string">expect:</span> Math.max(<span class="number">1</span>, <span class="number">2</span>) == <span class="number">2</span></span><br><span class="line"><span class="string">then:</span></span><br><span class="line">    x == <span class="number">2</span></span><br><span class="line"></span><br><span class="line"># Cleanup Blocks 函数退出前做一些清理工作，如关闭资源等</span><br><span class="line"></span><br><span class="line"># Where</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataDriven</span> <span class="keyword">extends</span> <span class="title">Specification</span> &#123;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="string">"maximum of two numbers"</span>() &#123;</span><br><span class="line"><span class="symbol">        expect:</span></span><br><span class="line">        Math.max(a, b) == c</span><br><span class="line"></span><br><span class="line"><span class="symbol">        where:</span></span><br><span class="line">        a | b || c</span><br><span class="line">        <span class="number">3</span> | <span class="number">5</span> || <span class="number">5</span></span><br><span class="line">        <span class="number">7</span> | <span class="number">0</span> || <span class="number">7</span></span><br><span class="line">        <span class="number">0</span> | <span class="number">0</span> || <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 上述例子实际会跑三次测试，相当于在for循环中执行三次测试，a/b/c的值分别为3/5/5,7/0/7和0/0/0。</span><br><span class="line">如果在方法前声明<span class="meta">@Unroll</span>，则会当成三个方法运行。更进一步，可以为标记<span class="meta">@Unroll</span>的方法声明动态的spec名。</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataDriven</span> <span class="keyword">extends</span> <span class="title">Specification</span> &#123;</span></span><br><span class="line">    <span class="meta">@Unroll</span></span><br><span class="line">    <span class="keyword">def</span> <span class="string">"maximum of #a and #b should be #c"</span>() &#123;</span><br><span class="line"><span class="symbol">        expect:</span></span><br><span class="line">        Math.max(a, b) == c</span><br><span class="line"></span><br><span class="line"><span class="symbol">        where:</span></span><br><span class="line">        a | b || c</span><br><span class="line">        <span class="number">3</span> | <span class="number">5</span> || <span class="number">5</span></span><br><span class="line">        <span class="number">7</span> | <span class="number">0</span> || <span class="number">7</span></span><br><span class="line">        <span class="number">0</span> | <span class="number">0</span> || <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/加密解密/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/Spock/#more">more >></a>
         
       
 
@@ -506,7 +694,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">spock</a>
         		</li>
       		
 		</ul>
@@ -527,7 +715,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/加密解密/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/Spock/">展开全文 >></a>
         </p>
       
 
@@ -631,93 +819,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/07/19/学习笔记/其他/freemarker/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/中间件/Nginx" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/中间件/Nginx/">Nginx</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/19/学习笔记/中间件/Nginx/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="配置文件结构"><a href="#配置文件结构" class="headerlink" title="配置文件结构"></a>配置文件结构</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">...              #全局块</span><br><span class="line"><span class="section">events</span> &#123;         <span class="comment">#events块</span></span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">http</span>      <span class="comment">#http块</span></span><br><span class="line">&#123;</span><br><span class="line">    ...   #http全局块</span><br><span class="line">    <span class="attribute">server</span>        <span class="comment">#server块</span></span><br><span class="line">    &#123; </span><br><span class="line">        ...       #server全局块</span><br><span class="line">        <span class="attribute">location</span> [PATTERN]   <span class="comment">#location块</span></span><br><span class="line">        &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="attribute">location</span> [PATTERN] </span><br><span class="line">        &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    server</span><br><span class="line">    &#123;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...     #http全局块</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2018/07/19/学习笔记/中间件/Nginx/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/19/学习笔记/中间件/Nginx/">展开全文 >></a>
         </p>
       
 
@@ -922,19 +1023,19 @@
 
 
   
-    <article id="post-学习笔记/其他/Groovy" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/其他/加密解密" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/学习笔记/其他/Groovy/">Groovy</a>
+      <a class="article-title" href="/2018/07/19/学习笔记/其他/加密解密/">加密解密</a>
     </h1>
   
 
         
-        <a href="/2018/07/19/学习笔记/其他/Groovy/" class="archive-article-date">
+        <a href="/2018/07/19/学习笔记/其他/加密解密/" class="archive-article-date">
   	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
 </a>
         
@@ -942,9 +1043,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*多行字符串可以使用三个连续的单引号或双引号包括*/</span></span><br><span class="line"><span class="keyword">def</span> multiline=<span class="string">"""line1</span></span><br><span class="line"><span class="string">line2</span></span><br><span class="line"><span class="string">line3</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*内插字符串,变量直接插入到字符串中,当使用内插字符串的时候，字符串字面值是Groovy的字符串类型GString。这一点需要注意。</span></span><br><span class="line"><span class="comment">普通的Java字符串是不变的，而GString是可变的。另外它们的哈希值也不同。因此在使用Map等数据类型的时候需要格外注意，避</span></span><br><span class="line"><span class="comment">免使用GString作为Map的键。*/</span></span><br><span class="line"><span class="keyword">def</span> name = <span class="string">'Guillaume'</span></span><br><span class="line"><span class="keyword">def</span> greeting = <span class="string">"Hello $&#123;name&#125;"</span></span><br></pre></td></tr></table></figure>
+        <h3 id="摘要算法"><a href="#摘要算法" class="headerlink" title="摘要算法"></a>摘要算法</h3><p>常用的摘要算法有MD5,SHA1。摘要算法是一个不可逆过程，就是无论多大数据，经过算法运算后都是生成固定长度的数据,一般结果使用16进制进行显示。<br>MD5和SHA1的区别：MD5结果是128位摘要，SHa1是160位摘要。那么MD5的速度更快，而SHA1的强度更高。</p>
+<p>主要用途有：验证消息完整性，安全访问认证，数据签名。</p>
+<ul>
+<li>消息完整性：由于每一份数据生成的MD5值不一样，因此发送数据时可以将数据和其MD5值一起发送，然后就可以用MD5验证数据是否丢失、修改。</li>
+<li>安全访问认证：这是使用了算法的不可逆性质，（就是无法从MD5值中恢复原数据）对账号登陆的密码进行MD5运算然后保存，这样可以保证除了用户之外，即使数据库管理人员都无法得知用户的密码。</li>
+<li>数字签名：这是结合非对称加密算法和CA证书的一种使用场景。</li>
+</ul>
+<h5 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"SHA-1"</span>);</span><br><span class="line">MessageDigest sha = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line"><span class="keyword">void</span> sha.update(byteBuffer);</span><br><span class="line"><span class="keyword">byte</span>[] sha.digest(byteBuffer);</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/Groovy/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/加密解密/#more">more >></a>
         
       
 
@@ -958,7 +1066,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">groovy</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">加密解密</a>
         		</li>
       		
 		</ul>
@@ -979,94 +1087,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/Groovy/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-小工具/IDEA" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/19/小工具/IDEA/">IDEA</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/19/小工具/IDEA/" class="archive-article-date">
-  	<time datetime="2018-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-19</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="主题"><a href="#主题" class="headerlink" title="主题"></a><a href="http://www.riaway.com/theme.php" target="_blank" rel="noopener">主题</a></h4><h4 id="常用plugins"><a href="#常用plugins" class="headerlink" title="常用plugins"></a>常用plugins</h4>
-        
-          <a class="article-more-a" href="/2018/07/19/小工具/IDEA/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">IDEA</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/19/小工具/IDEA/">展开全文 >></a>
+          <a class="article-more-a" href="/2018/07/19/学习笔记/其他/加密解密/">展开全文 >></a>
         </p>
       
 
@@ -1098,7 +1119,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -1197,19 +1218,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1217,23 +1230,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1242,6 +1239,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1265,11 +1286,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1285,10 +1318,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -1301,23 +1330,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1329,15 +1350,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1345,11 +1374,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1365,6 +1390,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -1373,7 +1402,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1381,11 +1410,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">

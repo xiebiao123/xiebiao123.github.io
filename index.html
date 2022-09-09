@@ -164,30 +164,367 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/其他/工作流框架Camunda" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/监控/Arthas" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/">工作流框架Camunda</a>
+      <a class="article-title" href="/2022/09/01/学习笔记/监控/Arthas/">Arthas</a>
     </h1>
   
 
         
-        <a href="/2022/08/10/学习笔记/其他/工作流框架Camunda/" class="archive-article-date">
-  	<time datetime="2022-08-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-10</time>
+        <a href="/2022/09/01/学习笔记/监控/Arthas/" class="archive-article-date">
+  	<time datetime="2022-08-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-09-01</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="框架对比"><a href="#框架对比" class="headerlink" title="框架对比"></a>框架对比</h3><p><a href="https://zhuanlan.zhihu.com/p/435249026" target="_blank" rel="noopener">工作流框架对比</a></p>
-        
-          <a class="article-more-a" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/#more">more >></a>
-        
+        <h3 id="什么是Arthas"><a href="#什么是Arthas" class="headerlink" title="什么是Arthas"></a>什么是Arthas</h3><p>Arthas 是Alibaba开源的Java诊断工具，深受开发者喜爱。当你遇到以下类似问题而束手无策时，Arthas可以帮助你解决：</p>
+<ol>
+<li>这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？</li>
+<li>我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？（jad 反编译代码）</li>
+<li>遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？（动态修改日志的级别）</li>
+<li>线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！</li>
+<li>是否有一个全局视角来查看系统的运行状况？(trace 查看方法的调用链和执行时间)</li>
+<li>有什么办法可以监控到JVM的实时运行状态？</li>
+<li>怎么快速定位应用的热点，生成火焰图？</li>
+<li>怎样直接从JVM内查找某个类的实例？</li>
+</ol>
+<h3 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h3><ul>
+<li>使用arthas-boot（推荐）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 下载arthas-boot.jar，然后用java -jar的方式启动：</span><br><span class="line">curl -O https://arthas.aliyun.com/arthas-boot.jar</span><br><span class="line">java -jar arthas-boot.jar</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 打印帮助信息：</span><br><span class="line">java -jar arthas-boot.jar -h</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用as.sh</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -L https://arthas.aliyun.com/install.sh | sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="后台异步任务"><a href="#后台异步任务" class="headerlink" title="后台异步任务"></a>后台异步任务</h3><h4 id="1-使用-amp-在后台执行任务"><a href="#1-使用-amp-在后台执行任务" class="headerlink" title="1. 使用&amp;在后台执行任务"></a>1. 使用&amp;在后台执行任务</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> trace Test t &amp;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-通过-jobs-查看任务"><a href="#2-通过-jobs-查看任务" class="headerlink" title="2. 通过 jobs 查看任务"></a>2. 通过 jobs 查看任务</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> jobs</span><br><span class="line">[10]*</span><br><span class="line">       Stopped           watch com.taobao.container.Test test "params[0].&#123;? #this.name == null &#125;" -x 2</span><br><span class="line">       execution count : 19</span><br><span class="line">       start time      : Fri Sep 22 09:59:55 CST 2017</span><br><span class="line">       timeout date    : Sat Sep 23 09:59:55 CST 2017</span><br><span class="line">       session         : 3648e874-5e69-473f-9eed-7f89660b079b (current)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>job id 是 10, * 表示此 job 是当前 session 创建</li>
+<li>状态是 Stopped</li>
+<li>execution count 是执行次数，从启动开始已经执行了 19 次</li>
+<li>timeout date 是超时的时间，到这个时间，任务将会自动超时退出</li>
+</ul>
+<h4 id="3-任务暂停和取消"><a href="#3-任务暂停和取消" class="headerlink" title="3.任务暂停和取消"></a>3.任务暂停和取消</h4><p>当任务正在前台执行，比如直接调用命令trace Test t或者调用后台执行命令trace Test t &amp;后又通过fg命令将任务转到前台。这时 console 中无法继续执行命令，但是可以接收并处理以下事件：</p>
+<ul>
+<li>‘ctrl + z’：将任务暂停。通过jbos查看任务状态将会变为 Stopped，通过bg <job-id>或者fg <job-id>可让任务重新开始执行</job-id></job-id></li>
+<li>‘ctrl + c’：停止任务</li>
+<li>‘ctrl + d’：按照 linux 语义应当是退出终端，目前 arthas 中是空实现，不处理</li>
+</ul>
+<h4 id="4-fg、bg-命令，将命令转到前台、后台继续执行"><a href="#4-fg、bg-命令，将命令转到前台、后台继续执行" class="headerlink" title="4. fg、bg 命令，将命令转到前台、后台继续执行"></a>4. fg、bg 命令，将命令转到前台、后台继续执行</h4><ul>
+<li>任务在后台执行或者暂停状态（ctrl + z暂停任务）时，执行fg <job-id>将可以把对应的任务转到前台继续执行。在前台执行时，无法在 console 中执行其他命令</job-id></li>
+<li>当任务处于暂停状态时（ctrl + z暂停任务），执行bg <job-id>将可以把对应的任务在后台继续执行</job-id></li>
+<li>非当前 session 创建的 job，只能由当前 session fg 到前台执行</li>
+</ul>
+<h4 id="5-任务输出重定向"><a href="#5-任务输出重定向" class="headerlink" title="5. 任务输出重定向"></a>5. 任务输出重定向</h4><p>可通过&gt;或者&gt;&gt;将任务输出结果输出到指定的文件中，可以和&amp;一起使用，实现 arthas 命令的后台异步任务。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> trace Test t &gt;&gt; test.out &amp;</span><br></pre></td></tr></table></figure>
+
+<p>这时 trace 命令会在后台执行，并且把结果输出到~/logs/arthas-cache/test.out。可继续执行其他命令。并可查看文件中的命令执行结果。</p>
+<p>当连接到远程的 arthas server 时，可能无法查看远程机器的文件，arthas 同时支持了自动重定向到本地缓存路径。使用方法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> trace Test t &gt;&gt;  &amp;</span><br><span class="line">job id  : 2</span><br><span class="line">cache location  : /Users/gehui/logs/arthas-cache/28198/2</span><br></pre></td></tr></table></figure>
+
+<p>可以看到并没有指定重定向文件位置，arthas 自动重定向到缓存中了，执行命令后会输出 job id 和 cache location。cache location 就是重定向文件的路径，在系统 logs 目录下，路径包括 pid 和 job id，避免和其他任务冲突。命令输出结果到/Users/gehui/logs/arthas-cache/28198/2中，job id 为 2。</p>
+<h4 id="6-停止命令"><a href="#6-停止命令" class="headerlink" title="6. 停止命令"></a>6. 停止命令</h4><p>异步执行的命令，如果希望停止，可执行kill <job-id></job-id></p>
+<h4 id="7-其他"><a href="#7-其他" class="headerlink" title="7. 其他"></a>7. 其他</h4><ul>
+<li>最多同时支持 8 个命令使用重定向将结果写日志</li>
+<li>请勿同时开启过多的后台异步命令，以免对目标 JVM 性能造成影响</li>
+<li>如果不想停止 arthas，继续执行后台任务，可以执行 quit 退出 arthas 控制台（stop 会停止 arthas 服务）</li>
+</ul>
+<h3 id="批处理功能"><a href="#批处理功能" class="headerlink" title="批处理功能"></a>批处理功能</h3><h4 id="1-创建批处理脚本"><a href="#1-创建批处理脚本" class="headerlink" title="1. 创建批处理脚本"></a>1. 创建批处理脚本</h4><p>这里我们新建了一个test.as脚本，为了规范，我们采用了.as 后缀名，但事实上任意的文本文件都 ok。</p>
+<blockquote>
+<ul>
+<li>目前需要每个命令占一行</li>
+<li>dashboard 务必指定执行次数(-n)，否则会导致批处理脚本无法终止</li>
+<li>watch/tt/trace/monitor/stack 等命令务必指定执行次数(-n)，否则会导致批处理脚本无法终止</li>
+<li>可以使用异步后台任务，如 watch c.t.X test returnObj &gt; &amp;，让命令一直在后台运行，通过日志获取结果</li>
+</ul>
+</blockquote>
+<h4 id="2-运行你的批处理脚本"><a href="#2-运行你的批处理脚本" class="headerlink" title="2. 运行你的批处理脚本"></a>2. 运行你的批处理脚本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 通过-f执行脚本文件， 批处理脚本默认会输出到标准输出中，可以将结果重定向到文件中。</span><br><span class="line"><span class="meta">$</span> ./as.sh -f /var/tmp/test.as &lt;pid&gt; &gt; test.out</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 也可以通过 -c 来指定指行的命令，比如</span><br><span class="line"><span class="meta">$</span> ./as.sh -c 'sysprop; thread' &lt;pid&gt; &gt; test.out</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>pid 可以通过 jps 命令查看</p>
+</blockquote>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a><a href="https://arthas.aliyun.com/doc/commands.html" target="_blank" rel="noopener">常用命令</a></h3><h4 id="jvm相关"><a href="#jvm相关" class="headerlink" title="jvm相关"></a>jvm相关</h4><ul>
+<li><a href="https://arthas.aliyun.com/doc/dashboard.html" target="_blank" rel="noopener">dashboard</a> 当前实例的数据面板</li>
+<li><a href="https://arthas.aliyun.com/doc/heapdump.html" target="_blank" rel="noopener">heapdump</a> 类似于jmap命令的 heap dump功能</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> dump 到指定文件</span><br><span class="line"><span class="meta">$</span> heapdump /tmp/dump.hprof</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 只 dump live 对象</span><br><span class="line"><span class="meta">$</span> heapdump --live /tmp/dump.hprof</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://arthas.gitee.io/doc/jvm.html" target="_blank" rel="noopener">jvm</a> 查看当前JVM信息</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> jvm</span><br><span class="line"></span><br><span class="line">···</span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line"> THREAD</span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line"> COUNT                          30      #  JVM 当前活跃的线程数</span><br><span class="line"> DAEMON-COUNT                   24      #  JVM 当前活跃的守护线程数</span><br><span class="line"> PEAK-COUNT                     31      #  从 JVM 启动开始曾经活着的最大线程数</span><br><span class="line"> STARTED-COUNT                  36      #  从 JVM 启动开始总共启动过的线程次数</span><br><span class="line"> DEADLOCK-COUNT                 0       #  JVM 当前死锁的线程数</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line"> FILE-DESCRIPTOR</span><br><span class="line">--------------------------------------------------------------------------------------------------------------</span><br><span class="line"> MAX-FILE-DESCRIPTOR-COUNT      1048576     # JVM 进程最大可以打开的文件描述符数</span><br><span class="line"> OPEN-FILE-DESCRIPTOR-COUNT     100         # JVM 当前打开的文件描述符数</span><br><span class="line">Affect(row-cnt:0) cost in 88 ms.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://arthas.gitee.io/doc/logger.html" target="_blank" rel="noopener">logger</a> 查看logger信息，更新logger level</li>
+<li><a href="https://arthas.gitee.io/doc/memory.html" target="_blank" rel="noopener">memory</a> 查看jvm内存信息</li>
+<li><a href="https://arthas.gitee.io/doc/thread.html" target="_blank" rel="noopener">thread</a> 查看当前线程的信息，查看线程的堆栈</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> thread -n x, 当前最忙的前 X 个线程并打印堆栈</span><br><span class="line"><span class="meta">$</span> thread -n 3</span><br><span class="line"></span><br><span class="line">"C1 CompilerThread0" [Internal] cpuUsage=1.63% deltaTime=3ms time=1170ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"arthas-command-execute" Id=23 cpuUsage=0.11% deltaTime=0ms time=401ms RUNNABLE</span><br><span class="line">    at java.management@11.0.7/sun.management.ThreadImpl.dumpThreads0(Native Method)</span><br><span class="line">    at java.management@11.0.7/sun.management.ThreadImpl.getThreadInfo(ThreadImpl.java:466)</span><br><span class="line">    at com.taobao.arthas.core.command.monitor200.ThreadCommand.processTopBusyThreads(ThreadCommand.java:199)</span><br><span class="line">    at com.taobao.arthas.core.command.monitor200.ThreadCommand.process(ThreadCommand.java:122)</span><br><span class="line">    at com.taobao.arthas.core.shell.command.impl.AnnotatedCommandImpl.process(AnnotatedCommandImpl.java:82)</span><br><span class="line">    at com.taobao.arthas.core.shell.command.impl.AnnotatedCommandImpl.access$100(AnnotatedCommandImpl.java:18)</span><br><span class="line">    at com.taobao.arthas.core.shell.command.impl.AnnotatedCommandImpl$ProcessHandler.handle(AnnotatedCommandImpl.java:111)</span><br><span class="line">    at com.taobao.arthas.core.shell.command.impl.AnnotatedCommandImpl$ProcessHandler.handle(AnnotatedCommandImpl.java:108)</span><br><span class="line">    at com.taobao.arthas.core.shell.system.impl.ProcessImpl$CommandProcessTask.run(ProcessImpl.java:385)</span><br><span class="line">    at java.base@11.0.7/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)</span><br><span class="line">    at java.base@11.0.7/java.util.concurrent.FutureTask.run(FutureTask.java:264)</span><br><span class="line">    at java.base@11.0.7/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304)</span><br><span class="line">    at java.base@11.0.7/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)</span><br><span class="line">    at java.base@11.0.7/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)</span><br><span class="line">    at java.base@11.0.7/java.lang.Thread.run(Thread.java:834)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">"VM Periodic Task Thread" [Internal] cpuUsage=0.07% deltaTime=0ms time=584ms</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> thread id, 显示指定线程的运行堆栈</span><br><span class="line"><span class="meta">$</span> thread 1</span><br><span class="line">"main" Id=1 WAITING on java.util.concurrent.CountDownLatch$Sync@29fafb28</span><br><span class="line">    at sun.misc.Unsafe.park(Native Method)</span><br><span class="line">    -  waiting on java.util.concurrent.CountDownLatch$Sync@29fafb28</span><br><span class="line">    at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)</span><br><span class="line">    at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:836)</span><br><span class="line">    at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:997)</span><br><span class="line">    at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1304)</span><br><span class="line">    at java.util.concurrent.CountDownLatch.await(CountDownLatch.java:231)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> thread -b, 找出当前阻塞其他线程的线程</span><br><span class="line"><span class="meta">$</span> thread -b</span><br><span class="line">"http-bio-8080-exec-4" Id=27 TIMED_WAITING</span><br><span class="line">    at java.lang.Thread.sleep(Native Method)</span><br><span class="line">    at test.arthas.TestThreadBlocking.doGet(TestThreadBlocking.java:22)</span><br><span class="line">    -  locked java.lang.Object@725be470 &lt;---- but blocks 4 other threads!</span><br><span class="line">    at javax.servlet.http.HttpServlet.service(HttpServlet.java:624)</span><br><span class="line">    at javax.servlet.http.HttpServlet.service(HttpServlet.java:731)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:303)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)</span><br><span class="line">    at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)</span><br><span class="line">    at test.filter.TestDurexFilter.doFilter(TestDurexFilter.java:46)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:241)</span><br><span class="line">    at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:208)</span><br><span class="line">    at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:220)</span><br><span class="line">    at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:122)</span><br><span class="line">    at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:505)</span><br><span class="line">    at com.taobao.tomcat.valves.ContextLoadFilterValve$FilterChainAdapter.doFilter(ContextLoadFilterValve.java:191)</span><br><span class="line">    at com.taobao.eagleeye.EagleEyeFilter.doFilter(EagleEyeFilter.java:81)</span><br><span class="line">    at com.taobao.tomcat.valves.ContextLoadFilterValve.invoke(ContextLoadFilterValve.java:150)</span><br><span class="line">    at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:170)</span><br><span class="line">    at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:103)</span><br><span class="line">    at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:116)</span><br><span class="line">    at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:429)</span><br><span class="line">    at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1085)</span><br><span class="line">    at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:625)</span><br><span class="line">    at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:318)</span><br><span class="line">    -  locked org.apache.tomcat.util.net.SocketWrapper@7127ee12</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)</span><br><span class="line">    at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)</span><br><span class="line">    at java.lang.Thread.run(Thread.java:745)</span><br><span class="line"></span><br><span class="line">    Number of locked synchronizers = 1</span><br><span class="line">    - java.util.concurrent.ThreadPoolExecutor$Worker@31a6493e</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意， 目前只支持找出 synchronized 关键字阻塞住的线程， 如果是java.util.concurrent.Lock， 目前还不支持。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> thread --state ，查看指定状态的线程</span><br><span class="line"><span class="meta">$</span> thread --state WAITING</span><br><span class="line">Threads Total: 16, NEW: 0, RUNNABLE: 9, BLOCKED: 0, WAITING: 3, TIMED_WAITING: 4, TERMINATED: 0</span><br><span class="line">ID   NAME                           GROUP           PRIORITY   STATE     %CPU      DELTA_TIME TIME      INTERRUPTE DAEMON</span><br><span class="line">3    Finalizer                      system          8          WAITING   0.0       0.000      0:0.000   false      true</span><br><span class="line">20   arthas-UserStat                system          9          WAITING   0.0       0.000      0:0.001   false      true</span><br><span class="line">14   arthas-timer                   system          9          WAITING   0.0       0.000      0:0.000   false      true</span><br></pre></td></tr></table></figure>
+
+<h4 id="class-classloader相关"><a href="#class-classloader相关" class="headerlink" title="class/classloader相关"></a>class/classloader相关</h4><ul>
+<li><a href="https://arthas.gitee.io/doc/jad.html" target="_blank" rel="noopener">jad</a> 反编译已加载类的源码</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 反编译时只显示源代码,默认情况下，反编译结果里会带有ClassLoader信息，通过--source-only选项，可以只打印源代码。方便和mc/retransform命令结合使用。</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span> jad --source-only demo.MathGame</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * Decompiled with CFR 0_132.</span><br><span class="line"> */</span><br><span class="line">package demo;</span><br><span class="line"></span><br><span class="line">import java.io.PrintStream;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.Iterator;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Random;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">public class MathGame &#123;</span><br><span class="line">    private static Random random = new Random();</span><br><span class="line">    public int illegalArgumentCount = 0;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 反编译指定的函数</span><br><span class="line"><span class="meta">$</span> jad demo.MathGame main</span><br><span class="line"></span><br><span class="line">ClassLoader:</span><br><span class="line">+-sun.misc.Launcher$AppClassLoader@232204a1</span><br><span class="line">  +-sun.misc.Launcher$ExtClassLoader@7f31245a</span><br><span class="line"></span><br><span class="line">Location:</span><br><span class="line">/private/tmp/math-game.jar</span><br><span class="line"></span><br><span class="line">       public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">           MathGame game = new MathGame();</span><br><span class="line">           while (true) &#123;</span><br><span class="line">/*16*/         game.run();</span><br><span class="line">/*17*/         TimeUnit.SECONDS.sleep(1L);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><a href="https://arthas.gitee.io/doc/mc.html" target="_blank" rel="noopener">mc</a> 内存编译器，编译.java文件生成.class文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> Memory Compiler/内存编译器，编译.java文件生成.class。</span><br><span class="line"><span class="meta">$</span> mc /tmp/Test.java</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 可以通过-c参数指定 classloader：</span><br><span class="line"><span class="meta">$</span> mc -c 327a647b /tmp/Test.java</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 也可以通过--classLoaderClass参数指定 ClassLoader，可以通过-d命令指定输出目录：</span><br><span class="line"><span class="meta">$</span> mc --classLoaderClass org.springframework.boot.loader.LaunchedURLClassLoader /tmp/UserController.java -d /tmp</span><br><span class="line">Memory compiler output:</span><br><span class="line">/tmp/com/example/demo/arthas/user/UserController.class</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://arthas.gitee.io/doc/retransform.html" target="_blank" rel="noopener">retransform</a> 加载外部的.class文件，retransform jvm 已加载的类。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 加载指定的class</span><br><span class="line"><span class="meta">$</span> retransform /tmp/Test.class</span><br><span class="line"><span class="meta">#</span> 列出所有加载的class</span><br><span class="line"><span class="meta">$</span> retransform -l</span><br><span class="line"><span class="meta">#</span> 删除指定加载的class</span><br><span class="line"><span class="meta">$</span> retransform -d 1                    # delete retransform entry</span><br><span class="line"><span class="meta">#</span> 删除所有加载的class</span><br><span class="line"><span class="meta">$</span> retransform --deleteAll             # delete all retransform entries</span><br><span class="line"><span class="meta">#</span> 通配符加载class</span><br><span class="line"><span class="meta">$</span> retransform --classPattern demo.*</span><br><span class="line"><span class="meta">#</span> 通过指定的编译器加载class</span><br><span class="line"><span class="meta">$</span> retransform --classLoaderClass 'sun.misc.Launcher$AppClassLoader' /tmp/Test.class</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<ol>
+<li>对于同一个类，当存在多个 retransform entry 时，如果显式触发 retransform ，则最后添加的 entry 生效(id 最大的)。</li>
+<li>如果不清除掉所有的 retransform entry，并重新触发 retransform ，则 arthas stop 时，retransform 过的类仍然生效。</li>
+</ol>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 结合 jad/mc 命令使用</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> jad 命令反编译，然后可以用其它编译器，比如 vim 来修改源码</span><br><span class="line">jad --source-only com.example.demo.arthas.user.UserController &gt; /tmp/UserController.java</span><br><span class="line"><span class="meta">#</span> mc 命令来内存编译修改过的代码</span><br><span class="line">mc /tmp/UserController.java -d /tmp</span><br><span class="line"><span class="meta">#</span> 用 retransform 命令加载新的字节码</span><br><span class="line">retransform /tmp/com/example/demo/arthas/user/UserController.class</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ol>
+<li>可以上传 .class 文件到服务器的技巧</li>
+<li>retransform 的限制:<ol>
+<li>不允许新增加 field/method </li>
+<li>正在跑的函数，没有退出不能生效，比如下面新增加的System.out.println，只有run()函数里的会生效</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<ul>
+<li><a href="https://arthas.gitee.io/doc/sc.html" target="_blank" rel="noopener">sc</a> 查看 JVM 已加载的类信息</li>
+<li><a href="https://arthas.gitee.io/doc/sm.html" target="_blank" rel="noopener">sm</a> 查看 JVM 已加载类的方法信息</li>
+</ul>
+<h4 id="monitor-watch-trace-相关"><a href="#monitor-watch-trace-相关" class="headerlink" title="monitor/watch/trace 相关"></a>monitor/watch/trace 相关</h4><ul>
+<li><a href="https://arthas.gitee.io/doc/monitor.html" target="_blank" rel="noopener">monitor</a> 方法执行监控 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> monitor [-b] [-c 5] [-E] class-pattern method-pattern [condition-express]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th align="center">参数说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>class-pattern</td>
+<td align="center">类名表达式匹配</td>
+</tr>
+<tr>
+<td>method-pattern</td>
+<td align="center">方法名表达式匹配</td>
+</tr>
+<tr>
+<td>condition-express</td>
+<td align="center">条件表达式</td>
+</tr>
+<tr>
+<td>[E]</td>
+<td align="center">开启正则表达式匹配，默认为通配符匹配</td>
+</tr>
+<tr>
+<td>[c]</td>
+<td align="center">统计周期，默认值为 120 秒</td>
+</tr>
+<tr>
+<td>[b]</td>
+<td align="center">在方法调用之前计算</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 计算条件表达式过滤统计结果(方法执行完毕之前)</span><br><span class="line">monitor -b -c 5 com.test.testes.MathGame primeFactors "params[0] &lt;= 2"</span><br><span class="line">Press Q or Ctrl+C to abort.</span><br><span class="line">Affect(class count: 1 , method count: 1) cost in 21 ms, listenerId: 4</span><br><span class="line"> timestamp            class          method         total  success  fail  avg-rt(ms)  fail-rate</span><br><span class="line">----------------------------------------------------------------------------------------------</span><br><span class="line"> 2020-09-02 09:41:57  demo.MathGame  primeFactors    1       0        1      0.10      100.00%</span><br><span class="line"></span><br><span class="line"> timestamp            class          method         total  success  fail  avg-rt(ms)  fail-rate</span><br><span class="line">----------------------------------------------------------------------------------------------</span><br><span class="line"> 2020-09-02 09:42:02  demo.MathGame  primeFactors    3       0        3      0.06      100.00%</span><br><span class="line"></span><br><span class="line"> timestamp            class          method         total  success  fail  avg-rt(ms)  fail-rate</span><br><span class="line">----------------------------------------------------------------------------------------------</span><br><span class="line"> 2020-09-02 09:42:07  demo.MathGame  primeFactors    2       0        2      0.06      100.00%</span><br><span class="line"></span><br><span class="line"> timestamp            class          method         total  success  fail  avg-rt(ms)  fail-rate</span><br><span class="line">----------------------------------------------------------------------------------------------</span><br><span class="line"> 2020-09-02 09:42:12  demo.MathGame  primeFactors    1       0        1      0.05      100.00%</span><br><span class="line"></span><br><span class="line"> timestamp            class          method         total  success  fail  avg-rt(ms)  fail-rate</span><br><span class="line">----------------------------------------------------------------------------------------------</span><br><span class="line"> 2020-09-02 09:42:17  demo.MathGame  primeFactors    2       0        2      0.10      100.00%</span><br></pre></td></tr></table></figure>
+
+<p>监控项说明：</p>
+<table>
+<thead>
+<tr>
+<th>监控项</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>timestamp</td>
+<td align="center">时间戳</td>
+</tr>
+<tr>
+<td>class</td>
+<td align="center">Java 类</td>
+</tr>
+<tr>
+<td>method</td>
+<td align="center">方法（构造方法、普通方法）</td>
+</tr>
+<tr>
+<td>total</td>
+<td align="center">调用次数</td>
+</tr>
+<tr>
+<td>success</td>
+<td align="center">成功次数</td>
+</tr>
+<tr>
+<td>fail</td>
+<td align="center">失败次数</td>
+</tr>
+<tr>
+<td>rt</td>
+<td align="center">平均 RT</td>
+</tr>
+<tr>
+<td>fail-rate</td>
+<td align="center">失败率</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><a href="https://arthas.gitee.io/doc/stack.html" target="_blank" rel="noopener">stack</a> 输出当前方法被调用的调用路径 (内 -&gt; 外)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> stack demo.MathGame primeFactors</span><br><span class="line">Press Ctrl+C to abort.</span><br><span class="line">Affect(class-cnt:1 , method-cnt:1) cost in 36 ms.</span><br><span class="line">ts=2018-12-04 01:32:19;thread_name=main;id=1;is_daemon=false;priority=5;TCCL=sun.misc.Launcher$AppClassLoader@3d4eac69</span><br><span class="line">    @demo.MathGame.run()</span><br><span class="line">        at demo.MathGame.main(MathGame.java:16)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 据条件表达式来过滤，[n]执行次数限制</span><br><span class="line"><span class="meta">$</span> stack demo.MathGame primeFactors 'params[0]&lt;0' -n 2</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 据执行时间来过滤 （大于5毫秒）</span><br><span class="line"><span class="meta">$</span> stack demo.MathGame primeFactors '#cost&gt;5'</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://arthas.gitee.io/doc/trace.html" target="_blank" rel="noopener">trace</a> 方法内部调用路径，并输出方法路径上的每个节点上耗时(外 -&gt; 内)</p>
+<blockquote>
+<p>能方便的帮助你定位和发现因 RT 高而导致的性能问题缺陷，但其每次只能跟踪一级方法的调用链路。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> trace 次数限制 -n</span><br><span class="line"><span class="meta">$</span> trace demo.MathGame run -n 1</span><br><span class="line">Press Q or Ctrl+C to abort.</span><br><span class="line">Affect(class-cnt:1 , method-cnt:1) cost in 20 ms.</span><br><span class="line">`---ts=2019-12-04 00:45:53;thread_name=main;id=1;is_daemon=false;priority=5;TCCL=sun.misc.Launcher$AppClassLoader@3d4eac69</span><br><span class="line">    `---[0.549379ms] demo.MathGame:run()</span><br><span class="line">        +---[0.059839ms] demo.MathGame:primeFactors() #24</span><br><span class="line">        `---[0.232887ms] demo.MathGame:print() #25</span><br><span class="line"></span><br><span class="line">Command execution times exceed limit: 1, so command will exit. You can set it with -n option.</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 包含 jdk 的函数，默认情况下，trace 不会包含 jdk 里的函数调用，如果希望 trace jdk 里的函数，需要显式设置--skipJDKMethod false</span><br><span class="line"><span class="meta">$</span> trace --skipJDKMethod false demo.MathGame run</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 据调用耗时过滤</span><br><span class="line"><span class="meta">$</span> trace demo.MathGame run '#cost &gt; 10'</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://arthas.gitee.io/doc/tt.html" target="_blank" rel="noopener">tt</a> 方法执行数据的时空隧道，记录下指定方法每次调用的入参和返回信息，并能对这些不同的时间下调用进行观测</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> tt -t -n 5 demo.MathGame primeFactors</span><br><span class="line">Press Ctrl+C to abort.</span><br><span class="line">Affect(class-cnt:1 , method-cnt:1) cost in 66 ms.</span><br><span class="line"> INDEX   TIMESTAMP            COST(ms)  IS-RET  IS-EXP   OBJECT         CLASS                          METHOD</span><br><span class="line">-------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> 1000    2018-12-04 11:15:38  1.096236  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1001    2018-12-04 11:15:39  0.191848  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1002    2018-12-04 11:15:40  0.069523  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1003    2018-12-04 11:15:41  0.186073  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1004    2018-12-04 11:15:42  17.76437  true    false    0x4b67cf4d     MathGame</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>解决方法重载，通过制定参数个数的形式解决不同的方法签名；如果参数个数一样, 可以判断参数的类型</p>
+<ul>
+<li>tt -t *Test print params.length==1</li>
+<li>tt -t *Test print ‘params[1] instanceof Integer’</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"># 检索调用记录</span><br><span class="line">$ tt -l</span><br><span class="line"> INDEX   TIMESTAMP            COST(ms)  IS-RET  IS-EXP   OBJECT         CLASS                          METHOD</span><br><span class="line">-------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> 1000    2018-12-04 11:15:38  1.096236  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1001    2018-12-04 11:15:39  0.191848  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1002    2018-12-04 11:15:40  0.069523  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1003    2018-12-04 11:15:41  0.186073  false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1004    2018-12-04 11:15:42  7.764379  true    false    0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line"> 1005    2018-12-04 11:15:43  0.4776    false   true     0x4b67cf4d     MathGame                       primeFactors</span><br><span class="line">Affect(row-cnt:6) cost in 4 ms.</span><br><span class="line"></span><br><span class="line"># 筛选出 primeFactors 方法的调用信息</span><br><span class="line">$ tt -s &apos;method.name==&quot;primeFactors&quot;&apos;</span><br><span class="line"></span><br><span class="line"># 查看调用信息</span><br><span class="line">$ tt -i 1003</span><br><span class="line"> INDEX            1003</span><br><span class="line"> GMT-CREATE       2018-12-04 11:15:41</span><br><span class="line"> COST(ms)         0.186073</span><br><span class="line"> OBJECT           0x4b67cf4d</span><br><span class="line"> CLASS            demo.MathGame</span><br><span class="line"> METHOD           primeFactors</span><br><span class="line"> IS-RETURN        false</span><br><span class="line"> IS-EXCEPTION     true</span><br><span class="line"> PARAMETERS[0]    @Integer[-564322413]</span><br><span class="line"> THROW-EXCEPTION  java.lang.IllegalArgumentException: number is: -564322413, need &gt;= 2</span><br><span class="line">                      at demo.MathGame.primeFactors(MathGame.java:46)</span><br><span class="line">                      at demo.MathGame.run(MathGame.java:24)</span><br><span class="line">                      at demo.MathGame.main(MathGame.java:16)</span><br><span class="line"></span><br><span class="line"># 重新调用一次，tt 命令由于保存了当时调用的所有现场信息，所以我们可以自己主动对一个 INDEX 编号的时间片自主发起一次调用，从而解放你的沟通成本。此时你需要 -p 参数。通过 --replay-times 指定 调用次数，通过 --replay-interval 指定多次调用间隔(单位 ms, 默认 1000ms)</span><br><span class="line">$ tt -i 1004 -p</span><br><span class="line"> RE-INDEX       1004</span><br><span class="line"> GMT-REPLAY     2018-12-04 11:26:00</span><br><span class="line"> OBJECT         0x4b67cf4d</span><br><span class="line"> CLASS          demo.MathGame</span><br><span class="line"> METHOD         primeFactors</span><br><span class="line"> PARAMETERS[0]  @Integer[946738738]</span><br><span class="line"> IS-RETURN      true</span><br><span class="line"> IS-EXCEPTION   false</span><br><span class="line"> COST(ms)         0.186073</span><br><span class="line"> RETURN-OBJ     @ArrayList[</span><br><span class="line">                    @Integer[2],</span><br><span class="line">                    @Integer[11],</span><br><span class="line">                    @Integer[17],</span><br><span class="line">                    @Integer[2531387],</span><br><span class="line">                ]</span><br><span class="line">Time fragment[1004] successfully replayed.</span><br><span class="line">Affect(row-cnt:1) cost in 14 ms.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://arthas.gitee.io/doc/watch.html" target="_blank" rel="noopener">watch</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> watch class-pattern method-pattern [express] [condition-express]</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th align="center">参数说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>class-pattern</td>
+<td align="center">类名表达式匹配</td>
+</tr>
+<tr>
+<td>method-pattern</td>
+<td align="center">方法名表达式匹配</td>
+</tr>
+<tr>
+<td>express</td>
+<td align="center">观察表达式，默认值：{params, target, returnObj}</td>
+</tr>
+<tr>
+<td>condition-express</td>
+<td align="center">条件表达式</td>
+</tr>
+<tr>
+<td>[b]</td>
+<td align="center">在函数调用之前观察</td>
+</tr>
+<tr>
+<td>[e]</td>
+<td align="center">在函数异常之后观察</td>
+</tr>
+<tr>
+<td>[s]</td>
+<td align="center">在函数返回之后观察</td>
+</tr>
+<tr>
+<td>[f]</td>
+<td align="center">在函数结束之后(正常返回和异常返回)观察</td>
+</tr>
+<tr>
+<td>[E]</td>
+<td align="center">开启正则表达式匹配，默认为通配符匹配</td>
+</tr>
+<tr>
+<td>[x]</td>
+<td align="center">指定输出结果的属性遍历深度，默认为 1，最大值是 4</td>
+</tr>
+</tbody></table>
+<blockquote>
+<ol>
+<li>观察表达式的构成主要由 ognl 表达式组成，所以你可以这样写”{params,returnObj}”，只要是一个合法的 ognl 表达式，都能被正常支持。</li>
+<li>4 个观察事件点 -b、-e、-s 默认关闭，-f 默认打开，当指定观察点被打开后，在相应事件点会对观察表达式进行求值并输出</li>
+<li>当使用 -b 时，由于观察事件点是在函数调用前，此时返回值或异常均不存在</li>
+<li>观察表达式，默认值是{params, target, returnObj}</li>
+<li>在 watch 命令的结果里，会打印出location信息。location有三种可能值：AtEnter(对应函数入口)，AtExit(正常 return)，AtExceptionExit(函数，函数抛出异常)。</li>
+</ol>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 同时观察函数调用前和函数返回后，结果的输出顺序和事件发生的先后顺序一致，和命令中 -s -b 的顺序无关</span><br><span class="line"><span class="meta">$</span> watch demo.MathGame primeFactors "&#123;params,target,returnObj&#125;" -x 2 -b -s -n 2</span><br><span class="line">Press Ctrl+C to abort.</span><br><span class="line">Affect(class-cnt:1 , method-cnt:1) cost in 46 ms.</span><br><span class="line">ts=2018-12-03 19:29:54; [cost=0.01696ms] result=@ArrayList[</span><br><span class="line">    @Object[][</span><br><span class="line">        @Integer[1],</span><br><span class="line">    ],</span><br><span class="line">    @MathGame[</span><br><span class="line">        random=@Random[java.util.Random@522b408a],</span><br><span class="line">        illegalArgumentCount=@Integer[13038],</span><br><span class="line">    ],</span><br><span class="line">    null,</span><br><span class="line">]</span><br><span class="line">ts=2018-12-03 19:29:54; [cost=4.277392ms] result=@ArrayList[</span><br><span class="line">    @Object[][</span><br><span class="line">        @Integer[1],</span><br><span class="line">    ],</span><br><span class="line">    @MathGame[</span><br><span class="line">        random=@Random[java.util.Random@522b408a],</span><br><span class="line">        illegalArgumentCount=@Integer[13038],</span><br><span class="line">    ],</span><br><span class="line">    @ArrayList[</span><br><span class="line">        @Integer[2],</span><br><span class="line">        @Integer[2],</span><br><span class="line">        @Integer[2],</span><br><span class="line">        @Integer[5],</span><br><span class="line">        @Integer[5],</span><br><span class="line">        @Integer[73],</span><br><span class="line">        @Integer[241],</span><br><span class="line">        @Integer[439],</span><br><span class="line">    ],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 条件表达式</span><br><span class="line"><span class="meta">$</span> watch demo.MathGame primeFactors "&#123;params[0],target&#125;" "params[0]&lt;0"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 观察异常信息的例子</span><br><span class="line"><span class="meta">$</span> watch demo.MathGame primeFactors "&#123;params[0],throwExp&#125;" -e -x 2</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 按照耗时进行过滤</span><br><span class="line"><span class="meta">$</span> watch demo.MathGame primeFactors '&#123;params, returnObj&#125;' '#cost&gt;200' -x 2</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>watch/stack/trace 这个三个命令都支持#cost</p>
+</blockquote>
+<h4 id="profiler-火焰图"><a href="#profiler-火焰图" class="headerlink" title="profiler/火焰图"></a>profiler/火焰图</h4><ul>
+<li><a href="https://arthas.gitee.io/doc/profiler.html" target="_blank" rel="noopener">profiler</a></li>
+</ul>
+<h3 id="ognl表达式"><a href="#ognl表达式" class="headerlink" title="ognl表达式"></a>ognl表达式</h3><h4 id="表达式核心变量"><a href="#表达式核心变量" class="headerlink" title="表达式核心变量"></a><a href="https://arthas.gitee.io/doc/advice-class.html" target="_blank" rel="noopener">表达式核心变量</a></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Advice</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ClassLoader loader;           <span class="comment">// 本次调用类所在的 ClassLoader</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;?&gt; clazz;               <span class="comment">// 本次调用类的 Class 引用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ArthasMethod method;          <span class="comment">// 本次调用方法反射引用</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object target;                <span class="comment">// 本次调用类的实例</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] params;              <span class="comment">// 本次调用参数列表，这是一个数组，如果方法是无参方法则为空数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object returnObj;             <span class="comment">// 本次调用返回的对象。当且仅当 isReturn==true 成立时候有效，表明方法调用是以正常返回的方式结束。如果当前方法无返回值 void，则值为 null</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Throwable throwExp;           <span class="comment">// 本次调用抛出的异常。当且仅当 isThrow==true 成立时有效，表明方法调用是以抛出异常的方式结束。</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> isBefore;             <span class="comment">// 辅助判断标记，当前的通知节点有可能是在方法一开始就通知，此时 isBefore==true 成立，同时 isThrow==false 和 isReturn==false，因为在方法刚开始时，还无法确定方法调用将会如何结束。</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> isThrow;              <span class="comment">// 辅助判断标记，当前的方法调用以抛异常的形式结束。</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> isReturn;             <span class="comment">// 辅助判断标记，当前的方法调用以正常返回的形式结束。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// getter/setter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>所有变量都可以在表达式中直接使用，如果在表达式中编写了不符合 OGNL 脚本语法或者引入了不在表格中的变量，则退出命令的执行；用户可以根据当前的异常信息修正条件表达式或观察表达式</p>
+</blockquote>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ul>
+<li>查找Top N线程   <ul>
+<li>thread -n N</li>
+</ul>
+</li>
+<li>排查死锁 (找出当前阻塞其他线程的线程)<ul>
+<li>thread -b</li>
+</ul>
+</li>
+<li>动态更新应用Logger Level<ul>
+<li>logger –name ROOT –level debug               # 更新全局日志等级</li>
+<li>logger -c 2a139a55 –name ROOT –level debug   # 更新指定类日志等级</li>
+</ul>
+</li>
+<li>热更新代码<ul>
+<li>jad (反编译java) -&gt;vim (更新代码)  -&gt; mc (编译为class) -&gt; retransform (重新加载class)</li>
+</ul>
+</li>
+<li>请求重放<ul>
+<li>tt -i 1004 -p</li>
+</ul>
+</li>
+<li>生成</li>
+</ul>
+
       
 
       
@@ -200,11 +537,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Camunda</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Arthas</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工作流</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">监控</a>
         		</li>
       		
 		</ul>
@@ -225,7 +562,98 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/09/01/学习笔记/监控/Arthas/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Spring/Spring如何解决循环依赖" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/26/学习笔记/Spring/Spring如何解决循环依赖/">Spring解决循环依赖</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/26/学习笔记/Spring/Spring如何解决循环依赖/" class="archive-article-date">
+  	<time datetime="2022-08-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h3><h4 id="什么是循环依赖？"><a href="#什么是循环依赖？" class="headerlink" title="什么是循环依赖？"></a>什么是循环依赖？</h4><p>一个或多个对象之间存在直接或间接的依赖关系，这种依赖关系构成一个环形调用，有下面 3 种方式。</p>
+        
+          <a class="article-more-a" href="/2022/08/26/学习笔记/Spring/Spring如何解决循环依赖/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/08/26/学习笔记/Spring/Spring如何解决循环依赖/">展开全文 >></a>
         </p>
       
 
@@ -317,6 +745,97 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2022/08/10/学习笔记/其他/retry框架/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/其他/工作流框架Camunda" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/">工作流框架Camunda</a>
+    </h1>
+  
+
+        
+        <a href="/2022/08/10/学习笔记/其他/工作流框架Camunda/" class="archive-article-date">
+  	<time datetime="2022-08-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-08-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="框架对比"><a href="#框架对比" class="headerlink" title="框架对比"></a>框架对比</h3><p><a href="https://zhuanlan.zhihu.com/p/435249026" target="_blank" rel="noopener">工作流框架对比</a></p>
+        
+          <a class="article-more-a" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Camunda</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">工作流</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/08/10/学习笔记/其他/工作流框架Camunda/">展开全文 >></a>
         </p>
       
 
@@ -957,278 +1476,19 @@
 
 
   
-    <article id="post-面试专栏/缓存" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-专栏/分布式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/05/面试专栏/缓存/">缓存</a>
+      <a class="article-title" href="/2021/01/05/专栏/分布式/">分布式</a>
     </h1>
   
 
         
-        <a href="/2021/01/05/面试专栏/缓存/" class="archive-article-date">
-  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="为什么要使用缓存？"><a href="#为什么要使用缓存？" class="headerlink" title="为什么要使用缓存？"></a>为什么要使用缓存？</h4><ol>
-<li>高性能<ul>
-<li>同一条数据多次查询，第二次查询用缓存耗时缩短</li>
-</ul>
-</li>
-<li>高并发<ul>
-<li>数据库并发能力有限（2000/s）,缓存是走内存的天然高并发（4w/s）</li>
-</ul>
-</li>
-</ol>
-<h4 id="用了缓存会有什么问题？"><a href="#用了缓存会有什么问题？" class="headerlink" title="用了缓存会有什么问题？"></a>用了缓存会有什么问题？</h4><ul>
-<li>缓存与数据库双写不一致的问题</li>
-<li>缓存的雪崩</li>
-<li>缓存的穿透</li>
-<li>缓存的并发竞争</li>
-</ul>
-<h4 id="为什么redis单线程模型也能够效率这么高？"><a href="#为什么redis单线程模型也能够效率这么高？" class="headerlink" title="为什么redis单线程模型也能够效率这么高？"></a>为什么redis单线程模型也能够效率这么高？</h4><ol>
-<li>纯内存操作</li>
-<li>核心是基于非阻塞的IO多路服用机制</li>
-<li>单线程反而避免了多线程的频繁上下文切换问题</li>
-</ol>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/redis%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png" alt="redis单线程模型"></p>
-<h4 id="redis有哪些数据类型？分别在哪些场景下比较合适？"><a href="#redis有哪些数据类型？分别在哪些场景下比较合适？" class="headerlink" title="redis有哪些数据类型？分别在哪些场景下比较合适？"></a>redis有哪些数据类型？分别在哪些场景下比较合适？</h4><ul>
-<li>string<ul>
-<li>就是普通的set和get,做简单的kv缓存</li>
-</ul>
-</li>
-<li>hashMap<ul>
-<li>类似map结构，这个一般用于结构化的数据（前提是没有嵌套），方便修改其中的一个字段</li>
-<li>例如只修改用户的年龄</li>
-</ul>
-</li>
-<li>list<ul>
-<li>有序列表，一类数据的集合，常用于取集合中的部分数据</li>
-<li>例如存储粉丝列表、评论列表，然后基于list实现分页查询；可以搞一个简单的消息队列，从list头怼进去，从list尾巴那里取出来</li>
-</ul>
-</li>
-<li>set<ul>
-<li>无序集合，自动去重</li>
-<li>去重的集合；交集、并集、差集；共同好友、共同关注的人</li>
-</ul>
-</li>
-<li>sort set<ul>
-<li>排序的set,写进去的时候给一个分数，自动根据分数排序</li>
-<li>分数写入时间，按照时间排序；排行版（根据用户获得的分数）</li>
-</ul>
-</li>
-</ul>
-<h4 id="redis过期策略有哪些？手写一下lru的代码？"><a href="#redis过期策略有哪些？手写一下lru的代码？" class="headerlink" title="redis过期策略有哪些？手写一下lru的代码？"></a>redis过期策略有哪些？手写一下lru的代码？</h4><ol>
-<li>设置过期时间<ul>
-<li>定期删除<ul>
-<li>redis默认每隔100ms就随机抽取一些设置了过期时间的key,检查是否过期，如果就删除</li>
-</ul>
-</li>
-<li>惰性删除<ul>
-<li>当你查询设置了过期时间key，redis会惰性的检查一下是否过期，如果过期则删除且不会返回任何结果</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. volatile-lru 使用LRU算法删除一个键(只针对设置了过期时间的key</span><br><span class="line">2. allkeys-lru(最常用) 使用LRU算法删除一个键</span><br><span class="line">3. volatile-lfu 使用LFU算法删除一个键(只针对设置了过期时间的键)</span><br><span class="line">4. allkeys-lfu 使用LFU算法删除一个键</span><br><span class="line">5. volatile-random 随机删除一个键(只针对设置了过期时间的键)</span><br><span class="line">6. allkeys-random 随机删除一个键</span><br><span class="line">7. volatile-ttl 删除最早过期的一个键</span><br><span class="line">8. noeviction 不删除键，返回错误信息(redis默认选项)</span><br></pre></td></tr></table></figure>
-
-<p>使用LinkedHashMap，将最近访问的放在头部，最老访问的放在尾部，当数据量大于指定的缓存个数时，就删除最老的数据</p>
-<h4 id="redis主从复制的原理？"><a href="#redis主从复制的原理？" class="headerlink" title="redis主从复制的原理？"></a>redis主从复制的原理？</h4><p>当启动一个slave node的时候，它会发送一个PSYNC命令给master node</p>
-<p>如果这是slave node重新连接master node，那么master node仅仅会复制给slave node部分缺少的数据；否则如果是slave node第一次连接master node<br>那么会触发一次full resynchronization,开始 full resynchronization的时候，master会启动一个后台线程，开始生成一份RDB快照文件，同时还会将<br>从客户端收到的所有写命令缓存到内存中。RDB文件生成完毕之后，master会将这个RDB发送给slave，slave会先写入本地磁盘，然后再从本地磁盘加载到<br>内存中，然后master会将内存中缓存的写命令发送给slave，slave也会同步这些数据</p>
-<p>slave node如果跟master node有网络故障，断开了连接，会自动重连。master如果发现有多个slave node都来重新连接，仅仅会启动一个RDB save操作，<br>用一份数据给所有slave node</p>
-<h5 id="主从复制的断点续传？"><a href="#主从复制的断点续传？" class="headerlink" title="主从复制的断点续传？"></a>主从复制的断点续传？</h5><p>从redis 2.8开始，就支持主从复制的断点续传；如果主从复制的过程中网络断掉，可以接着上次复制的地方继续复制下去，而不是从头开始复制。</p>
-<p>master node会在内存中维护的一个blacklog，master和slave都会保存一个replica offset还有一个master id，offset就是保存在blacklog中的。<br>如果master和slave网络连接断掉，slave会让master从上次的replica offset开始继续复制</p>
-<p>但如果没有找到对应的offset，那么就会执行一次full resynchronization</p>
-<h5 id="无磁盘化复制"><a href="#无磁盘化复制" class="headerlink" title="无磁盘化复制"></a>无磁盘化复制</h5><p>master在内存中直接创建rdb，然后发送给slave，不会在自己本地落磁盘</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">缓存</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/01/05/面试专栏/缓存/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-面试专栏/zookeeper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/05/面试专栏/zookeeper/">zookeeper</a>
-    </h1>
-  
-
-        
-        <a href="/2021/01/05/面试专栏/zookeeper/" class="archive-article-date">
-  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="说一说zookeeper有哪些使用场景？"><a href="#说一说zookeeper有哪些使用场景？" class="headerlink" title="说一说zookeeper有哪些使用场景？"></a>说一说zookeeper有哪些使用场景？</h4><ul>
-<li>1.分布式协调</li>
-</ul>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%B0%83.png" alt="分布式系统顺序性"></p>
-<ul>
-<li>2.分布式锁</li>
-</ul>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.png" alt="分布式系统顺序性"></p>
-<ul>
-<li>3.元素据、配置信息管理</li>
-</ul>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%85%83%E7%B4%A0%E6%8D%AE%E3%80%81%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86.png" alt="分布式系统顺序性"></p>
-<ul>
-<li>4.HA高可用性(主备切换)</li>
-</ul>
-<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-HA%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7.png" alt="分布式系统顺序性"></p>
-<h4 id="redis分布式锁-和-ZK分布式锁的对比-？"><a href="#redis分布式锁-和-ZK分布式锁的对比-？" class="headerlink" title="redis分布式锁 和 ZK分布式锁的对比 ？"></a>redis分布式锁 和 ZK分布式锁的对比 ？</h4><ol>
-<li>redis分布式锁，其实需要自己不断去尝试获取锁，比较消耗性能；zk分布式锁，获取不到锁，<strong>注册一个监听器</strong>即可，不需要不断主动尝试获取锁，性能开销较小</li>
-<li>redis获取锁的那个客户端如果bug了或挂掉，那么只能等待超时时间之后才能释放；而ZK因为创建的是临时节点，只要客户端挂了，znode就没有了，此时自动释放锁</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">zookeeper</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/01/05/面试专栏/zookeeper/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-面试专栏/分布式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/05/面试专栏/分布式/">分布式</a>
-    </h1>
-  
-
-        
-        <a href="/2021/01/05/面试专栏/分布式/" class="archive-article-date">
+        <a href="/2021/01/05/专栏/分布式/" class="archive-article-date">
   	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
 </a>
         
@@ -1349,7 +1609,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/01/05/面试专栏/分布式/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/01/05/专栏/分布式/">展开全文 >></a>
         </p>
       
 
@@ -1379,19 +1639,19 @@
 
 
   
-    <article id="post-面试专栏/dubbo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-专栏/dubbo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/01/05/面试专栏/dubbo/">dubbo</a>
+      <a class="article-title" href="/2021/01/05/专栏/dubbo/">dubbo</a>
     </h1>
   
 
         
-        <a href="/2021/01/05/面试专栏/dubbo/" class="archive-article-date">
+        <a href="/2021/01/05/专栏/dubbo/" class="archive-article-date">
   	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
 </a>
         
@@ -1562,7 +1822,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/01/05/面试专栏/dubbo/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/01/05/专栏/dubbo/">展开全文 >></a>
         </p>
       
 
@@ -1594,7 +1854,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1693,19 +1953,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1713,23 +1965,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1738,6 +1974,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1761,11 +2021,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1781,10 +2053,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -1797,23 +2065,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1825,15 +2085,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1841,11 +2109,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1861,6 +2125,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -1869,7 +2137,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1877,11 +2145,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">

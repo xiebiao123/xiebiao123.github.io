@@ -6,20 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://xiebiao123.github.io">
-  <title>消息队列多连炮 | 奔跑的蜗牛</title>
+  <title>分布式 | 奔跑的蜗牛</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="为什么使用消息队列？ 解耦 异步 消峰  消息队列有什么优点和缺点？ 系统可用性降低 系统复杂性变高 一致性问题  kafka、activemq、rabbitmq、rocketmq 都有什么区别以及适合的场景？   特性 ActiveMQ RabbitMQ RocketMQ Kafka    单机吞吐量 万级 万级 10 万级，支撑高吞吐 10 万级，高吞吐，一般配合大数据类的系统来进行实时数据计">
-<meta name="keywords" content="消息队列">
+  <meta name="description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
+<meta name="keywords" content="分布式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="消息队列多连炮">
-<meta property="og:url" content="https://xiebiao123.github.io/2020/12/16/面试专栏/消息队列/index.html">
+<meta property="og:title" content="分布式">
+<meta property="og:url" content="https://xiebiao123.github.io/2021/01/05/专栏/分布式/index.html">
 <meta property="og:site_name" content="奔跑的蜗牛">
-<meta property="og:description" content="为什么使用消息队列？ 解耦 异步 消峰  消息队列有什么优点和缺点？ 系统可用性降低 系统复杂性变高 一致性问题  kafka、activemq、rabbitmq、rocketmq 都有什么区别以及适合的场景？   特性 ActiveMQ RabbitMQ RocketMQ Kafka    单机吞吐量 万级 万级 10 万级，支撑高吞吐 10 万级，高吞吐，一般配合大数据类的系统来进行实时数据计">
+<meta property="og:description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-01-11T09:21:40.035Z">
+<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png">
+<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7.png">
+<meta property="og:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%80%E5%A4%A7%E5%8A%AA%E5%8A%9B%E9%80%9A%E7%9F%A5.png">
+<meta property="og:updated_time" content="2022-01-26T01:34:46.397Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="消息队列多连炮">
-<meta name="twitter:description" content="为什么使用消息队列？ 解耦 异步 消峰  消息队列有什么优点和缺点？ 系统可用性降低 系统复杂性变高 一致性问题  kafka、activemq、rabbitmq、rocketmq 都有什么区别以及适合的场景？   特性 ActiveMQ RabbitMQ RocketMQ Kafka    单机吞吐量 万级 万级 10 万级，支撑高吞吐 10 万级，高吞吐，一般配合大数据类的系统来进行实时数据计">
+<meta name="twitter:title" content="分布式">
+<meta name="twitter:description" content="什么是分布式事务？怎么解决分布式事务？ 两阶段提交方案 / XA方案  两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务 这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务">
+<meta name="twitter:image" content="https://xiebiao123.github.io/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png">
   
     <link rel="alternative" href="/atom.xml" title="奔跑的蜗牛" type="application/atom+xml">
   
@@ -163,213 +167,105 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-面试专栏/消息队列" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-专栏/分布式" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      消息队列多连炮
+      分布式
     </h1>
   
 
         
-        <a href="/2020/12/16/面试专栏/消息队列/" class="archive-article-date">
-  	<time datetime="2020-12-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-16</time>
+        <a href="/2021/01/05/专栏/分布式/" class="archive-article-date">
+  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="为什么使用消息队列？"><a href="#为什么使用消息队列？" class="headerlink" title="为什么使用消息队列？"></a>为什么使用消息队列？</h4><ul>
-<li>解耦</li>
-<li>异步</li>
-<li>消峰</li>
+        <h4 id="什么是分布式事务？"><a href="#什么是分布式事务？" class="headerlink" title="什么是分布式事务？"></a>什么是分布式事务？</h4><h4 id="怎么解决分布式事务？"><a href="#怎么解决分布式事务？" class="headerlink" title="怎么解决分布式事务？"></a>怎么解决分布式事务？</h4><ul>
+<li>两阶段提交方案 / XA方案</li>
 </ul>
-<h4 id="消息队列有什么优点和缺点？"><a href="#消息队列有什么优点和缺点？" class="headerlink" title="消息队列有什么优点和缺点？"></a>消息队列有什么优点和缺点？</h4><ul>
-<li>系统可用性降低</li>
-<li>系统复杂性变高</li>
-<li>一致性问题</li>
-</ul>
-<h4 id="kafka、activemq、rabbitmq、rocketmq-都有什么区别以及适合的场景？"><a href="#kafka、activemq、rabbitmq、rocketmq-都有什么区别以及适合的场景？" class="headerlink" title="kafka、activemq、rabbitmq、rocketmq 都有什么区别以及适合的场景？"></a>kafka、activemq、rabbitmq、rocketmq 都有什么区别以及适合的场景？</h4><table>
-<thead>
-<tr>
-<th>特性</th>
-<th align="center">ActiveMQ</th>
-<th align="center">RabbitMQ</th>
-<th align="center">RocketMQ</th>
-<th align="center">Kafka</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>单机吞吐量</td>
-<td align="center">万级</td>
-<td align="center">万级</td>
-<td align="center">10 万级，支撑高吞吐</td>
-<td align="center">10 万级，高吞吐，一般配合大数据类的系统来进行实时数据计算、日志采集等场景</td>
-</tr>
-<tr>
-<td>topic 数量对吞吐量的影响</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center">topic 可以达到几百/几千的级别，吞吐量会有较小幅度的下降，这是 RocketMQ 的一大优势，在同等机器下，可以支撑大量的 topic</td>
-<td align="center">topic 从几十到几百个时候，吞吐量会大幅度下降，在同等机器下，Kafka 尽量保证 topic 数量不要过多，如果要支撑大规模的 topic，需要增加更多的机器资源</td>
-</tr>
-<tr>
-<td>时效性</td>
-<td align="center">ms 级</td>
-<td align="center">微秒级，延迟最低</td>
-<td align="center">ms 级</td>
-<td align="center">ms 级</td>
-</tr>
-<tr>
-<td>可用性</td>
-<td align="center">高，基于主从架构实现高可用</td>
-<td align="center">同 ActiveMQ</td>
-<td align="center">非常高，分布式架构</td>
-<td align="center">非常高，分布式，一个数据多个副本，少数机器宕机，不会丢失数据，不会导致不可用</td>
-</tr>
-<tr>
-<td>消息可靠性</td>
-<td align="center">有较低的概率丢失数据</td>
-<td align="center">基本不丢</td>
-<td align="center">经过参数优化配置，可以做到 0 丢失</td>
-<td align="center">同 RocketMQ</td>
-</tr>
-<tr>
-<td>功能支持</td>
-<td align="center">MQ 领域的功能极其完备</td>
-<td align="center">基于erlang 开发，并发能力很强，性能极好，延时很低</td>
-<td align="center">MQ 功能较为完善，还是分布式的，扩展性好</td>
-<td align="center">功能较为简单，主要支持简单的 MQ 功能，在大数据领域的实时计算以及日志采集被大规模使用</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>综上，各种对比之后，有如下建议：</p>
-</blockquote>
-<ol>
-<li>一般的业务系统要引入 MQ，最早大家都用 ActiveMQ，但是现在确实大家用的不多了，没经过大规模吞吐量场景的验证，社区也不是很活跃，所以大家还是算了吧，我个人不推荐用这个了；</li>
-<li>后来大家开始用 RabbitMQ，但是确实 erlang 语言阻止了大量的 Java 工程师去深入研究和掌控它，对公司而言，几乎处于不可控的状态，但是确实人家是开源的，比较稳定的支持，活跃度也高；</li>
-<li>不过现在确实越来越多的公司，会去用 RocketMQ，确实很不错（阿里出品），但社区可能有突然黄掉的风险，对自己公司技术实力有绝对自信的，推荐用 RocketMQ，否则回去老老实实用 RabbitMQ 吧，人家有活跃的开源社区，绝对不会黄。</li>
-<li>所以中小型公司，技术实力较为一般，技术挑战不是特别高，用 RabbitMQ 是不错的选择；大型公司，基础架构研发实力较强，用 RocketMQ 是很好的选择。</li>
-<li>如果是大数据领域的实时计算、日志采集等场景，用 Kafka 是业内标准的，绝对没问题，社区活跃度很高，绝对不会黄，何况几乎是全世界这个领域的事实性规范</li>
-</ol>
-<h4 id="如何保证消息队列的高可用"><a href="#如何保证消息队列的高可用" class="headerlink" title="如何保证消息队列的高可用"></a>如何保证消息队列的高可用</h4><h5 id="RabbitMQ-的高可用性"><a href="#RabbitMQ-的高可用性" class="headerlink" title="RabbitMQ 的高可用性"></a>RabbitMQ 的高可用性</h5><ul>
-<li>单机模式</li>
-<li>普通集群模式（无高可用性）<ul>
-<li>消费者每次随机连接一个实例，然后该实例从真正的数据节点拉取数据，有数据拉取的开销</li>
-<li>固定连接那个 queue 所在实例消费数据，导致单实例性能瓶颈</li>
-<li>不是分布式的</li>
-</ul>
-</li>
-<li>镜像集群模式（高可用性）<ul>
-<li>不是分布式的，每个节点都有这个queue的完整数据，如果queue的数据量很大，大到这个机器上的容量无法容纳就会有问题</li>
-</ul>
-</li>
-</ul>
-<h5 id="Kafka-的高可用架构"><a href="#Kafka-的高可用架构" class="headerlink" title="Kafka 的高可用架构"></a>Kafka 的高可用架构</h5><ul>
-<li>分布式集群模式<ul>
-<li>kafka 是由多个 broker 组成，每个 broker 是一个节点</li>
-<li>创建一个 topic，这个 topic 可以划分为多个 partition，每个 partition 可以存在于不同的 broker 上</li>
-<li>每个 partition 的数据都会同步到其它机器上，形成自己的多个 replica 副本</li>
-<li>所有 replica 会选举一个 leader 出来，那么生产和消费都跟这个 leader 打交道，然后其他 replica 就是 follower</li>
-<li>leader 会负责把数据同步到所有 follower 上去，读/写的时候就直接读/写 leader 上的数据即可</li>
-<li>如果某个 broker 宕机了并且 broker上面有某个 partition 的 leader，那么此时会从其他broker的 follower 中重新选举一个新的 leader 出来，大家继续读写那个新的 leader 即可</li>
-</ul>
-</li>
-</ul>
-<p>写数据的时候，生产者就写 leader，然后 leader 将数据落地写本地磁盘，接着其他 follower 自己主动从 leader 来 pull 数据。一旦所有 follower 同步好数据了，就会发送 ack 给 leader，leader 收到所有 follower 的 ack 之后，就会返回写成功的消息给生产者。（当然，这只是其中一种模式，还可以适当调整这个行为）</p>
-<p>消费的时候，只会从 leader 去读，但是只有当一个消息已经被所有 follower 都同步成功返回 ack 的时候，这个消息才会被消费者读到</p>
-<h4 id="如何解决消息的重复消费"><a href="#如何解决消息的重复消费" class="headerlink" title="如何解决消息的重复消费"></a>如何解决消息的重复消费</h4><p>主要结合业务来实现消息的幂等性</p>
+<p>两阶段提交有一个事务管理器的概念，负责协调多个数据源的事务，事务管理器先问问各个数据库你准备好了吗？如果每个数据库都回复ok<br>,那么就正事提交事务，在各个数据库上执行操作，如果任何一个数据库回答不ok，那么就回滚事务</p>
+<p>这种分布式事务方案，比较适合单块应用里面，跨多个数据库的分布式事务，而且因为严重依赖于数据库层面来搞定复杂的事务，效率很低<br>绝对不适合高并发的场景。可以通过Spring + JTA来实现</p>
 <ul>
-<li>数据的主键ID,不存在插入，存在则更新</li>
-<li>用redis给消息标记，存在则不处理</li>
-</ul>
-<h4 id="如何保证消息的可靠性（如何处理消息丢失问题）"><a href="#如何保证消息的可靠性（如何处理消息丢失问题）" class="headerlink" title="如何保证消息的可靠性（如何处理消息丢失问题）"></a>如何保证消息的可靠性（如何处理消息丢失问题）</h4><h5 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h5><ol>
-<li>写消息的过程中消息都没有到rabbitMq，或者消息到rabbitMq但是人家内部出错没有保存下来<ul>
-<li>事务模式 （同步）</li>
-<li>confirm模式（回调方法确认消息接收成功）（异步）</li>
+<li>TCC方案 （Try + Confirm + Cancel）<ul>
+<li>Try阶段：这个阶段说的就是对各个服务的资源做检测以及对资源进行锁定或者预留</li>
+<li>Confirm阶段： 这个阶段就是在各个服务中执行实际的操作</li>
+<li>Cancel阶段： 如果任何一个服务的业务方法执行出错，那么这里就需要进行补偿，就是执行已经执行成功业务逻辑的回滚操作</li>
 </ul>
 </li>
-<li>rabbitMq接收到消息之后暂存到自己的内存里，在消费之前出现故障、重启导致内存数据丢失<ul>
-<li>将消息持久化到磁盘上（同时持久化queue 和消息的持久化）</li>
 </ul>
-</li>
-<li>消费者消费到了消息，但是还没来及处理就挂掉了，rabbitMq以为这个消费者已经处理完了<ul>
-<li>将autoAck关闭，如果消费者没处理完就宕机了，此时rabbitMq没有收到你的ack消息，就会将这条消息重新分配给其他的消费者处理</li>
-</ul>
-</li>
+<p>除非你的系统对一致性要求非常高，是你系统中核心中的核心场景，并且最好各个业务的执行时间较短。比如常见的就是资金类的场景，那就可以用TCC方案。<br>自己编写大量的业务逻辑，自己判断一个事务中的各个环节是否ok，不ok就执行回滚代码</p>
+<p>这种方案几乎很少人使用，因为这个事务回滚实际严重依赖于你写的代码来回滚和补偿，会造成补偿代码巨大，非常恶心</p>
+<ul>
+<li>本地消息表<ol>
+<li>A系统在自己本地一个事务里面操作，同时插入一条数据到消息表里面</li>
+<li>接着A系统将这个消息发送到MQ中去</li>
+<li>B系统接收到消息之后，在一个事务里，往自己本地消息表里面插入一条数据，同时执行其他的业务操作，如果这个消息已经被处理过了那么这个事务会回滚，这样保证消息不会重复处理</li>
+<li>B系统执行成功之后，就会更新自己本地消息表的状态，以及A系统消息表的状态</li>
+<li>如果B系统处理失败了，那么就不会更新消息表的状态，那么此时A系统会定时扫描自己的消息表，如果有没有处理的消息，会再次发送到MQ中去，让B再次处理</li>
+<li>这个方案保证了最终的一致性，哪怕B事务失败了，但是A会不断重发消息，直到B那边成功为止</li>
 </ol>
-<h5 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h5><ol>
-<li>消费者消费到了消息，但是还没来及处理就挂掉了，kafak以为这个消费者已经处理完了<ul>
-<li>关闭自动提交offset，此时有重复消费的问题，自己保证幂等性</li>
-</ul>
 </li>
-<li>kafka 某个broker宕机，然后重新选举partition的leader，而之前的leader还没有来的及同步数据到follower中<ul>
-<li>topic的 <strong>replication.factor</strong> 参数的值必须大于1，即每个partition至少有2个副本</li>
-<li>kafka的服务端设置 min.insync.replicas 参数的值必须大于1，即要求一个leader至少感知到一个follower还跟自己保持联系</li>
-<li>在producer端设置 acks=all，这个是要求每条数据必须写入所有replica之后，才能认为是写入成功</li>
-<li>在producer端设置 retries=MAX(很大的一个值，无限重试的意思)，这个是要求一旦写入失败，重试写入的次数</li>
 </ul>
-</li>
+<p>这个方案说实话最大的问题在于严重依赖于数据库的消息表来管理事务，这就导致高并发的场景下有性能瓶颈。怎么拓展？所以一般很少使用</p>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%AC%E5%9C%B0%E6%B6%88%E6%81%AF%E8%A1%A8.png" alt="分布式事务-本地消息表"></p>
+<ul>
+<li>可靠消息最终一致性方案 (基于RacketMQ事务消息)<ol>
+<li>A系统先发一个prepared消息到MQ,如果这个prepared消息发送失败，那么直接取消操作</li>
+<li>如果这个消息发送成了，那么接着执行一个本地事务，如果成功就告诉MQ发送确认消息，如果失败就告诉MQ发送回滚消息</li>
+<li>如果发送了确认消息，那么此时B系统会接收到确认消息，然后执行本地事务</li>
+<li>MQ会自动定时轮询所有prepared消息回调你的接口，问你这个消息是不是本地事务处理失败了，所以没有发送确认消息？那是继续重试还是回滚？一般来说这里我们就可以查询下数据库，之前本地事务是否执行了，如果回滚了那么这里也回滚吧。<br>这样可以避免本地事务执行成功了，确认消息发送失败</li>
+<li>这个方案里，要是系统B的事务处理失败怎么办？重试，自动不断重试直到成功，如果实在是不行，那么就要针对重要的资金业务进行回滚。比如B系统本地回滚以后，想办法通知系统A也回滚；或者发送报警由人工来回滚或者补偿</li>
 </ol>
-<h4 id="如何保证消息的顺序性"><a href="#如何保证消息的顺序性" class="headerlink" title="如何保证消息的顺序性"></a>如何保证消息的顺序性</h4><h5 id="RabbitMQ-1"><a href="#RabbitMQ-1" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h5><ol>
-<li>一个queue，多个consumer消费速度不一样，导致消费顺序不一致<ul>
-<li>拆分多个queue，每个queue对应一个consumer</li>
-<li>一个queue对应一个consumer，然后内部用内存队列做排列，然后再分发给不同的worker来处理</li>
+</li>
 </ul>
-</li>
+<p>这个还是比较合适的，目前国内互联网公司大都是这么玩的。要不你举用RocketMQ支持的</p>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7.png" alt="分布式事务-可靠消息最终一致性"></p>
+<ul>
+<li>最大努力通知方案<ol>
+<li>系统A本地事务执行完之后，发送个消息到MQ中</li>
+<li>这里会有一个专门消费MQ的最大努力通知服务，这个服务会消费MQ，然后写入数据库中记录下来或者放入一个内存队列中，接着调用系统B的接口</li>
+<li>要是系统B执行成功就ok了；要是系统B执行失败了，那么最大努力通知服务就定时尝试重新调用系统B。反复N次，最后还是不行就放弃</li>
 </ol>
-<h5 id="Kafka-1"><a href="#Kafka-1" class="headerlink" title="Kafka"></a>Kafka</h5><ol>
-<li>一个topic,一个partition，一个consumer，内部多线程<ul>
-<li>内部单线程消费，根据唯一标识hash 写入N个内存queue，然后N个线程分别消费一个内存queue即可</li>
+</li>
 </ul>
-</li>
-</ol>
-<h4 id="有几百万消息持续积压几个小时怎么处理？"><a href="#有几百万消息持续积压几个小时怎么处理？" class="headerlink" title="有几百万消息持续积压几个小时怎么处理？"></a>有几百万消息持续积压几个小时怎么处理？</h4><ol>
-<li>先修复consumer的问题，确保其恢复消费速度，然后将现有consumer都停掉</li>
-<li>新建一个topic，partition是原来的10倍，临时建立好原来10倍的queue数量</li>
-<li>然后写一个临时的分发数据的consumer程序，这个程序部署上去消费积压的数据，消耗之后不做耗时的处理，直接均匀的轮询写入建立好的10倍数量的queue</li>
-<li>接着临时征用10倍的机器来部署consumer，每一批consumer消费一个临时的queue的数据</li>
-<li>这种做法就相当于是临时将queue资源和consumer资源扩大10倍，以正常的10速度消费数据</li>
-<li>等快速消费完积压数据以后，恢复原来的部署架构，重新用原来的consumer机器来消费消息</li>
-</ol>
-<h4 id="如何解决消息队列的延时以及过期失效的问题？"><a href="#如何解决消息队列的延时以及过期失效的问题？" class="headerlink" title="如何解决消息队列的延时以及过期失效的问题？"></a>如何解决消息队列的延时以及过期失效的问题？</h4><p>假设你用的是rabbitMq，刚好你设置了过期时间TTL,如果消息在queue中积压超过一定的时间就会被rabbitMq给清理掉，这个数据就没了</p>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1-%E6%9C%80%E5%A4%A7%E5%8A%AA%E5%8A%9B%E9%80%9A%E7%9F%A5.png" alt="分布式事务-最大努力通知"></p>
+<p>如果是一个资金严格要求决定不能出错的场景，你可以说你用的TCC方案，如果是一般的分布式场景，如订单插入之后要更新库存，库存数据没有资金那么敏感<br>可以用可靠消息最终一致性方案</p>
 <blockquote>
-<p>这个时候就需要些一个临时的程序把丢失的数据查出来，然后重新的插入到mq里面去，然后执行业务代码补全数据</p>
+<p>注意：rocketMQ 3.2.6之前的版本，是可以按照上面的思路来的，但是之后接口做了一些改变</p>
 </blockquote>
-<h4 id="消息队列满了以后怎么处理？-就是MQ积压的快挂掉了"><a href="#消息队列满了以后怎么处理？-就是MQ积压的快挂掉了" class="headerlink" title="消息队列满了以后怎么处理？ 就是MQ积压的快挂掉了"></a>消息队列满了以后怎么处理？ 就是MQ积压的快挂掉了</h4><ul>
-<li>数据不重要<ul>
-<li>临时写程序快速消费消息，消费一个丢弃一个，然后到了晚上再补数据</li>
+<h4 id="如何设计一个高并发的系统架构？"><a href="#如何设计一个高并发的系统架构？" class="headerlink" title="如何设计一个高并发的系统架构？"></a>如何设计一个高并发的系统架构？</h4><ol>
+<li>系统拆分<ul>
+<li>将一个系统拆分为多个子系统，用dubbo来搞。然后每个系统连一个数据库，这样本来就一个库，现在多了数据库，也可以支持高并发</li>
 </ul>
 </li>
-<li>数据重要<ul>
-<li>临时写程序快速写入另外一个消息队列，然后再增加10倍queue、consumer来消费数据</li>
+<li>缓存（高并发读 必须用）<ul>
+<li>大部分的高并发请求，都是读多写少，所以完全可以数据库和缓存各写一份，然后读的时候大量走缓存redis，毕竟redis单机就可以支持几万的并发</li>
 </ul>
 </li>
-</ul>
-<h4 id="如果让你来开发一个消息中间件，你会如何设计架构"><a href="#如果让你来开发一个消息中间件，你会如何设计架构" class="headerlink" title="如果让你来开发一个消息中间件，你会如何设计架构"></a>如果让你来开发一个消息中间件，你会如何设计架构</h4><ul>
-<li><strong>首先这个mq要支持可伸缩性，即快速的扩容增加吞吐量和容量</strong><ul>
-<li>参考kafka的设计理念，broker-&gt;topic-&gt;partition</li>
-<li>每个partition在一个机器中就存放一部分数据</li>
-<li>需要扩容的时候，就给topic增加partition，然后做数据迁移，增加机器就可以存放更多的数据，提高吞吐量</li>
+<li>MQ （高并发写 必须用）<ul>
+<li>把大量的写请求灌入MQ中，后面系统慢慢消费慢慢写，控制在mysql的承受范围内就可以了</li>
 </ul>
 </li>
-<li><strong>mq数据要落磁盘，避免重启丢、故障失数据</strong><ul>
-<li>顺序写，这样就没有磁盘随机读写的寻址开销，磁盘顺序读写的性能是很高的，这就是kafka的思路</li>
+<li>Elasticsearch （可以考虑用）<ul>
+<li>es 是分布式的，可以随便扩容，分布式天然就可以支持高并发，因为动不动就可以扩容机器来抗更高的并发。那么一些简单的查询、统计类的操作，可以用es来承载，特别是全文检索类的操作</li>
 </ul>
 </li>
-<li><strong>mq的可用性</strong><ul>
-<li>kafka高可用机制，多副本-&gt;leader &amp; follower -&gt;broker  挂了重新选举leader即可对外服务</li>
+<li>分库分表<ul>
+<li>可能到最后数据库层面还是免不了抗高并发的要求。这样我们可以将数据库拆分为多个库，多个库来抗更高的并发；如果一个表的数据量过大，我们还可以将一个表拆分成多个表，每个表的数据量保持少一点，提高sql的性能</li>
 </ul>
 </li>
-<li><strong>支持数据0丢失</strong><ul>
-<li>参考kafka 零丢失配置方案</li>
+<li>读写分离<ul>
+<li>如果说大部分请求必须要落库，且读多写少，我们可以搞主从架构，主库写入，从库读取。当流量太多的时候，还可以加更多的从库</li>
 </ul>
 </li>
-</ul>
+</ol>
 
       
 
@@ -414,7 +310,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		
 		</ul>
@@ -481,7 +377,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2020/12/16/面试专栏/消息队列/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://xiebiao123.github.io/2021/01/05/专栏/分布式/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -495,18 +391,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/12/28/面试专栏/搜索引擎/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2022/02/09/学习笔记/docker/DockerDesktop/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          搜索引擎多连炮
+          Docker Desktop
         
       </div>
     </a>
   
   
-    <a href="/2020/11/19/学习笔记/中间件/Redis/Redis-主从模式、哨兵模式、集群模式/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Redis 主从模式、哨兵模式、集群模式</div>
+    <a href="/2021/01/05/专栏/dubbo/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">dubbo</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -636,19 +532,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -656,23 +544,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -681,6 +553,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -704,11 +600,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -724,10 +632,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -740,23 +644,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -768,15 +664,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -784,11 +688,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -804,6 +704,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -812,7 +716,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -820,11 +724,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">

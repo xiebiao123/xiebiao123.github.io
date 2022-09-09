@@ -164,27 +164,59 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-学习笔记/分布式/分布式事务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/其他/JWT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/学习笔记/分布式/分布式事务/">分布式事务</a>
+      <a class="article-title" href="/2019/09/26/学习笔记/其他/JWT/">JWT原理解析</a>
     </h1>
   
 
         
-        <a href="/2019/09/10/学习笔记/分布式/分布式事务/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+        <a href="/2019/09/26/学习笔记/其他/JWT/" class="archive-article-date">
+  	<time datetime="2019-09-25T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>### </p>
+        <h3 id="什么是JWT"><a href="#什么是JWT" class="headerlink" title="什么是JWT"></a>什么是JWT</h3><pre><code>JSON Web Token(JWT),是一个开放安全的行业标准,用于多个系统之间传递安全可靠的信息</code></pre><h3 id="为什么使用JWT"><a href="#为什么使用JWT" class="headerlink" title="为什么使用JWT"></a>为什么使用JWT</h3><ul>
+<li>传统的访问模式 | PC(浏览器)-&gt;服务端<ol>
+<li>用户登录时发送用户名密码给服务器</li>
+<li>服务器验证通过后服务器会生成一个HttpSession对象，并将对象的ID(sessionID)作为Cookie发送给浏览器</li>
+<li>后面的每次请求浏览器都会带上这个sessionId。服务器通过验证这个sessionId就可以知道客户端是否登录</li>
+</ol>
+</li>
+</ul>
+<p>随着智能手机、微信小程序等用户端越来越多，服务端需要同时支持PC端、APP端、微信小程序的访问。而对于APP端和微信小程序<br>来说cookie的机制就不太友好，这个时候就需要JWT了</p>
+<ul>
+<li>JWT<ol>
+<li>用户登录时发送用户名密码给服务器</li>
+<li>服务器验证通过后服务器会生成一个token串，并将这个token串返回给客户端</li>
+<li>后面的每次请求客户端都要带上这个token串，服务器通过解析这个token串，可以验证请求的合法性</li>
+</ol>
+</li>
+</ul>
+<p>乍一看好像只是用token串替换掉了sessionId,其实主要区别有：</p>
+<ol>
+<li>对应sessionid来说服务端是有保存的，而token服务端是没有保存的。而仅仅是通过算法解析来验证合法性</li>
+<li>传统的sessionid机制实现过于复用户杂，且可能是tomcat等容器默认实现了，要改动也是很不方便的。所以用token</li>
+</ol>
+<h3 id="token串解析"><a href="#token串解析" class="headerlink" title="token串解析"></a>token串解析</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">eyJhbGciOiJIUzI1NiJ9</span><br><span class="line">.eyJzdWIiOiJsbEBmY2JveC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwiaWQiOjIsImV4cCI6MTU2OTQ5OTc1NSwiaWF0IjoxNTY5NDk3OTU1LCJqdGkiOiIzMGIxZjJiOC1iNDE4LTQ4ODAtYjY4OC02OTY0NmYxMDg3MmIiLCJ1c2VybmFtZSI6ImxsQGZjYm94LmNvbSJ9</span><br><span class="line">.</span><br><span class="line">YE-SYjyThmogsF5Xj5sgvE9rNzAt4t3z19iDmi2Q2EI</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一段为头部信息，指明了加密算法等信息</li>
+<li>第二段为用户自定义信息，通常放username等信息</li>
+<li>第三段为签名，使用第一段里面指定的签名算法（默认是 HMAC SHA256）按照下面的公式生成签名。主要用于验证token的合法性<ul>
+<li>HMACSHA256( base64UrlEncode(header) + “.” + base64UrlEncode(payload),secret)</li>
+<li>由于签名的密钥只有服务端有，所以别人没有办法伪造和篡改token</li>
+</ul>
+</li>
+</ul>
 
       
 
@@ -198,7 +230,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">jwt</a>
         		</li>
       		
 		</ul>
@@ -219,7 +251,156 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/10/学习笔记/分布式/分布式事务/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/26/学习笔记/其他/JWT/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/Spring/Logback" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/Spring/Logback/">Logback</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/10/学习笔记/Spring/Logback/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>logback是java的日志开源组件，是log4j创始人写的，性能比log4j要好，目前主要分为3个模块：</p>
+<ol>
+<li><strong>logback-core</strong>:核心代码模块</li>
+<li><strong>logback-classic</strong>:log4j的一个改良版本，同时实现了slf4j的接口，这样你如果之后要切换其他日志组件也是一件很容易的事</li>
+<li><strong>logback-access</strong>:访问模块与Servlet容器集成提供通过Http来访问日志的功能</li>
+</ol>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="引入maven依赖"><a href="#引入maven依赖" class="headerlink" title="引入maven依赖"></a>引入maven依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--这个依赖直接包含了 logback-core 以及 slf4j-api的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="logback的配置"><a href="#logback的配置" class="headerlink" title="logback的配置"></a>logback的配置</h4><h5 id="配置获取顺序"><a href="#配置获取顺序" class="headerlink" title="配置获取顺序"></a>配置获取顺序</h5><p>logback在启动的时候，会按照下面的顺序加载配置文件</p>
+<ol>
+<li>如果java程序启动是指定<strong>logback.configurationFile</strong>属性，就用该属性指定的配置文件。如java -Dlogback.configurationFile=/path/to/mylogback.xml Test<br>这样执行Test类的时候就会加载/path/to/mylogback.xml配置</li>
+<li>在classpath中查找 logback.groovy 文件</li>
+<li>在classpath中查找 logback-test.xml 文件</li>
+<li>在classpath中查找 logback.xml 文件</li>
+<li>如果是 jdk6+,那么会调用ServiceLoader 查找 com.qos.logback.classic.spi.Configurator接口的第一个实现类</li>
+<li>自动使用ch.qos.logback.classic.BasicConfigurator,在控制台输出日志</li>
+</ol>
+<p>上面的顺序表示优先级，使用java -D配置的优先级最高，只要获取到配置后就不会再执行下面的流程。相关代码可以看ContextInitializer#autoConfig()方法。</p>
+<h5 id="日志输出级别"><a href="#日志输出级别" class="headerlink" title="日志输出级别"></a>日志输出级别</h5><p>从小到大的日志级别依旧是 <strong>trace、debug、info、warn、error</strong></p>
+<h5 id="logback-xml-配置样例"><a href="#logback-xml-配置样例" class="headerlink" title="logback.xml 配置样例"></a>logback.xml 配置样例</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">de<span class="doctag">bug:</span> 要不要打印 logback内部日志信息，true则表示要打印。建议开启</span></span><br><span class="line"><span class="comment">scan: 配置发生改变时，要不要重新加载</span></span><br><span class="line"><span class="comment">scanPeriod: 检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">debug</span>=<span class="string">"true"</span> <span class="attr">scan</span>=<span class="string">"true"</span> <span class="attr">scanPeriod</span>=<span class="string">"1 seconds"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>logback<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--定义参数,后面可以通过$&#123;app.name&#125;使用--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"app.name"</span> <span class="attr">value</span>=<span class="string">"logback_test"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--ConsoleAppender 用于在屏幕上输出日志--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"stdout"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里定义了DEBUG，也就是控制台不会输出比DEBUG级别小的日志--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.ThresholdFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder 默认配置为PatternLayoutEncoder --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义控制台输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志输出的路径--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--这里的scheduler.manager.server.home 没有在上面的配置中设定，所以会使用java启动时配置的值--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--比如通过 java -Dscheduler.manager.server.home=/path/to XXXX 配置该属性--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.log<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义日志滚动的策略--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--定义文件滚动时的文件名的格式--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;scheduler.manager.server.home&#125;/logs/$&#123;app.name&#125;.%d&#123;yyyy-MM-dd.HH&#125;.log.gz</span><br><span class="line">            <span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--60天的时间周期，日志量最大20GB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>60<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 该属性在 1.1.6版本后 才开始支持--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">totalSizeCap</span>&gt;</span>20GB<span class="tag">&lt;/<span class="name">totalSizeCap</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">triggeringPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--每个日志文件最大100MB--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxFileSize</span>&gt;</span>100MB<span class="tag">&lt;/<span class="name">maxFileSize</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">triggeringPolicy</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义输出格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d [%thread] %-5level %logger&#123;36&#125; [%file : %line] - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--root是默认的logger 这里设定输出级别是debug--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"trace"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--定义了两个appender，日志会通过往这两个appender里面写--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"file"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--这个logger没有指定appender，它会继承root节点中定义的那些appender--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.example.logback"</span> <span class="attr">level</span>=<span class="string">"warn"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--通过 LoggerFactory.getLogger("mytest") 可以获取到这个logger--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--由于这个logger自动继承了root的appender，root中已经有stdout的appender了，自己这边又引入了stdout的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果没有设置 additivity="false" ,就会导致一条日志在控制台输出两次的情况--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--additivity表示要不要使用rootLogger配置的appender进行输出--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"stdout"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!--由于设置了 additivity="false" ，所以输出时不会使用rootLogger的appender--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--但是这个logger本身又没有配置appender，所以使用这个logger输出日志的话就不会输出到任何地方--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"mytest2"</span> <span class="attr">level</span>=<span class="string">"info"</span> <span class="attr">additivity</span>=<span class="string">"false"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>configuration节点相关属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th align="center">默认值</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>debug</td>
+<td align="center">false</td>
+<td>要不要打印 logback内部日志信息，true则表示要打印。建议开启</td>
+</tr>
+<tr>
+<td>scan</td>
+<td align="center">true</td>
+<td>配置发送改变时，要不要重新加载</td>
+</tr>
+<tr>
+<td>scanPeriod</td>
+<td align="center">1 seconds</td>
+<td>检测配置发生变化的时间间隔。如果没给出时间单位，默认时间单位是毫秒</td>
+</tr>
+</tbody></table>
+<ul>
+<li>configuration子节点<ul>
+<li>contextName 设置日志上下文名称，后面输出格式中可以通过定义 %contextName 来打印日志上下文名称</li>
+<li>property 用来设置相关变量,通过key-value的方式配置，然后在后面的配置文件中通过 ${key}来访问</li>
+<li>appender 日志输出组件，主要负责日志的输出以及格式化日志。常用的属性有name和class<ul>
+<li>name 无默认值 | appender组件的名称，后面给logger指定appender使用</li>
+<li>class 无默认值 | appender的具体实现类。常用的有 ConsoleAppender、FileAppender、RollingFileAppender<ul>
+<li>ConsoleAppender 向控制台输出日志内容的组件，只要定义好encoder节点就可以使用</li>
+<li>FileAppender 向文件输出日志内容的组件，用法也很简单，不过由于没有日志滚动策略，一般很少使用</li>
+<li>RollingFileAppender 向文件输出日志内容的组件，同时可以配置日志文件滚动策略，在日志达到一定条件后生成一个新的日志文件</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">logback</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/10/学习笔记/Spring/Logback/">展开全文 >></a>
         </p>
       
 
@@ -307,287 +488,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/10/学习笔记/中间件/MQ/Kafka/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-问题总结/重大漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/问题总结/重大漏洞/">重大漏洞</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/10/问题总结/重大漏洞/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="版本漏洞"><a href="#版本漏洞" class="headerlink" title="版本漏洞"></a>版本漏洞</h3><ul>
-<li><a href="https://www.anquanke.com/post/id/185909" target="_blank" rel="noopener">FastJson &lt; 1.2.60 拒绝服务攻击预警</a></li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">重大漏洞</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/问题//" class="article-tag-list-link color3">问题</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/10/问题总结/重大漏洞/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/其他/Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/学习笔记/其他/Git/">Git</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/10/学习笔记/其他/Git/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
-<li>本地一直提示没有权限或账户密码错误</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --system --unset credential.helper</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>删除保存在本地的git账户</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git credential-manager uninstall</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>本地仓库与远程仓库关联</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 创建本地仓库</span><br><span class="line">git init</span><br><span class="line">git add *</span><br><span class="line">git commit -m "init test"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 创建远程仓库</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 关联远程仓库</span><br><span class="line">git remote add origin https://仓库地址</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/10/学习笔记/其他/Git/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-面试专栏/常用概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/面试专栏/常用概念/">常用概念</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/10/面试专栏/常用概念/" class="archive-article-date">
-  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="吞吐量（TPS）、QPS、并发数、响应时间（RT）概念"><a href="#吞吐量（TPS）、QPS、并发数、响应时间（RT）概念" class="headerlink" title="吞吐量（TPS）、QPS、并发数、响应时间（RT）概念"></a>吞吐量（TPS）、QPS、并发数、响应时间（RT）概念</h4><ul>
-<li><strong>响应时间（RT）</strong> 响应时间是指系统对请求作出响应的时间</li>
-<li><strong>吞吐量(TPS)</strong> 吞吐量是指系统在单位时间内处理请求的数量</li>
-<li><strong>并发数</strong> 并发数是指系统可以同时承载的正常使用系统功能的用户的数量</li>
-<li><strong>QPS(峰值时间每秒请求数)</strong><ul>
-<li>原理：每天80%的访问集中在20%的时间里，这20%时间叫做峰值时间</li>
-<li>公式：( 总PV数 * 80% ) / ( 每天秒数 * 20% ) = 峰值时间每秒请求数(QPS)</li>
-<li>机器：峰值时间每秒QPS / 单台机器的QPS = 需要的机器</li>
-</ul>
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/10/面试专栏/常用概念/">展开全文 >></a>
         </p>
       
 
@@ -764,19 +664,106 @@
 
 
   
-    <article id="post-面试专栏/面试总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-问题总结/重大漏洞" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/10/面试专栏/面试总结/">面试100问</a>
+      <a class="article-title" href="/2019/09/10/问题总结/重大漏洞/">重大漏洞</a>
     </h1>
   
 
         
-        <a href="/2019/09/10/面试专栏/面试总结/" class="archive-article-date">
+        <a href="/2019/09/10/问题总结/重大漏洞/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="版本漏洞"><a href="#版本漏洞" class="headerlink" title="版本漏洞"></a>版本漏洞</h3><ul>
+<li><a href="https://www.anquanke.com/post/id/185909" target="_blank" rel="noopener">FastJson &lt; 1.2.60 拒绝服务攻击预警</a></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">重大漏洞</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/问题//" class="article-tag-list-link color3">问题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/10/问题总结/重大漏洞/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-专栏/面试总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/专栏/面试总结/">面试100问</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/10/专栏/面试总结/" class="archive-article-date">
   	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
 </a>
         
@@ -903,7 +890,92 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/10/面试专栏/面试总结/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/10/专栏/面试总结/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-学习笔记/分布式/分布式事务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/10/学习笔记/分布式/分布式事务/">分布式事务</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/10/学习笔记/分布式/分布式事务/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>### </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/10/学习笔记/分布式/分布式事务/">展开全文 >></a>
         </p>
       
 
@@ -1023,36 +1095,42 @@
 
 
   
-    <article id="post-学习笔记/web前端/Vue/Vue-常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-学习笔记/其他/Git" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/web前端/Vue/Vue-常见问题/">Vue常见问题</a>
+      <a class="article-title" href="/2019/09/10/学习笔记/其他/Git/">Git</a>
     </h1>
   
 
         
-        <a href="/2019/07/19/学习笔记/web前端/Vue/Vue-常见问题/" class="archive-article-date">
-  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+        <a href="/2019/09/10/学习笔记/其他/Git/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="vue-style-loader-css-loader-“sourceMap”-true-vue-loader类似问题的"><a href="#vue-style-loader-css-loader-“sourceMap”-true-vue-loader类似问题的" class="headerlink" title="*!!vue-style-loader!css-loader?{“sourceMap”:true}!../../../../vue-loader类似问题的"></a><a href="https://blog.csdn.net/genius_yym/article/details/82222424" target="_blank" rel="noopener">*!!vue-style-loader!css-loader?{“sourceMap”:true}!../../../../vue-loader类似问题的</a></h3><ul>
-<li>问题描述</li>
+        <h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
+<li>本地一直提示没有权限或账户密码错误</li>
 </ul>
-<p>*!!vue-style-loader!css-loader?{“sourceMap”:true}!../../../../vue-loader/lib/style-compiler/index?{“vue”:true,”id”:”data-v-570115ee”,”scoped”:false,”hasInlineConfig”:false}!../../../../vux-loader/src/after-less-loader.js!less-loader?{“sourceMap”:true}!../../../../vux-loader/src/style-loader.js!../../../../vue-loader/lib/selector?type=styles&amp;index=0!./index.vue in ./node_modules/vux/src/components/alert/index.vue</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --system --unset credential.helper</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li>解决方案</li>
+<li>删除保存在本地的git账户</li>
 </ul>
-<p>此类问题一般是缺少相关依赖而导致的，对于本例，仔细看一下报错提示信息，抓住关键词，vue-style-loader!css-loader，说明是css解析的时候出了问题。<br>所以，解决方案就要根据情况而定，看你使用的CSS语言是什么,是 常规的 或者 less 或者 sass。</p>
-<p>如果是 常规 的，执行 npm install stylus-loader css-loader style-loader –save-dev 安装依赖就行。<br>如果是 less 的，执行 npm install less less-loader –save-dev 安装依赖就行。<br>如果是 sass 的，执行 npm install sass sass-loader –save-dev 安装依赖就行。或者（$npm intall sass-loader –save ; $npm install node-sass –save）<br>如果你不知道，好吧，你三个都执行吧。<br>一般只有在初始化配置的的时候才会出现这个问题，如果是已经完好的项目都会在package.json中已经配好，直接install即可。</p>
-<h3 id="强大的css预编译stylus以及在vue中使用stylus"><a href="#强大的css预编译stylus以及在vue中使用stylus" class="headerlink" title="强大的css预编译stylus以及在vue中使用stylus"></a><a href="https://www.jianshu.com/p/8601ccf91225" target="_blank" rel="noopener">强大的css预编译stylus以及在vue中使用stylus</a></h3><h3 id="解决webstorm中vue语法没有提示"><a href="#解决webstorm中vue语法没有提示" class="headerlink" title="解决webstorm中vue语法没有提示"></a><a href="https://blog.csdn.net/weixin_42795449/article/details/84112876" target="_blank" rel="noopener">解决webstorm中vue语法没有提示</a></h3><h3 id="解决webstorm中vue语法高亮显示"><a href="#解决webstorm中vue语法高亮显示" class="headerlink" title="解决webstorm中vue语法高亮显示"></a><a href="https://blog.csdn.net/weixin_42795449/article/details/84112876" target="_blank" rel="noopener">解决webstorm中vue语法高亮显示</a></h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git credential-manager uninstall</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>本地仓库与远程仓库关联</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 创建本地仓库</span><br><span class="line">git init</span><br><span class="line">git add *</span><br><span class="line">git commit -m "init test"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 创建远程仓库</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 关联远程仓库</span><br><span class="line">git remote add origin https://仓库地址</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+
+
       
 
       
@@ -1065,7 +1143,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
         		</li>
       		
 		</ul>
@@ -1086,7 +1164,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/19/学习笔记/web前端/Vue/Vue-常见问题/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/10/学习笔记/其他/Git/">展开全文 >></a>
         </p>
       
 
@@ -1116,38 +1194,38 @@
 
 
   
-    <article id="post-学习笔记/中间件/Elastic-job" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-专栏/常用概念" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/19/学习笔记/中间件/Elastic-job/">elastic-job</a>
+      <a class="article-title" href="/2019/09/10/专栏/常用概念/">常用概念</a>
     </h1>
   
 
         
-        <a href="/2019/07/19/学习笔记/中间件/Elastic-job/" class="archive-article-date">
-  	<time datetime="2019-07-18T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-19</time>
+        <a href="/2019/09/10/专栏/常用概念/" class="archive-article-date">
+  	<time datetime="2019-09-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="分片策略"><a href="#分片策略" class="headerlink" title="分片策略"></a>分片策略</h3><p>数据分片的目的在于把一个任务分散到不同的机器上运行，既可以解决单机计算能力上限的问题，也能降低部分任务失败对整体系统的影响。elastic-job并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器（其实是Job实例，部署在一台机器上的多个Job实例也能分片），开发者需要自行处理分片项与真实数据的对应关系。框架也预置了一些分片策略：平均分配算法策略，作业名哈希值奇偶数算法策略，轮转分片策略。同时也提供了自定义分片策略的接口。</p>
-<h4 id="分片原理"><a href="#分片原理" class="headerlink" title="分片原理"></a>分片原理</h4><p>elastic-job的分片是通过zookeeper来实现的。节点的分片由主节点分配，如下三种情况都会触发主节点上的分片算法执行：</p>
-<ol>
-<li>新的Job实例加入集群</li>
-<li>现有的Job实例下线（如果下线的是leader节点，那么先选举然后触发分片算法的执行）</li>
-<li>主节点选举<br>上述三种情况，会让zookeeper上leader节点的sharding节点上多出来一个necessary的临时节点，主节点每次执行Job前，都会去看一下这个节点，如果有则执行分片算法。</li>
-</ol>
-<p>分片的执行结果会存储在zookeeper上，5个分片，每个分片应该由哪个Job实例来运行都已经分配好。分配的过程就是上面触发分片算法之后的操作。分配完成之后，各个Job实例就会在下次执行的时候使用上这个分配结果。</p>
-<p>每个job实例任务触发前都会获取本任务在本实例上的分片情况，然后封装成shardingContext，传递给调用任务的实际执行方法：</p>
-        
-          <a class="article-more-a" href="/2019/07/19/学习笔记/中间件/Elastic-job/#more">more >></a>
-        
+        <h4 id="吞吐量（TPS）、QPS、并发数、响应时间（RT）概念"><a href="#吞吐量（TPS）、QPS、并发数、响应时间（RT）概念" class="headerlink" title="吞吐量（TPS）、QPS、并发数、响应时间（RT）概念"></a>吞吐量（TPS）、QPS、并发数、响应时间（RT）概念</h4><ul>
+<li><strong>响应时间（RT）</strong> 响应时间是指系统对请求作出响应的时间</li>
+<li><strong>吞吐量(TPS)</strong> 吞吐量是指系统在单位时间内处理请求的数量</li>
+<li><strong>并发数</strong> 并发数是指系统可以同时承载的正常使用系统功能的用户的数量</li>
+<li><strong>QPS(峰值时间每秒请求数)</strong><ul>
+<li>原理：每天80%的访问集中在20%的时间里，这20%时间叫做峰值时间</li>
+<li>公式：( 总PV数 * 80% ) / ( 每天秒数 * 20% ) = 峰值时间每秒请求数(QPS)</li>
+<li>机器：峰值时间每秒QPS / 单台机器的QPS = 需要的机器</li>
+</ul>
+</li>
+</ul>
+
       
 
       
@@ -1160,7 +1238,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">elastic-job</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
         		</li>
       		
 		</ul>
@@ -1172,7 +1250,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
+        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
         		</li>
       		
 		</ul>
@@ -1181,7 +1259,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/19/学习笔记/中间件/Elastic-job/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/09/10/专栏/常用概念/">展开全文 >></a>
         </p>
       
 
@@ -1213,7 +1291,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -1312,19 +1390,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1332,23 +1402,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1357,6 +1411,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1380,11 +1458,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1400,10 +1490,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -1416,23 +1502,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1444,15 +1522,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1460,11 +1546,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1480,6 +1562,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -1488,7 +1574,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1496,11 +1582,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">

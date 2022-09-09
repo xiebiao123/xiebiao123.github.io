@@ -164,19 +164,278 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-面试专栏/搜索引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-专栏/缓存" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/12/28/面试专栏/搜索引擎/">搜索引擎多连炮</a>
+      <a class="article-title" href="/2021/01/05/专栏/缓存/">缓存</a>
     </h1>
   
 
         
-        <a href="/2020/12/28/面试专栏/搜索引擎/" class="archive-article-date">
+        <a href="/2021/01/05/专栏/缓存/" class="archive-article-date">
+  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="为什么要使用缓存？"><a href="#为什么要使用缓存？" class="headerlink" title="为什么要使用缓存？"></a>为什么要使用缓存？</h4><ol>
+<li>高性能<ul>
+<li>同一条数据多次查询，第二次查询用缓存耗时缩短</li>
+</ul>
+</li>
+<li>高并发<ul>
+<li>数据库并发能力有限（2000/s）,缓存是走内存的天然高并发（4w/s）</li>
+</ul>
+</li>
+</ol>
+<h4 id="用了缓存会有什么问题？"><a href="#用了缓存会有什么问题？" class="headerlink" title="用了缓存会有什么问题？"></a>用了缓存会有什么问题？</h4><ul>
+<li>缓存与数据库双写不一致的问题</li>
+<li>缓存的雪崩</li>
+<li>缓存的穿透</li>
+<li>缓存的并发竞争</li>
+</ul>
+<h4 id="为什么redis单线程模型也能够效率这么高？"><a href="#为什么redis单线程模型也能够效率这么高？" class="headerlink" title="为什么redis单线程模型也能够效率这么高？"></a>为什么redis单线程模型也能够效率这么高？</h4><ol>
+<li>纯内存操作</li>
+<li>核心是基于非阻塞的IO多路服用机制</li>
+<li>单线程反而避免了多线程的频繁上下文切换问题</li>
+</ol>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/redis%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B.png" alt="redis单线程模型"></p>
+<h4 id="redis有哪些数据类型？分别在哪些场景下比较合适？"><a href="#redis有哪些数据类型？分别在哪些场景下比较合适？" class="headerlink" title="redis有哪些数据类型？分别在哪些场景下比较合适？"></a>redis有哪些数据类型？分别在哪些场景下比较合适？</h4><ul>
+<li>string<ul>
+<li>就是普通的set和get,做简单的kv缓存</li>
+</ul>
+</li>
+<li>hashMap<ul>
+<li>类似map结构，这个一般用于结构化的数据（前提是没有嵌套），方便修改其中的一个字段</li>
+<li>例如只修改用户的年龄</li>
+</ul>
+</li>
+<li>list<ul>
+<li>有序列表，一类数据的集合，常用于取集合中的部分数据</li>
+<li>例如存储粉丝列表、评论列表，然后基于list实现分页查询；可以搞一个简单的消息队列，从list头怼进去，从list尾巴那里取出来</li>
+</ul>
+</li>
+<li>set<ul>
+<li>无序集合，自动去重</li>
+<li>去重的集合；交集、并集、差集；共同好友、共同关注的人</li>
+</ul>
+</li>
+<li>sort set<ul>
+<li>排序的set,写进去的时候给一个分数，自动根据分数排序</li>
+<li>分数写入时间，按照时间排序；排行版（根据用户获得的分数）</li>
+</ul>
+</li>
+</ul>
+<h4 id="redis过期策略有哪些？手写一下lru的代码？"><a href="#redis过期策略有哪些？手写一下lru的代码？" class="headerlink" title="redis过期策略有哪些？手写一下lru的代码？"></a>redis过期策略有哪些？手写一下lru的代码？</h4><ol>
+<li>设置过期时间<ul>
+<li>定期删除<ul>
+<li>redis默认每隔100ms就随机抽取一些设置了过期时间的key,检查是否过期，如果就删除</li>
+</ul>
+</li>
+<li>惰性删除<ul>
+<li>当你查询设置了过期时间key，redis会惰性的检查一下是否过期，如果过期则删除且不会返回任何结果</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1. volatile-lru 使用LRU算法删除一个键(只针对设置了过期时间的key</span><br><span class="line">2. allkeys-lru(最常用) 使用LRU算法删除一个键</span><br><span class="line">3. volatile-lfu 使用LFU算法删除一个键(只针对设置了过期时间的键)</span><br><span class="line">4. allkeys-lfu 使用LFU算法删除一个键</span><br><span class="line">5. volatile-random 随机删除一个键(只针对设置了过期时间的键)</span><br><span class="line">6. allkeys-random 随机删除一个键</span><br><span class="line">7. volatile-ttl 删除最早过期的一个键</span><br><span class="line">8. noeviction 不删除键，返回错误信息(redis默认选项)</span><br></pre></td></tr></table></figure>
+
+<p>使用LinkedHashMap，将最近访问的放在头部，最老访问的放在尾部，当数据量大于指定的缓存个数时，就删除最老的数据</p>
+<h4 id="redis主从复制的原理？"><a href="#redis主从复制的原理？" class="headerlink" title="redis主从复制的原理？"></a>redis主从复制的原理？</h4><p>当启动一个slave node的时候，它会发送一个PSYNC命令给master node</p>
+<p>如果这是slave node重新连接master node，那么master node仅仅会复制给slave node部分缺少的数据；否则如果是slave node第一次连接master node<br>那么会触发一次full resynchronization,开始 full resynchronization的时候，master会启动一个后台线程，开始生成一份RDB快照文件，同时还会将<br>从客户端收到的所有写命令缓存到内存中。RDB文件生成完毕之后，master会将这个RDB发送给slave，slave会先写入本地磁盘，然后再从本地磁盘加载到<br>内存中，然后master会将内存中缓存的写命令发送给slave，slave也会同步这些数据</p>
+<p>slave node如果跟master node有网络故障，断开了连接，会自动重连。master如果发现有多个slave node都来重新连接，仅仅会启动一个RDB save操作，<br>用一份数据给所有slave node</p>
+<h5 id="主从复制的断点续传？"><a href="#主从复制的断点续传？" class="headerlink" title="主从复制的断点续传？"></a>主从复制的断点续传？</h5><p>从redis 2.8开始，就支持主从复制的断点续传；如果主从复制的过程中网络断掉，可以接着上次复制的地方继续复制下去，而不是从头开始复制。</p>
+<p>master node会在内存中维护的一个blacklog，master和slave都会保存一个replica offset还有一个master id，offset就是保存在blacklog中的。<br>如果master和slave网络连接断掉，slave会让master从上次的replica offset开始继续复制</p>
+<p>但如果没有找到对应的offset，那么就会执行一次full resynchronization</p>
+<h5 id="无磁盘化复制"><a href="#无磁盘化复制" class="headerlink" title="无磁盘化复制"></a>无磁盘化复制</h5><p>master在内存中直接创建rdb，然后发送给slave，不会在自己本地落磁盘</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">缓存</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/01/05/专栏/缓存/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-专栏/zookeeper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/01/05/专栏/zookeeper/">zookeeper</a>
+    </h1>
+  
+
+        
+        <a href="/2021/01/05/专栏/zookeeper/" class="archive-article-date">
+  	<time datetime="2021-01-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-01-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="说一说zookeeper有哪些使用场景？"><a href="#说一说zookeeper有哪些使用场景？" class="headerlink" title="说一说zookeeper有哪些使用场景？"></a>说一说zookeeper有哪些使用场景？</h4><ul>
+<li>1.分布式协调</li>
+</ul>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%88%86%E5%B8%83%E5%BC%8F%E5%8D%8F%E8%B0%83.png" alt="分布式系统顺序性"></p>
+<ul>
+<li>2.分布式锁</li>
+</ul>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81.png" alt="分布式系统顺序性"></p>
+<ul>
+<li>3.元素据、配置信息管理</li>
+</ul>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-%E5%85%83%E7%B4%A0%E6%8D%AE%E3%80%81%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86.png" alt="分布式系统顺序性"></p>
+<ul>
+<li>4.HA高可用性(主备切换)</li>
+</ul>
+<p><img src="/images/%E9%9D%A2%E8%AF%95/zookeeper-HA%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7.png" alt="分布式系统顺序性"></p>
+<h4 id="redis分布式锁-和-ZK分布式锁的对比-？"><a href="#redis分布式锁-和-ZK分布式锁的对比-？" class="headerlink" title="redis分布式锁 和 ZK分布式锁的对比 ？"></a>redis分布式锁 和 ZK分布式锁的对比 ？</h4><ol>
+<li>redis分布式锁，其实需要自己不断去尝试获取锁，比较消耗性能；zk分布式锁，获取不到锁，<strong>注册一个监听器</strong>即可，不需要不断主动尝试获取锁，性能开销较小</li>
+<li>redis获取锁的那个客户端如果bug了或挂掉，那么只能等待超时时间之后才能释放；而ZK因为创建的是临时节点，只要客户端挂了，znode就没有了，此时自动释放锁</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">zookeeper</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/专栏//" class="article-tag-list-link color3">专栏</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/01/05/专栏/zookeeper/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-专栏/搜索引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/12/28/专栏/搜索引擎/">搜索引擎多连炮</a>
+    </h1>
+  
+
+        
+        <a href="/2020/12/28/专栏/搜索引擎/" class="archive-article-date">
   	<time datetime="2020-12-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-28</time>
 </a>
         
@@ -295,7 +554,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/12/28/面试专栏/搜索引擎/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/12/28/专栏/搜索引擎/">展开全文 >></a>
         </p>
       
 
@@ -325,19 +584,19 @@
 
 
   
-    <article id="post-面试专栏/消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-专栏/消息队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/12/16/面试专栏/消息队列/">消息队列多连炮</a>
+      <a class="article-title" href="/2020/12/16/专栏/消息队列/">消息队列多连炮</a>
     </h1>
   
 
         
-        <a href="/2020/12/16/面试专栏/消息队列/" class="archive-article-date">
+        <a href="/2020/12/16/专栏/消息队列/" class="archive-article-date">
   	<time datetime="2020-12-15T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-12-16</time>
 </a>
         
@@ -566,7 +825,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/12/16/面试专栏/消息队列/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/12/16/专栏/消息队列/">展开全文 >></a>
         </p>
       
 
@@ -1379,186 +1638,9 @@
 
 
   
-    <article id="post-学习笔记/web前端/小程序" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/05/学习笔记/web前端/小程序/">小程序</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/05/学习笔记/web前端/小程序/" class="archive-article-date">
-  	<time datetime="2019-12-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="catchtap-、-bindtap-、-longtap"><a href="#catchtap-、-bindtap-、-longtap" class="headerlink" title="catchtap 、 bindtap 、 longtap"></a>catchtap 、 bindtap 、 longtap</h3><ul>
-<li>bindtap： 允许事件冒泡</li>
-<li>catchtap： 阻止事件冒泡</li>
-<li>longtap：手指触摸后，超过350ms再离开</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">小程序</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/05/学习笔记/web前端/小程序/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-学习笔记/数据库/Mysql-分库分表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/">mysql之分库分表</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/" class="archive-article-date">
-  	<time datetime="2019-11-19T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="为什么要分库分表"><a href="#为什么要分库分表" class="headerlink" title="为什么要分库分表"></a>为什么要分库分表</h3><p>当流量不大的时候，单机数据库就够了。后面因为业务的发展请求越来越多，但是我们发现大多数都是读请求，于是我们想到了将数据库的<br><strong>写操作</strong>和<strong>读操作</strong>进行分离，使用多个从库（Slaver）副本负责读，使用主库（Master）负责写，主库的数据同步给从库保持数据的一致，从<br>库可以水平拓展，所以更多的读请求也不成问题</p>
-<p>但是当用户量级上来后，写请求越来越多，该怎么办？加一个Master是不能解决问题的， 因为数据要保持一致性，写操作需要2个master<br>之间同步，相当于是重复了，而且更加复杂。这时就需要用到<strong>分库分表</strong>，对写操作进行切分</p>
-        
-          <a class="article-more-a" href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/学习//" class="article-tag-list-link color3">学习</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/20/学习笔记/数据库/Mysql-分库分表/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -1657,19 +1739,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">商城</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1677,23 +1751,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">dubbo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">面试</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1702,6 +1760,30 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">vagrant</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">IDEA</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">重大漏洞</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">商城</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">沟通</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1725,11 +1807,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Window</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">docker</a>
+                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1745,10 +1839,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">小程序</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Hexo</a>
               </li>
              
@@ -1761,23 +1851,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">spock</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">maven</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">spock</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">freemarker</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1789,15 +1871,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nacos</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
+                <a href="javascript:void(0)" class="js-tag color3">Camunda</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">工作流</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1805,11 +1895,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">groovy</a>
+                <a href="javascript:void(0)" class="js-tag color4">sentinel</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1825,6 +1911,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">唯一ID</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">hystrix</a>
               </li>
              
@@ -1833,7 +1923,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1841,11 +1931,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">MQ</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">Arthas</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">监控</a>
               </li>
              
               <li class="article-tag-list-item">
